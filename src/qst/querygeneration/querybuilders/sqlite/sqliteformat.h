@@ -21,7 +21,7 @@ const QString SQL_INNER_JOIN    = "INNER JOIN";
 const QString SQL_RIGHT_JOIN    = "RIGHT JOIN";
 const QString SQL_FULL_JOIN     = "FULL JOIN";
 const QString SQL_PARAMETERS    = "";
-const QString SQL_AS_RETURN_VALUE = "AS return_value";
+const QString SQL_AS_RETURN_VALUE = "";
 
 
 const QString TO_STRING_CONVERT = QString("(CAST (%1 as TEXT)");

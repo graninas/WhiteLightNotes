@@ -147,6 +147,8 @@ MatchPolicy;
 	Q_DECLARE_FLAGS(QueryClauses, QueryClause)
 	Q_DECLARE_OPERATORS_FOR_FLAGS(QueryClauses)
 
+	typedef QList<Qst::QueryClause> QueryClauseList;
+
 
 	typedef enum	{
 						RoleNone		= 0x1000,

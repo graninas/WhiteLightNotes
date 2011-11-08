@@ -48,7 +48,8 @@ QstDefaultItemNameExtractor QstBatch::_defaultExtractor = QstDefaultItemNameExtr
 */
 QstBatch::QstBatch()
 	:
-	  _itemNameExtractor(&_defaultExtractor)
+	  _itemNameExtractor(&_defaultExtractor),
+	  _queryBatch(QueryBatch(QuerySelect))
 {
 }
 
@@ -67,6 +68,59 @@ QstBatch::QstBatch(const QueryBatch &queryBatch,
 	  _queryBatch(queryBatch),
 	  _viewAppearance(appearance)
 {
+}
+
+void QstBatch::setItemNameExtractor(QstAbstractItemNameExtractor *extractor)
+{
+	if (extractor == NULL)
+		_itemNameExtractor = &_defaultExtractor;
+	else
+		_itemNameExtractor = extractor;
+}
+
+QString QstBatch::escape(const QString &text)
+{
+	QString res = text;
+	res.replace(QChar('\''), QString("''"));
+	return res;
+}
+
+QString QstBatch::unescape(const QString &text)
+{
+	QString res = text;
+	res.replace(QString("''"), QString("'"));
+	return res;
+}
+
+QVariant QstBatch::escapeVariant(const QVariant &val)
+{
+	if (val.type() == QVariant::String
+			|| val.type() == QVariant::ByteArray)
+		return QVariant(escape(val.toString()));
+return val;
+}
+
+QVariantList QstBatch::escapeVariantList(const QVariantList &list)
+{
+	QVariantList escaped;
+	foreach (QVariant val, list)
+		escaped.append(escapeVariant(val));
+	return escaped;
+}
+
+QVariantMap QstBatch::escapeVariantMap(const QVariantMap &map)
+{
+	QVariantMap escaped;
+	QVariantMap::const_iterator iter = map.begin();
+	while (iter != map.end())
+		escaped.insert(iter.key(), escapeVariant(iter.value()));
+	return escaped;
+}
+
+QueryValue QstBatch::escapeQueryValue(const QueryValue &val)
+{
+	return QueryValue(escapeVariant(val.value()),
+					  val.percentPlaceholders());
 }
 
 void QstBatch::addSource(const QString &source)
@@ -129,14 +183,6 @@ QueryBatch QstBatch::queryBatch() const
 	return _queryBatch;
 }
 
-void QstBatch::setItemNameExtractor(QstAbstractItemNameExtractor *extractor)
-{
-	if (extractor == NULL)
-		_itemNameExtractor = &_defaultExtractor;
-	else
-		_itemNameExtractor = extractor;
-}
-
 ViewAppearance QstBatch::viewAppearance() const
 {
 	return _viewAppearance;
@@ -194,9 +240,8 @@ QstBatch & QstBatch::updatePlaceholder(const QString &placeholderName,
 									   const QstValue &qstValue)
 {
 	_queryBatch.updatePlaceholder(placeholderName,
-								  qstValue.queryValue(),
+								  escapeQueryValue(qstValue.queryValue()),
 								  qstValue.functor());
-
 	return (*this);
 }
 
@@ -206,7 +251,8 @@ QstBatch & QstBatch::updatePlaceholder(const QString &placeholderName,
 									   const PercentPlaceholders &percentPlaceholders)
 {
 	_queryBatch.updatePlaceholder(placeholderName,
-								  QueryValue(value, percentPlaceholders),
+								  QueryValue(escapeVariant(value),
+											 percentPlaceholders),
 								  functor);
 
 	return (*this);
@@ -216,17 +262,19 @@ QstBatch & QstBatch::updatePlaceholder(const QString &placeholderName,
 									   const QVariantList &varList,
 									   const Functor &functor)
 {
-	_queryBatch.updatePlaceholder(placeholderName, varList, functor);
+	_queryBatch.updatePlaceholder(placeholderName,
+								  escapeVariantList(varList),
+								  functor);
 
 	return (*this);
 }
 
-QstBatch & QstBatch::updatePlaceholders(const QVariantMap &newValues)
+QstBatch & QstBatch::updatePlaceholders(const QVariantMap &varMap)
 {
-	QVariantMap::const_iterator iter = newValues.begin();
-
-	while (iter != newValues.end())
-		_queryBatch.updatePlaceholder(iter.key(), QueryValue(iter.value()));
+	QVariantMap::const_iterator iter = varMap.begin();
+	while (iter != varMap.end())
+		_queryBatch.updatePlaceholder(iter.key(),
+									  QueryValue(escapeVariant(iter.value())));
 
 	return (*this);
 }
@@ -306,6 +354,20 @@ QstBatch & QstBatch::where(const QString &fieldName,
 	return (*this);
 }
 
+QstBatch & QstBatch::where(const QString &fieldName,
+						   const QueryValue &value)
+{
+	_queryBatch.where(fieldName, value);
+	return (*this);
+}
+
+QstBatch & QstBatch::where(const QString &fieldName,
+						   const QVariant &value)
+{
+	_queryBatch.where(fieldName, QueryValue(value));
+	return (*this);
+}
+
 QstBatch & QstBatch::where(const QueryIn &in)
 {
 	_queryBatch.where(in);
@@ -376,8 +438,9 @@ QstBatch & QstBatch::orderBy(const QString &fieldName)
 }
 
 QstBatch & QstBatch::insert(const QString &tableName,
-							  const QStringList &fieldNames)
+							const QStringList &fieldNames)
 {
+	_queryBatch.setQueryType(QueryInsert);
 	_queryBatch.insert(tableName, fieldNames);
 	return (*this);
 }
@@ -396,14 +459,20 @@ QstBatch & QstBatch::values(const QueryValueList &values)
 
 QstBatch & QstBatch::values(const QVariantList &values)
 {
-	_queryBatch.values(values);
+	_queryBatch.values(escapeVariantList(values));
+	return (*this);
+}
+
+QstBatch & QstBatch::values(const QstPlaceholderList &placeholderList)
+{
+	_queryBatch.values(placeholderList);
 	return (*this);
 }
 
 QstBatch & QstBatch::update(const QString &tableName)
 {
-	_queryBatch.update(tableName);
 	_queryBatch.setQueryType(QueryUpdate);
+	_queryBatch.update(tableName);
 	return (*this);
 }
 
@@ -415,15 +484,15 @@ QstBatch & QstBatch::set(const QueryFieldList &fields)
 
 QstBatch & QstBatch::deleteFrom(const QString &tableName)
 {
-	_queryBatch.deleteFrom(tableName);
 	_queryBatch.setQueryType(QueryDelete);
+	_queryBatch.deleteFrom(tableName);
 	return (*this);
 }
 
 QstBatch & QstBatch::execute(const QString &funcName)
 {
-	_queryBatch.execute(funcName);
 	_queryBatch.setQueryType(QueryExecute);
+	_queryBatch.execute(funcName);
 	return (*this);
 }
 
@@ -440,5 +509,6 @@ QstBatch & QstBatch::parameters(const QstPlaceholder &placeholder)
 	_queryBatch.parameters(list);
 	return (*this);
 }
+
 
 }

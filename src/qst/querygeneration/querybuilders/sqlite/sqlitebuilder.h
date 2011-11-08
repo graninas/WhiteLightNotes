@@ -21,8 +21,8 @@ public:
 	virtual QueryFrame makeClauseItemFrame(const QueryBatch &batch,
 										   const bool &delimiterEnded) const;
 
-	QueryBatchList validClauseBatches(const Qst::QueryClause &queryClause,
-									  const QueryBatchList &batchList) const;
+	virtual QueryBatchList validClauseBatches(const Qst::QueryClause &queryClause,
+											  const QueryBatchList &batchList) const;
 
 private:
 

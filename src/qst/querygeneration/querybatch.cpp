@@ -128,6 +128,14 @@ QueryBatch (QuerySelect, name, BatchSource, ClauseNone)
 */
 
 
+QueryClauseList QueryBatch::_placeholderedClauses()
+{
+	return QueryClauseList()
+			<< ClauseParameters
+			<< ClauseValues
+			<< ClauseWhere;
+}
+
 QueryBatch::QueryBatch()
 	:
 	  _name(QString()),
@@ -285,9 +293,12 @@ QueryBatch & QueryBatch::updatePlaceholder(const QString &placeholderName,
 										   const QueryValue &value,
 										   const Qst::Functor &functor)
 {
-	if (_batchPacks.contains(ClauseWhere))
-		for (int i = 0; i < _batchPacks[ClauseWhere].count(); ++i)
-			_batchPacks[ClauseWhere][i].updatePlaceholder(placeholderName, value, functor);
+	foreach (Qst::QueryClause cl, _placeholderedClauses())
+	{
+		if (_batchPacks.contains(cl))
+			for (int i = 0; i < _batchPacks[cl].count(); ++i)
+				_batchPacks[cl][i].updatePlaceholder(placeholderName, value, functor);
+	}
 
 	_condition.updatePlaceholder(placeholderName, value, functor);
 
@@ -298,9 +309,12 @@ QueryBatch & QueryBatch::updatePlaceholder(const QString &placeholderName,
 										   const QVariantList &varList,
 										   const Qst::Functor &functor)
 {
-	if (_batchPacks.contains(ClauseWhere))
-		for (int i = 0; i < _batchPacks[ClauseWhere].count(); ++i)
-			_batchPacks[ClauseWhere][i].updatePlaceholder(placeholderName, varList, functor);
+	foreach (Qst::QueryClause cl, _placeholderedClauses())
+	{
+		if (_batchPacks.contains(cl))
+			for (int i = 0; i < _batchPacks[cl].count(); ++i)
+				_batchPacks[cl][i].updatePlaceholder(placeholderName, varList, functor);
+	}
 
 	_condition.updatePlaceholder(placeholderName, varList, functor);
 
@@ -309,16 +323,18 @@ QueryBatch & QueryBatch::updatePlaceholder(const QString &placeholderName,
 
 QueryBatch & QueryBatch::updatePlaceholder(const QVariantMap &varMap)
 {
-	if (_batchPacks.contains(ClauseParameters))
-		for (int i = 0; i < _batchPacks[ClauseParameters].count(); ++i)
-			_batchPacks[ClauseParameters][i].updatePlaceholder(varMap);
+	foreach (Qst::QueryClause cl, _placeholderedClauses())
+	{
+	if (_batchPacks.contains(cl))
+		for (int i = 0; i < _batchPacks[cl].count(); ++i)
+			_batchPacks[cl][i].updatePlaceholder(varMap);
+	}
 
 	QVariantMap::const_iterator iter = varMap.begin();
 	while (iter != varMap.end())
 	{
 		for (int i = 0; i < _fields.count(); ++i)
 			_fields[i].updatePlaceholder(iter.key(), QueryValue(iter.value()), NoFunctor);
-
 		iter++;
 	}
 
@@ -327,15 +343,15 @@ QueryBatch & QueryBatch::updatePlaceholder(const QVariantMap &varMap)
 
 void QueryBatch::resetPlaceholders()
 {
-	if (_batchPacks.contains(ClauseWhere))
-		for (int i = 0; i < _batchPacks[ClauseWhere].count(); ++i)
-			_batchPacks[ClauseWhere][i].resetPlaceholders();
-
-	if (_batchPacks.contains(ClauseParameters))
-		for (int i = 0; i < _batchPacks[ClauseParameters].count(); ++i)
-			_batchPacks[ClauseParameters][i].resetPlaceholders();
+	foreach (Qst::QueryClause cl, _placeholderedClauses())
+	{
+		if (_batchPacks.contains(cl))
+			for (int i = 0; i < _batchPacks[cl].count(); ++i)
+				_batchPacks[cl][i].resetPlaceholders();
+	}
 
 	_condition.resetPlaceholders();
+
 	for (int i = 0; i < _fields.count(); ++i)
 		_fields[i].resetPlaceholder();
 }
@@ -675,6 +691,21 @@ QueryBatch & QueryBatch::values(const QueryFieldList &fieldValues)
 return (*this);
 }
 
+QueryBatch & QueryBatch::values(const Qst::QstPlaceholderList &placeholderList)
+{
+	Q_ASSERT(!placeholderList.isEmpty());
+
+	QueryFieldList fieldList = _getFieldList(placeholderList,
+											 ClauseValues,
+											 Qst::NoFunctor);
+
+	QueryBatch batch = QueryBatch(ClauseValues, QString());
+	batch.setFields(fieldList);
+
+	appendBatch(ClauseValues, batch);
+return (*this);
+}
+
 QueryBatch & QueryBatch::values(const QueryValueList &values)
 {
 	Q_ASSERT(!values.isEmpty());
@@ -762,10 +793,8 @@ QueryBatch & QueryBatch::parameters(const QVariantList &varList)
 {
 	Q_ASSERT(!varList.isEmpty());
 
-	QueryFieldList fieldList;
-
-	foreach (QVariant var, varList)
-		fieldList.append(QueryField(QueryValue(var), ClauseParameters));
+	QueryFieldList fieldList = _getFieldList(varList,
+											 ClauseParameters);
 
 	QueryBatch batch = QueryBatch(ClauseParameters, QString());
 	batch.setFields(fieldList);
@@ -778,18 +807,9 @@ QueryBatch & QueryBatch::parameters(const Qst::QstPlaceholderList &placeholderLi
 {
 	Q_ASSERT(!placeholderList.isEmpty());
 
-	QueryFieldList fieldList;
-
-	foreach (QstPlaceholder pl, placeholderList)
-	{
-		Q_ASSERT(!pl.names().isEmpty());
-
-		QueryField field = QueryField(pl.name(),
-									  pl.name(),
-									  Qst::TypeDependedFunctor,
-									  Qst::ClauseParameters);
-		fieldList.append(field);
-	}
+	QueryFieldList fieldList = _getFieldList(placeholderList,
+											 Qst::ClauseParameters,
+											 Qst::TypeDependedFunctor);
 
 	QueryBatch batch = QueryBatch(ClauseParameters, QString());
 	batch.setFields(fieldList);
@@ -797,49 +817,6 @@ QueryBatch & QueryBatch::parameters(const Qst::QstPlaceholderList &placeholderLi
 	appendBatch(ClauseParameters, batch);
 return (*this);
 }
-
-//QueryBatch & QueryBatch::parameters(const QueryFieldList &fieldParameters)
-//{
-//	Q_ASSERT(!fieldParameters.isEmpty());
-
-//	QueryBatch batch = QueryBatch(ClauseParameters, QString());
-//	batch.setFields(fieldParameters);
-
-//	appendBatch(ClauseParameters, batch);
-//return (*this);
-//}
-
-//QueryBatch & QueryBatch::parameters(const QueryValueList &valueParameters)
-//{
-//	Q_ASSERT(!valueParameters.isEmpty());
-
-//	QueryFieldList list;
-
-//	foreach(QueryValue val, valueParameters)
-//		list << QueryField(val, ClauseParameters);
-
-//	QueryBatch batch = QueryBatch(ClauseParameters, QString());
-//	batch.setFields(list);
-
-//	appendBatch(ClauseParameters, batch);
-//return (*this);
-//}
-
-//QueryBatch & QueryBatch::parameters(const QVariantList &valueParameters)
-//{
-//	Q_ASSERT(!valueParameters.isEmpty());
-
-//	QueryFieldList list;
-
-//	foreach(QVariant val, valueParameters)
-//		list << QueryField(QueryValue(val), ClauseParameters);
-
-//	QueryBatch batch = QueryBatch(ClauseParameters, QString());
-//	batch.setFields(list);
-
-//	appendBatch(ClauseParameters, batch);
-//return (*this);
-//}
 
 void QueryBatch::_addField(const QueryField &field)
 {
@@ -860,4 +837,32 @@ QueryClause QueryBatch::_clauseInBatchPack(const QueryClause &clause) const
 			return cl;
 
 return NoClause;
+}
+
+QueryFieldList QueryBatch::_getFieldList(const Qst::QstPlaceholderList &plList,
+										 const Qst::QueryClause &clause,
+										 const Qst::Functor &functor) const
+{
+	Q_ASSERT(!plList.isEmpty());
+	QueryFieldList fieldList;
+		foreach (QstPlaceholder pl, plList)
+		{
+			Q_ASSERT(!pl.names().isEmpty());
+
+			QueryField field = QueryField(pl.name(),
+										  pl.name(),
+										  functor,
+										  clause);
+			fieldList.append(field);
+		}
+	return fieldList;
+}
+
+QueryFieldList QueryBatch::_getFieldList(const QVariantList &list,
+										 const Qst::QueryClause &clause) const
+{
+	QueryFieldList fieldList;
+	foreach (QVariant var, list)
+		fieldList.append(QueryField(QueryValue(var), clause));
+	return fieldList;
 }

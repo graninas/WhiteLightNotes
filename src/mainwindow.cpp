@@ -10,6 +10,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
 	_notesForm = new NotesForm(this);
+	_createNoteForm = new CreateNoteForm(this);
+	Q_ASSERT(_notesForm != NULL);
+	Q_ASSERT(_createNoteForm != NULL);
 
 	_trayIconContextMenu.addAction(ui->action_AddNote);
 	_trayIconContextMenu.addAction(ui->action_ShowNotes);
@@ -19,10 +22,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	_trayIcon.setIcon(QIcon(":icons/resources/notebook.png"));
 	_trayIcon.setContextMenu(&_trayIconContextMenu);
 
-	_hotkeyHandle.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
-	_hotkeyHandle.setEnabled(true);
-	connect(&_hotkeyHandle, SIGNAL(activated()),
+	_notesFormHotKeyHandle.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+	_notesFormHotKeyHandle.setEnabled(true);
+	connect(&_notesFormHotKeyHandle, SIGNAL(activated()),
 			this, SLOT(showNotesForm()));
+
+	_createNoteFormHotKeyHandle.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
+	_createNoteFormHotKeyHandle.setEnabled(true);
+	connect(&_createNoteFormHotKeyHandle, SIGNAL(activated()),
+			this, SLOT(showCreateNoteForm()));
+
 }
 
 MainWindow::~MainWindow()
@@ -39,4 +48,11 @@ void MainWindow::showNotesForm()
 {
 	Q_ASSERT(_notesForm != NULL);
 	_notesForm->show();
+}
+
+void MainWindow::showCreateNoteForm()
+{
+	Q_ASSERT(_createNoteForm != NULL);
+	_createNoteForm->resetEditFields();
+	_createNoteForm->show();
 }

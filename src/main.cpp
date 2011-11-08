@@ -5,7 +5,9 @@
 #include <QTextCodec>
 
 #include "settings/settingsmanager.h"
+
 #include "qst/qstdbconnection.h"
+#include "qst/querygeneration/querybuilders/sqlite/sqlitebuilder.h"
 
 using namespace Qst;
 
@@ -21,6 +23,9 @@ int main(int argc, char *argv[])
 	SettingsManager sm = SettingsManager("GAS Soft", "WhiteLightNotes");
 	QString dbFilePath = sm.value("Database.FilePath",
 								  QApplication::applicationDirPath()).toString();
+
+	SqLiteBuilder builder;
+	QstAbstractModelHandler::setQueryBuilder(&builder);
 
 	QstDBConnection conn;
 	conn.setDriverName("QSQLITE");

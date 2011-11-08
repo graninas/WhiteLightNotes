@@ -7,6 +7,7 @@
 #include <QMenu>
 
 #include "notesform.h"
+#include "createnoteform.h"
 
 // Qxt works only if it compiled into Qt.
 #include <QxtGui/qxtgui.h>
@@ -31,15 +32,18 @@ private:
     Ui::MainWindow *ui;
 
 	NotesForm *_notesForm;
+	CreateNoteForm *_createNoteForm;
 
 	QSystemTrayIcon _trayIcon;
 	QMenu _trayIconContextMenu;
 
-	QxtGlobalShortcut _hotkeyHandle;
+	QxtGlobalShortcut _notesFormHotKeyHandle;
+	QxtGlobalShortcut _createNoteFormHotKeyHandle;
 
 public slots:
 
 	void showNotesForm();
+	void showCreateNoteForm();
 };
 
 #endif // MAINWINDOW_H

@@ -80,6 +80,15 @@ public:
 	explicit QstBatch(const QueryBatch &queryBatch,
 					  const Qst::Mvc::ViewAppearance &appearance = Qst::Mvc::ViewAppearance());
 
+	void setItemNameExtractor(QstAbstractItemNameExtractor *extractor);
+
+	static QString escape(const QString &text);
+	static QString unescape(const QString &text);
+	static QVariant     escapeVariant(const QVariant &val);
+	static QVariantList escapeVariantList(const QVariantList &list);
+	static QVariantMap  escapeVariantMap(const QVariantMap &map);
+	static QueryValue   escapeQueryValue(const QueryValue &val);
+
 	void addSource(const QString &source);
 	void addSource(const QstSourceIf &sourceIf);
 
@@ -90,8 +99,6 @@ public:
 
 	void setQueryBatch(const QueryBatch &queryBatch);
 	QueryBatch queryBatch() const;
-
-	void setItemNameExtractor(QstAbstractItemNameExtractor *extractor);
 
 	Qst::Mvc::ViewAppearance   viewAppearance() const;
 	Qst::Mvc::ComboBoxSettings comboBoxSettings() const;	// FIX ME
@@ -115,7 +122,7 @@ public:
 								 const QVariantList &varList,
 								 const Functor &functor = NoFunctor);
 
-	QstBatch & updatePlaceholders(const QVariantMap &newValues);
+	QstBatch & updatePlaceholders(const QVariantMap &varMap);
 	void resetPlaceholders();
 
 	QstBatch & operator<<(const QString &source);
@@ -139,6 +146,10 @@ public:
 	QstBatch & where(const QString &fieldName,
 					 const QueryValue &value1,
 					 const QueryValue &value2);
+	QstBatch & where(const QString &fieldName,
+					 const QueryValue &value);
+	QstBatch & where(const QString &fieldName,
+					 const QVariant &value);
 
 	QstBatch & where(const QueryIn &in);
 
@@ -156,10 +167,11 @@ public:
 	QstBatch & orderBy(const QString &fieldName);
 
 	QstBatch & insert(const QString &tableName,
-						const QStringList &fieldNames = QStringList());
+					  const QStringList &fieldNames = QStringList());
 	QstBatch & values(const QueryFieldList &fieldValues);
 	QstBatch & values(const QueryValueList &values);
 	QstBatch & values(const QVariantList &values);
+	QstBatch & values(const QstPlaceholderList &placeholderList);
 
 	QstBatch & update(const QString &tableName);
 	QstBatch & set(const QueryFieldList &fields);

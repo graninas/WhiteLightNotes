@@ -7,13 +7,10 @@
 
 class QueryScheme
 {
-public:
-
-	typedef QList<Qst::QueryClause> QueryClauseList;
 
 private:
 
-	QueryClauseList _queryClauseList;
+	Qst::QueryClauseList _queryClauseList;
 
 	int _currentClause;
 

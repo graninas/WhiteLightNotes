@@ -6,15 +6,14 @@ QueryBuildDirector::QueryBuildDirector()
 {
 }
 
+// Создает глобальный фрейм, в котором будет лежать весь запрос в виде подфреймов.
+// Обрабатывает batch как пакет, содержащий подзапрос.
 QueryFrame QueryBuildDirector::build(const QueryBatch &batch,
 									 AbstractQueryBuilder *builder)
 {
 	Q_ASSERT(builder != NULL);
 
-	// Создает глобальный фрейм, в котором будет лежать весь запрос в виде подфреймов.
 	QueryFrame frame = builder->makeQueryFrame(batch);
-
-	// Обрабатывает batch как пакет, содержащий подзапрос.
 	buildSubquery(batch, &frame, builder);
 return frame;
 }

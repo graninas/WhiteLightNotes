@@ -39,6 +39,9 @@ private:
 
 	Qst::QueryClause    _queryClause;
 
+
+	static Qst::QueryClauseList _placeholderedClauses();
+
 public:
 
 	QueryBatch();
@@ -140,6 +143,7 @@ public:
 	QueryBatch & values(const QueryFieldList &fieldValues);
 	QueryBatch & values(const QueryValueList &values);
 	QueryBatch & values(const QVariantList &values);
+	QueryBatch & values(const Qst::QstPlaceholderList &placeholderList);
 
 	QueryBatch & update(const QString &tableName);
 	QueryBatch & set(const QueryFieldList &fields);
@@ -168,6 +172,12 @@ private:
 	void _addField(const QueryField &field);
 	void _addCondition(const QueryWhere &cond);
 	Qst::QueryClause _clauseInBatchPack(const Qst::QueryClause &clause) const;
+
+	QueryFieldList _getFieldList(const Qst::QstPlaceholderList &plList,
+								 const Qst::QueryClause &clause,
+								 const Qst::Functor &functor) const;
+	QueryFieldList _getFieldList(const QVariantList &list,
+								 const Qst::QueryClause &clause) const;
 };
 
 #endif // QUERYBATCH_H

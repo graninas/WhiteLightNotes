@@ -7,6 +7,9 @@ class NoteHandler : public Qst::QstAbstractModelHandler
 {
 public:
     NoteHandler();
+
+	static QVariant createNote(const QVariant &noteHtmlText,
+							   const QVariant &date);
 };
 
 Qst::QstBatch noteBatch();
