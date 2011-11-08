@@ -1,0 +1,5 @@
+
+
+-= QstAbstractModelHandler =-
+- Метод exec() переименован в evalQuery.
+- Метод _execute() переименован в execute() и сделан public.

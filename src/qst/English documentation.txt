@@ -1,0 +1,41 @@
+Translated:
+- QstAbstractItemNameExtractor
+- QstField
+- QstValue
+- qstglobal.cpp, qstglobal.h
+- QstAbstractModelHandler
+- QstAbstractQueryComposer
+- QstBatch
+- QstConnectionSettings
+- QstDBConnection
+
+- QstDefaultItemNameExtractor
+- QstIf
+- QstLimit
+- QstModelViewDescriptor
+- QstPlainQueryModel
+* QstAbstractModelHandler
+- QstQueryDescriptor
+- QstQueryGenerator
+- QstRoleVisibility
+- QstTextCodec
+
+- Filter
+- FilterAssembly
+- FilterGuiItem
+- FiltersManager
+
+* QstField
+* QstBatch
+- AbstractTreeModel
+- TreeItem
+- QstCompleter
+- qstguisettings.h
+
+- PostgreSqlQueryComposer
+- QstColumnSetting
+- QstComboBoxSettings
+- QstViewSettings
+- QstTreeQueryModel
+
+This is full translation of the QST.
