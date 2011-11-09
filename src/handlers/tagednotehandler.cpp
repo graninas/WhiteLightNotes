@@ -6,7 +6,17 @@ TagedNoteHandler::TagedNoteHandler()
 {
 }
 
-void TagedNoteHandler::deleteTagedNotes(const QVariant &noteID) const
+
+void TagedNoteHandler::createTagedNote(const QVariant &tagID,
+									   const QVariant &noteID)
+{
+	QstBatch b;
+	b.insert("taged_note", QStringList() << "tag_id" << "note_id");
+	b.values(QVariantList() << tagID << noteID);
+	execute(b);
+}
+
+void TagedNoteHandler::deleteTagedNotes(const QVariant &noteID)
 {
 	QstBatch b;
 	b.deleteFrom("taged_note");
@@ -14,14 +24,6 @@ void TagedNoteHandler::deleteTagedNotes(const QVariant &noteID) const
 	execute(b);
 }
 
-void TagedNoteHandler::createTagedNote(const QVariant &tagID,
-									   const QVariant &noteID) const
-{
-	QstBatch b;
-	b.insert("taged_note", QStringList() << "tag_id" << "note_id");
-	b.values(QVariantList() << tagID << noteID);
-	execute(b);
-}
 
 Qst::QstBatch tagedNoteBatch()
 {

@@ -141,7 +141,7 @@ public:
 
 	QstBatch & where(const QString &fieldName,
 					 const QstPlaceholder &placeholder,
-					 const Functor &functor = NoFunctor);
+					 const Functor &functor = TypeDependedFunctor);
 
 	QstBatch & where(const QString &fieldName,
 					 const QueryValue &value1,

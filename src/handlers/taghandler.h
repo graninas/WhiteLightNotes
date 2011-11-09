@@ -8,7 +8,7 @@ class TagHandler : public Qst::QstAbstractModelHandler
 public:
     TagHandler();
 
-	QVariant createTag(const QString &tagName) const;
+	static QVariant createTag(const QString &tagName);
 };
 
 Qst::QstBatch tagBatch();

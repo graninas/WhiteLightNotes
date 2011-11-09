@@ -802,8 +802,9 @@ QVariant QstAbstractModelHandler::_fieldData(const QstBatch &batch,
 		return QVariant();
 	}
 
-	QVariant res =
-		index.model()->data(index.model()->index(index.row(), columnIndex, index.parent()));
+	QVariant res;
+	if (index.model()->hasIndex(index.row(), columnIndex, index.parent()))
+		res = index.model()->data(index.model()->index(index.row(), columnIndex, index.parent()));
 return res;
 }
 

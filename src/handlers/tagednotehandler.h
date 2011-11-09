@@ -8,9 +8,10 @@ class TagedNoteHandler : public Qst::QstAbstractModelHandler
 public:
     TagedNoteHandler();
 
-	void deleteTagedNotes(const QVariant &noteID) const;
-	void createTagedNote(const QVariant &tagID,
-						 const QVariant &noteID) const;
+	static void createTagedNote(const QVariant &tagID,
+								const QVariant &noteID);
+	static void deleteTagedNotes(const QVariant &noteID);
+
 };
 
 Qst::QstBatch tagedNoteBatch();

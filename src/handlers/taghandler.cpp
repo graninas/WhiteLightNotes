@@ -6,7 +6,7 @@ TagHandler::TagHandler()
 {
 }
 
-QVariant TagHandler::createTag(const QString &tagName) const
+QVariant TagHandler::createTag(const QString &tagName)
 {
 	QstBatch b;
 	b.insert("tag", QStringList() << "name");

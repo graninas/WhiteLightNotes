@@ -28,6 +28,9 @@ public slots:
 
 	void showTrayIcon();
 
+	void showNotesForm();
+	void showCreateNoteForm();
+
 private:
     Ui::MainWindow *ui;
 
@@ -40,10 +43,8 @@ private:
 	QxtGlobalShortcut _notesFormHotKeyHandle;
 	QxtGlobalShortcut _createNoteFormHotKeyHandle;
 
-public slots:
+	QString _getNoteTemplate();
 
-	void showNotesForm();
-	void showCreateNoteForm();
 };
 
 #endif // MAINWINDOW_H

@@ -14,7 +14,6 @@ NotesForm::NotesForm(QWidget *parent) :
 	_noteHandler.setQuery(noteBatch());
 	_noteHandler.setModel(&_noteModel);
 	_noteHandler.setListView(ui->lw_NotesFormList);
-
 }
 
 NotesForm::~NotesForm()

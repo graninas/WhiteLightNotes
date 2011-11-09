@@ -345,10 +345,43 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>CreateNoteForm</receiver>
+   <slot>finishAndNew()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>172</x>
+     <y>271</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>187</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CreateNoteForm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>64</x>
+     <y>316</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>adjustButtons(QTextCharFormat)</slot>
   <slot>setBold(bool)</slot>
   <slot>finishCreation()</slot>
+  <slot>finishAndNew()</slot>
  </slots>
 </ui>
