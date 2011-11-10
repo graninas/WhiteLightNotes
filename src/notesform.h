@@ -22,7 +22,7 @@ public slots:
 
 	void loadAll();
 	void loadTags();
-	void loadNotesForm();
+	void loadNotes();
 
 private:
     Ui::NotesForm *ui;

@@ -24,7 +24,7 @@ NotesForm::~NotesForm()
 void NotesForm::loadAll()
 {
 	loadTags();
-	loadNotesForm();
+	loadNotes();
 }
 
 void NotesForm::loadTags()
@@ -32,7 +32,7 @@ void NotesForm::loadTags()
 	_tagHandler.reload();
 }
 
-void NotesForm::loadNotesForm()
+void NotesForm::loadNotes()
 {
-
+	_noteHandler.reload();
 }

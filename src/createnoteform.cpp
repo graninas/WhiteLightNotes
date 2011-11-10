@@ -19,6 +19,18 @@ CreateNoteForm::CreateNoteForm(QWidget *parent) :
     ui->setupUi(this);
 
 	ui->te_NoteHtmlText->setUndoRedoEnabled(true);
+
+	_okEnterShortcut.setShortcut (QKeySequence(Qt::CTRL + Qt::Key_Enter));
+	_okReturnShortcut.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Return));
+	_okAndNewEnterShortcut.setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Return));
+	_okAndNewReturnShortcut.setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Enter));
+	_cancelShortcut.setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Escape));
+
+	connect(&_okEnterShortcut, SIGNAL(activated()), this, SLOT(finishCreation()));
+	connect(&_okReturnShortcut, SIGNAL(activated()), this, SLOT(finishCreation()));
+	connect(&_okAndNewEnterShortcut, SIGNAL(activated()), this, SLOT(finishAndNew()));
+	connect(&_okAndNewReturnShortcut, SIGNAL(activated()), this, SLOT(finishCreation()));
+	connect(&_cancelShortcut, SIGNAL(activated()), this, SLOT(cancelCreation()));
 }
 
 CreateNoteForm::~CreateNoteForm()
@@ -34,7 +46,7 @@ void CreateNoteForm::setNoteTemplate(const QString &noteTemplate)
 void CreateNoteForm::resetEditFields()
 {
 	ui->te_NoteHtmlText->setHtml(_noteTemplate);
-	qDebug() << _noteTemplate;
+	_setShortcutsEnabled(true);
 }
 
 void CreateNoteForm::adjustButtons(const QTextCharFormat &format)
@@ -57,6 +69,7 @@ void CreateNoteForm::setBold(bool bold)
 
 void CreateNoteForm::finishCreation()
 {
+	_setShortcutsEnabled(false);
 	_createNote();
 	emit noteCreated();
 	this->close();
@@ -64,10 +77,17 @@ void CreateNoteForm::finishCreation()
 
 void CreateNoteForm::finishAndNew()
 {
+	_setShortcutsEnabled(false);
 	_createNote();
 	emit noteCreated();
 	resetEditFields();
 	ui->te_NoteHtmlText->setFocus();
+}
+
+void CreateNoteForm::cancelCreation()
+{
+	_setShortcutsEnabled(false);
+	this->close();
 }
 
 void CreateNoteForm::_createNote()
@@ -101,4 +121,13 @@ QVariant CreateNoteForm::_createTag(const QString &tagName)
 
 	if (tagID.isNull()) return TagHandler::createTag(tagName);
 	return tagID;
+}
+
+void CreateNoteForm::_setShortcutsEnabled(bool enabled)
+{
+	_okEnterShortcut.setEnabled(enabled);
+	_okReturnShortcut.setEnabled(enabled);
+	_okAndNewEnterShortcut.setEnabled(enabled);
+	_okAndNewReturnShortcut.setEnabled(enabled);
+	_cancelShortcut.setEnabled(enabled);
 }

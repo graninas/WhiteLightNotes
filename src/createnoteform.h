@@ -2,6 +2,8 @@
 #define CREATENOTEFORM_H
 
 #include <QMainWindow>
+
+#include <QxtGui/qxtgui.h>
 #include <QTextCharFormat>
 
 namespace Ui {
@@ -26,6 +28,7 @@ public slots:
 
 	void finishCreation();
 	void finishAndNew();
+	void cancelCreation();
 
 signals:
 
@@ -36,9 +39,17 @@ private:
 
 	QString _noteTemplate;
 
+	QxtGlobalShortcut _okEnterShortcut;
+	QxtGlobalShortcut _okReturnShortcut;
+	QxtGlobalShortcut _okAndNewEnterShortcut;
+	QxtGlobalShortcut _okAndNewReturnShortcut;
+	QxtGlobalShortcut _cancelShortcut;
+
 	void _createNote();
 
 	QVariant _createTag(const QString &tagName);
+
+	void _setShortcutsEnabled(bool enabled);
 };
 
 #endif // CREATENOTEFORM_H

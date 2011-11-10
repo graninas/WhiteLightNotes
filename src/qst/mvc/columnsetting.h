@@ -1,9 +1,9 @@
 /****************************************************************************
-** QST 0.6.0 pre-alpha
+** QST 0.6.2 alpha
 ** Copyright (C) 2011 Granin A.S.
 ** Contact: Granin A.S. (graninas@gmail.com)
 **
-** This file is part of the Qst module of the QsT SQL Tools.
+** This file is part of the Qst::Mvc module of the QsT SQL Tools.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser

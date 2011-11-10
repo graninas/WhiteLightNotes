@@ -68,6 +68,12 @@ void MainWindow::showCreateNoteForm()
 	_createNoteForm->show();
 }
 
+void MainWindow::loadAll()
+{
+	Q_ASSERT(_notesForm != NULL);
+	_notesForm->loadAll();
+}
+
 QString MainWindow::_getNoteTemplate()
 {
 	QFile templFile(QApplication::applicationDirPath()

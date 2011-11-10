@@ -1,3 +1,31 @@
+/****************************************************************************
+** QST 0.6.2 alpha
+** Copyright (C) 2011 Granin A.S.
+** Contact: Granin A.S. (graninas@gmail.com)
+**
+** This file is part of the QueryGeneration module of the QsT SQL Tools.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: http://www.gnu.org/licenses/lgpl.html.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL3 included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/licenses/gpl.html.
+**
+** If you have questions regarding the use of this file, please contact
+** author (graninas@gmail.com).
+**
+****************************************************************************/
+
 #include "querybatch.h"
 
 using namespace Qst;
@@ -153,7 +181,6 @@ QueryBatch::QueryBatch(const QueryType &queryType,
 	  _sourceType(BatchSource),
 	  _queryType(queryType),
 	  _queryClause(queryClause)
-
 {
 }
 
@@ -182,8 +209,24 @@ QueryBatch::QueryBatch(const QueryWhere &condition, const Qst::QueryClause &quer
 	  _name(QString()),
 	  _sourceType(StringSource),
 	  _queryType(QueryUndefined),
-	  _condition(condition),
-	  _queryClause(queryClause)
+	  _queryClause(queryClause),
+	  _condition(condition)
+{
+}
+
+QueryBatch::QueryBatch(const QString &name,
+					   const SourceType &sourceType,
+					   const Qst::QueryType &queryType,
+					   const QueryFieldList &fieldList,
+					   const QueryWhere &condition,
+					   const Qst::QueryClause &clause)
+	:
+	  _name(name),
+	  _sourceType(sourceType),
+	  _queryType(queryType),
+	  _queryClause(clause),
+	  _fieldList(fieldList),
+	  _condition(condition)
 {
 }
 
@@ -202,6 +245,11 @@ QString QueryBatch::alias() const
 	if (_queryClause == NoClause)
 		return "";
 	return _name;
+}
+
+QueryBatch::SourceType QueryBatch::sourceType() const
+{
+	return _sourceType;
 }
 
 void QueryBatch::setQueryClause(const Qst::QueryClause &queryClause)
@@ -226,27 +274,33 @@ Qst::QueryType QueryBatch::queryType() const
 
 QueryBatchPack QueryBatch::batchPack() const
 {
-	return _batchPacks;
+	return _batchPack;
 }
 
-QueryBatchList QueryBatch::batches(const Qst::QueryClause clause) const
+QueryBatchList QueryBatch::batchList(const Qst::QueryClause &clause) const
 {
 	QueryClause packClause = _clauseInBatchPack(clause);
 
 	if (packClause != NoClause)
-		return _batchPacks[packClause];
+		return _batchPack[packClause];
 
 	return QueryBatchList();
 }
 
-/*! Добавляет batch в конец слота с индексом packClause.*/
-void QueryBatch::appendBatch(const Qst::QueryClause packClause,
-							 const QueryBatch &batch)
+void QueryBatch::setBatchList(const Qst::QueryClause &queryClause,
+							  const QueryBatchList &batchList)
 {
-	_batchPacks[packClause].append(batch);
+	_batchPack[queryClause] = batchList;
 }
 
-QueryWhere	QueryBatch::condition(const bool &validOnly) const
+/*! Добавляет batch в конец слота с индексом packClause.*/
+void QueryBatch::addBatch(const Qst::QueryClause packClause,
+							 const QueryBatch &batch)
+{
+	_batchPack[packClause].append(batch);
+}
+
+QueryWhere QueryBatch::condition(const bool &validOnly) const
 {
 	if (validOnly)
 		return _condition.validOnly();
@@ -255,38 +309,57 @@ return _condition;
 
 bool QueryBatch::contains(const QueryField &field) const
 {
-	return _fields.contains(field);
+	return _fieldList.contains(field);
 }
 
 QStringList QueryBatch::fieldNames() const
 {
 QStringList resList;
 
-	for (int i = 0; i < _fields.count(); ++i)
-		resList << _fields[i].name();
+	for (int i = 0; i < _fieldList.count(); ++i)
+		resList << _fieldList[i].name();
 
 	return resList;
 }
 
+/*!
+	Returns source names for StringSource-type batch, if name not empty.
+	Otherwise returns empty list.
+
+	If you need batch name, use name() function instead.
+*/
 QStringList QueryBatch::sourceNames() const
 {
-	return QStringList() << _name;
+	if (_sourceType == StringSource && !_name.isEmpty())
+		return QStringList() << _name;
+
+	return QStringList();
 }
 
 void QueryBatch::setFields(const QueryFieldList &fields)
 {
-	_fields = fields;
+	_fieldList = fields;
 }
 
 QueryFieldList QueryBatch::fields(const QueryClause &queryClause) const
 {
 	QueryFieldList fieldList;
 
-	for (int i = 0; i < _fields.count(); ++i)
-		if (_fields[i].testClause(queryClause))
-			fieldList.append(_fields[i]);
+	for (int i = 0; i < _fieldList.count(); ++i)
+		if (_fieldList[i].testClause(queryClause))
+			fieldList.append(_fieldList[i]);
 
 return fieldList;
+}
+
+QueryFieldList QueryBatch::fieldsList() const
+{
+	return _fieldList;
+}
+
+void QueryBatch::addField(const QueryField &field)
+{
+	_fieldList.append(field);
 }
 
 QueryBatch & QueryBatch::updatePlaceholder(const QString &placeholderName,
@@ -295,9 +368,9 @@ QueryBatch & QueryBatch::updatePlaceholder(const QString &placeholderName,
 {
 	foreach (Qst::QueryClause cl, _placeholderedClauses())
 	{
-		if (_batchPacks.contains(cl))
-			for (int i = 0; i < _batchPacks[cl].count(); ++i)
-				_batchPacks[cl][i].updatePlaceholder(placeholderName, value, functor);
+		if (_batchPack.contains(cl))
+			for (int i = 0; i < _batchPack[cl].count(); ++i)
+				_batchPack[cl][i].updatePlaceholder(placeholderName, value, functor);
 	}
 
 	_condition.updatePlaceholder(placeholderName, value, functor);
@@ -311,9 +384,9 @@ QueryBatch & QueryBatch::updatePlaceholder(const QString &placeholderName,
 {
 	foreach (Qst::QueryClause cl, _placeholderedClauses())
 	{
-		if (_batchPacks.contains(cl))
-			for (int i = 0; i < _batchPacks[cl].count(); ++i)
-				_batchPacks[cl][i].updatePlaceholder(placeholderName, varList, functor);
+		if (_batchPack.contains(cl))
+			for (int i = 0; i < _batchPack[cl].count(); ++i)
+				_batchPack[cl][i].updatePlaceholder(placeholderName, varList, functor);
 	}
 
 	_condition.updatePlaceholder(placeholderName, varList, functor);
@@ -325,16 +398,16 @@ QueryBatch & QueryBatch::updatePlaceholder(const QVariantMap &varMap)
 {
 	foreach (Qst::QueryClause cl, _placeholderedClauses())
 	{
-	if (_batchPacks.contains(cl))
-		for (int i = 0; i < _batchPacks[cl].count(); ++i)
-			_batchPacks[cl][i].updatePlaceholder(varMap);
+	if (_batchPack.contains(cl))
+		for (int i = 0; i < _batchPack[cl].count(); ++i)
+			_batchPack[cl][i].updatePlaceholder(varMap);
 	}
 
 	QVariantMap::const_iterator iter = varMap.begin();
 	while (iter != varMap.end())
 	{
-		for (int i = 0; i < _fields.count(); ++i)
-			_fields[i].updatePlaceholder(iter.key(), QueryValue(iter.value()), NoFunctor);
+		for (int i = 0; i < _fieldList.count(); ++i)
+			_fieldList[i].updatePlaceholder(iter.key(), QueryValue(iter.value()), NoFunctor);
 		iter++;
 	}
 
@@ -345,15 +418,15 @@ void QueryBatch::resetPlaceholders()
 {
 	foreach (Qst::QueryClause cl, _placeholderedClauses())
 	{
-		if (_batchPacks.contains(cl))
-			for (int i = 0; i < _batchPacks[cl].count(); ++i)
-				_batchPacks[cl][i].resetPlaceholders();
+		if (_batchPack.contains(cl))
+			for (int i = 0; i < _batchPack[cl].count(); ++i)
+				_batchPack[cl][i].resetPlaceholders();
 	}
 
 	_condition.resetPlaceholders();
 
-	for (int i = 0; i < _fields.count(); ++i)
-		_fields[i].resetPlaceholder();
+	for (int i = 0; i < _fieldList.count(); ++i)
+		_fieldList[i].resetPlaceholder();
 }
 
 /*! Добавляет batch в "свой" слот - слот с индексом batch.queryClause(). */
@@ -363,7 +436,7 @@ QueryBatch & QueryBatch::operator<<(const QueryBatch &batch)
 	if (batch.queryClause() == NoClause)
 		return (*this);
 
-	appendBatch(batch.queryClause(), batch);
+	addBatch(batch.queryClause(), batch);
 	return *this;
 }
 
@@ -371,10 +444,10 @@ QueryBatch & QueryBatch::operator<<(const QueryWhere &condition)
 {
 	Q_ASSERT(_sourceType == BatchSource);
 
-	if (_batchPacks[ClauseWhere].isEmpty())
-		appendBatch(ClauseWhere, QueryBatch(condition));
+	if (_batchPack[ClauseWhere].isEmpty())
+		addBatch(ClauseWhere, QueryBatch(condition));
 	else
-		_batchPacks[ClauseWhere].first()._addCondition(condition);
+		_batchPack[ClauseWhere].first()._addCondition(condition);
 
 	return *this;
 }
@@ -387,14 +460,14 @@ QueryBatch & QueryBatch::operator<<(const QueryField &field)
 	{
 		if (clause == ClauseWhere)
 		{
-			appendBatch(ClauseWhere, QueryBatch(QueryWhere(field)));
+			addBatch(ClauseWhere, QueryBatch(QueryWhere(field)));
 		}
 		else
 		{
-			if (_batchPacks[clause].isEmpty())
-				appendBatch(clause, QueryBatch(clause, QString()));
+			if (_batchPack[clause].isEmpty())
+				addBatch(clause, QueryBatch(clause, QString()));
 
-			_batchPacks[clause].last()._addField(field);
+			_batchPack[clause].last()._addField(field);
 		}
 	}
 	else
@@ -417,7 +490,7 @@ QueryBatch & QueryBatch::operator<<(const QString &sourceName)
 	default: Q_ASSERT(false);
 	}
 
-	appendBatch(clause, QueryBatch(clause, sourceName));
+	addBatch(clause, QueryBatch(clause, sourceName));
 	return *this;
 }
 
@@ -508,10 +581,10 @@ QueryBatch & QueryBatch::join(const QueryBatch &batch,
 
 	QueryBatch joinQueryBatch = QueryBatch(ServiceQueryJoin, "", ServiceJoinClause_Mask);
 
-	joinQueryBatch.appendBatch(batch.queryClause(), batch);
-	joinQueryBatch.appendBatch(ClauseOn, QueryBatch(condition, ClauseOn));
+	joinQueryBatch.addBatch(batch.queryClause(), batch);
+	joinQueryBatch.addBatch(ClauseOn, QueryBatch(condition, ClauseOn));
 
-appendBatch(ServiceJoinClause_Mask, joinQueryBatch);
+addBatch(ServiceJoinClause_Mask, joinQueryBatch);
 return (*this);
 }
 
@@ -628,7 +701,7 @@ return (*this);
 
 QueryBatch & QueryBatch::having(const QueryHaving &condition)
 {
-	appendBatch(ClauseHaving, QueryBatch(condition));
+	addBatch(ClauseHaving, QueryBatch(condition));
 return (*this);
 }
 
@@ -636,7 +709,7 @@ QueryBatch & QueryBatch::having(const QString &strCond)
 {
 	Q_ASSERT(!strCond.isEmpty());
 
-	appendBatch(ClauseHaving, QueryBatch(QueryHaving(strCond), ClauseHaving));
+	addBatch(ClauseHaving, QueryBatch(QueryHaving(strCond), ClauseHaving));
 return (*this);
 }
 
@@ -665,7 +738,7 @@ QueryBatch & QueryBatch::insert(const QString &tableName, const QStringList &fie
 {
 	Q_ASSERT(queryType() == QueryInsert);
 	Q_ASSERT(!tableName.isEmpty());
-	Q_ASSERT(!fieldNames.isEmpty());
+//	Q_ASSERT(!fieldNames.isEmpty());
 
 	QueryBatch batch = QueryBatch(ClauseInsert, tableName);
 
@@ -675,7 +748,7 @@ QueryBatch & QueryBatch::insert(const QString &tableName, const QStringList &fie
 		batch << QueryField(f, ClauseInsert);
 	}
 
-	appendBatch(ClauseInsert, batch);
+	addBatch(ClauseInsert, batch);
 return (*this);
 }
 
@@ -687,7 +760,7 @@ QueryBatch & QueryBatch::values(const QueryFieldList &fieldValues)
 	batch.setFields(fieldValues);
 	batch.setQueryClause(ClauseValues);
 
-	appendBatch(ClauseValues, batch);
+	addBatch(ClauseValues, batch);
 return (*this);
 }
 
@@ -702,7 +775,7 @@ QueryBatch & QueryBatch::values(const Qst::QstPlaceholderList &placeholderList)
 	QueryBatch batch = QueryBatch(ClauseValues, QString());
 	batch.setFields(fieldList);
 
-	appendBatch(ClauseValues, batch);
+	addBatch(ClauseValues, batch);
 return (*this);
 }
 
@@ -718,7 +791,7 @@ QueryBatch & QueryBatch::values(const QueryValueList &values)
 	QueryBatch batch = QueryBatch(ClauseValues, QString());
 	batch.setFields(list);
 
-	appendBatch(ClauseValues, batch);
+	addBatch(ClauseValues, batch);
 return (*this);
 }
 
@@ -734,7 +807,7 @@ QueryBatch & QueryBatch::values(const QVariantList &values)
 	QueryBatch batch = QueryBatch(ClauseValues, QString());
 	batch.setFields(list);
 
-	appendBatch(ClauseValues, batch);
+	addBatch(ClauseValues, batch);
 return (*this);
 }
 
@@ -743,7 +816,7 @@ QueryBatch & QueryBatch::update(const QString &tableName)
 	Q_ASSERT(queryType() == QueryUpdate);
 	Q_ASSERT(!tableName.isEmpty());
 
-	appendBatch(ClauseUpdate, QueryBatch(ClauseUpdate, tableName));
+	addBatch(ClauseUpdate, QueryBatch(ClauseUpdate, tableName));
 return (*this);
 }
 
@@ -751,8 +824,8 @@ QueryBatch & QueryBatch::set(const QueryFieldList &fields)
 {
 	Q_ASSERT(!fields.empty());
 
-	if (_batchPacks[ClauseSet].isEmpty())
-		appendBatch(ClauseSet, QueryBatch(ClauseSet, QString()));
+	if (_batchPack[ClauseSet].isEmpty())
+		addBatch(ClauseSet, QueryBatch(ClauseSet, QString()));
 
 	QueryFieldList list;
 	foreach (QueryField field, fields)
@@ -762,13 +835,18 @@ QueryBatch & QueryBatch::set(const QueryFieldList &fields)
 		field.setClause(ClauseSet);
 		list << field;
 	}
-	Q_ASSERT(!list.isEmpty());
-
-	_batchPacks[ClauseSet].last().setFields(list);
-
-	Q_ASSERT(!_batchPacks[ClauseSet].last().fields(ClauseSet).isEmpty());
+	_batchPack[ClauseSet].last().setFields(list);
 
 return (*this);
+}
+
+QueryBatch & QueryBatch::set(const QVariantMap &varMap)
+{
+	QueryFieldList list;
+	foreach (QString key, varMap.keys())
+		list << QueryField(key, QueryValue(varMap.value(key)));
+
+	return set(list);
 }
 
 QueryBatch & QueryBatch::deleteFrom(const QString &tableName)
@@ -776,7 +854,7 @@ QueryBatch & QueryBatch::deleteFrom(const QString &tableName)
 	Q_ASSERT(queryType() == QueryDelete);
 	Q_ASSERT(!tableName.isEmpty());
 
-	appendBatch(ClauseDelete, QueryBatch(ClauseDelete, tableName));
+	addBatch(ClauseDelete, QueryBatch(ClauseDelete, tableName));
 return (*this);
 }
 
@@ -785,7 +863,7 @@ QueryBatch & QueryBatch::execute(const QString &funcName)
 	Q_ASSERT(queryType() == QueryExecute);
 	Q_ASSERT(!funcName.isEmpty());
 
-	appendBatch(ClauseExecute, QueryBatch(ClauseExecute, funcName));
+	addBatch(ClauseExecute, QueryBatch(ClauseExecute, funcName));
 return (*this);
 }
 
@@ -799,7 +877,7 @@ QueryBatch & QueryBatch::parameters(const QVariantList &varList)
 	QueryBatch batch = QueryBatch(ClauseParameters, QString());
 	batch.setFields(fieldList);
 
-	appendBatch(ClauseParameters, batch);
+	addBatch(ClauseParameters, batch);
 return (*this);
 }
 
@@ -814,13 +892,13 @@ QueryBatch & QueryBatch::parameters(const Qst::QstPlaceholderList &placeholderLi
 	QueryBatch batch = QueryBatch(ClauseParameters, QString());
 	batch.setFields(fieldList);
 
-	appendBatch(ClauseParameters, batch);
+	addBatch(ClauseParameters, batch);
 return (*this);
 }
 
 void QueryBatch::_addField(const QueryField &field)
 {
-	_fields.append(field);
+	_fieldList.append(field);
 }
 
 void QueryBatch::_addCondition(const QueryWhere &cond)
@@ -830,7 +908,7 @@ void QueryBatch::_addCondition(const QueryWhere &cond)
 
 QueryClause QueryBatch::_clauseInBatchPack(const QueryClause &clause) const
 {
-	QList<QueryClause> keys = _batchPacks.keys();
+	QList<QueryClause> keys = _batchPack.keys();
 
 	foreach (QueryClause cl, keys)
 		if (clause & cl)
@@ -866,3 +944,25 @@ QueryFieldList QueryBatch::_getFieldList(const QVariantList &list,
 		fieldList.append(QueryField(QueryValue(var), clause));
 	return fieldList;
 }
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug dbg, const QueryBatch &b)
+{
+#ifndef Q_BROKEN_DEBUG_STREAM
+	dbg.nospace() << "QueryBatch\nname=" << b.name();
+	dbg.nospace() << "\nsourceType = " << b.sourceType();
+	dbg.nospace() << "\nqueryType = " << b.queryType();
+	dbg.nospace() << "\nqueryClause = " << b.queryClause();
+	dbg.nospace() << "\nbatchPack = " << b.batchPack();
+	dbg.nospace() << "fieldList = "   << b.fieldsList();
+	dbg.nospace() << "\ncondition = " << b.condition();
+	dbg.nospace() << "\nqueryType = " << b.queryType();
+
+	return dbg.space();
+#else
+	qWarning("This compiler doesn't support streaming QueryValue to QDebug");
+	return dbg;
+	Q_UNUSED(b);
+#endif
+}
+#endif

@@ -1,3 +1,31 @@
+/****************************************************************************
+** QST 0.6.2 alpha
+** Copyright (C) 2011 Granin A.S.
+** Contact: Granin A.S. (graninas@gmail.com)
+**
+** This file is part of the QueryGeneration module of the QsT SQL Tools.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: http://www.gnu.org/licenses/lgpl.html.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL3 included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/licenses/gpl.html.
+**
+** If you have questions regarding the use of this file, please contact
+** author (graninas@gmail.com).
+**
+****************************************************************************/
+
 #ifndef QUERYBATCH_H
 #define QUERYBATCH_H
 
@@ -31,14 +59,12 @@ private:
 
 	SourceType			_sourceType;
 	Qst::QueryType		_queryType;
-
-	QueryBatchPack		_batchPacks;
-	QueryFieldList		_fields;
-
-	QueryWhere			_condition;
-
 	Qst::QueryClause    _queryClause;
 
+	QueryBatchPack		_batchPack;
+	QueryFieldList		_fieldList;
+
+	QueryWhere			_condition;
 
 	static Qst::QueryClauseList _placeholderedClauses();
 
@@ -58,20 +84,32 @@ public:
 	QueryBatch(const QueryWhere &condition,
 			   const Qst::QueryClause &queryClause = Qst::ClauseWhere);
 
+	QueryBatch(const QString &name,
+			   const SourceType &sourceType,
+			   const Qst::QueryType &queryType,
+			   const QueryFieldList &fields,
+			   const QueryWhere &condition,
+			   const Qst::QueryClause &clause);
+
 	void    setName(const QString &name);
 	QString name() const;
 	QString alias() const;
 
-	void             setQueryClause(const Qst::QueryClause &queryClause);
+	SourceType sourceType() const;
+
+	void setQueryClause(const Qst::QueryClause &queryClause);
 	Qst::QueryClause queryClause() const;
 
-	void           setQueryType(const Qst::QueryType &queryType);
+	void setQueryType(const Qst::QueryType &queryType);
 	Qst::QueryType queryType() const;
 
 	QueryBatchPack batchPack() const;
-	QueryBatchList batches(const Qst::QueryClause queryClause = Qst::ClauseSelect) const;
+	QueryBatchList batchList(const Qst::QueryClause &queryClause = Qst::ClauseSelect) const;
+	void setBatchList(const Qst::QueryClause &queryClause,
+					  const QueryBatchList &batchList);
 
-	void appendBatch(const Qst::QueryClause packClause, const QueryBatch &batch);
+	void addBatch(const Qst::QueryClause packClause,
+				  const QueryBatch &batch);
 
 	QueryWhere condition(const bool &validOnly = false) const;
 
@@ -82,6 +120,8 @@ public:
 
 	void setFields(const QueryFieldList &fields);
 	QueryFieldList fields(const Qst::QueryClause &queryClause) const;
+	QueryFieldList fieldsList() const;
+	void addField(const QueryField &field);
 
 	QueryBatch & updatePlaceholder(const QString &placeholderName,
 								   const QueryValue &value,
@@ -147,6 +187,7 @@ public:
 
 	QueryBatch & update(const QString &tableName);
 	QueryBatch & set(const QueryFieldList &fields);
+	QueryBatch & set(const QVariantMap &varMap);
 
 	QueryBatch & deleteFrom(const QString &tableName);
 
@@ -162,9 +203,9 @@ public:
 				&& btch1._sourceType == btch2._sourceType
 				&& btch1._queryType == btch2._queryType
 				&& btch1._queryClause == btch2._queryClause
-				&& btch1._fields == btch2._fields
+				&& btch1._fieldList == btch2._fieldList
 				&& btch1._condition == btch2._condition
-				&& btch1._batchPacks == btch2._batchPacks;
+				&& btch1._batchPack == btch2._batchPack;
 	}
 
 private:
@@ -179,5 +220,9 @@ private:
 	QueryFieldList _getFieldList(const QVariantList &list,
 								 const Qst::QueryClause &clause) const;
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug, const QueryBatch &b);
+#endif
 
 #endif // QUERYBATCH_H

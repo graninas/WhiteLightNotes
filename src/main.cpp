@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 	conn.open();
 
 	MainWindow w;
+	w.loadAll();
 	w.show();
 	w.showTrayIcon();
 //	QApplication::setQuitOnLastWindowClosed(false);

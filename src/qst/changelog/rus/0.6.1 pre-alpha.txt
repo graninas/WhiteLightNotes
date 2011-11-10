@@ -1,5 +1,3 @@
+0.6.0 to 0.6.1 (pre-alpha) Changes
 
-
--= QstAbstractModelHandler =-
-- Метод exec() переименован в evalQuery.
-- Метод _execute() переименован в execute() и сделан public.
+- Много изменений, см. 0.6.2 alpha.

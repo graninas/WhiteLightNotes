@@ -3,7 +3,7 @@
 ** Copyright (C) 2011 Granin A.S.
 ** Contact: Granin A.S. (graninas@gmail.com)
 **
-** This file is part of the QueryGeneration module of the QsT SQL Tools.
+** This file is part of the Qst::Mvc module of the QsT SQL Tools.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -25,33 +25,3 @@
 ** author (graninas@gmail.com).
 **
 ****************************************************************************/
-
-#ifndef QUERYBUILDDIRECTOR_H
-#define QUERYBUILDDIRECTOR_H
-
-#include "abstractquerybuilder.h"
-#include "qst/qstglobal.h"
-
-
-class QueryBuildDirector
-{
-private:
-
-	AbstractQueryBuilder *_builder;
-
-public:
-    QueryBuildDirector();
-
-	QueryFrame build(const QueryBatch &batch, AbstractQueryBuilder *builder);
-
-	void buildSubquery(const QueryBatch &batch,
-					   QueryFrame *frame,
-					   AbstractQueryBuilder *builder);
-
-	void buildClause(const Qst::QueryClause &queryClause,
-					 const QueryBatchList &batches,
-					 QueryFrame *frame,
-					 AbstractQueryBuilder *builder);
-};
-
-#endif // QUERYBUILDDIRECTOR_H

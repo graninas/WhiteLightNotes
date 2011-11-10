@@ -31,6 +31,8 @@ public slots:
 	void showNotesForm();
 	void showCreateNoteForm();
 
+	void loadAll();
+
 private:
     Ui::MainWindow *ui;
 
