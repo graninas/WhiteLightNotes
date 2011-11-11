@@ -9,7 +9,11 @@
 #include "qst/qstdbconnection.h"
 #include "qst/querygeneration/querybuilders/sqlite/sqlitebuilder.h"
 
+#include "qst/qstabstractmodelhandler.h"
+
 using namespace Qst;
+
+void createTables();
 
 int main(int argc, char *argv[])
 {
@@ -32,10 +36,17 @@ int main(int argc, char *argv[])
 	conn.setDatabaseName(dbFilePath + "/WhiteLightNotes.db");
 	conn.open();
 
+	createTables();
+
 	MainWindow w;
 	w.loadAll();
 	w.show();
 	w.showTrayIcon();
 //	QApplication::setQuitOnLastWindowClosed(false);
-    return a.exec();
+	return a.exec();
+}
+
+void createTables()
+{
+	Qst::QstAbstractModelHandler::evalQuery("CREATE TABLE IF NOT EXISTS tag (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
 }
