@@ -25,9 +25,16 @@ QVariant TagHandler::createTag(const QString &tagName)
 Qst::QstBatch tagBatch()
 {
 	QstBatch b;
-	b	<< "tag"
-		<< QstField(RolePrimaryKey, "id")
-		<< QstField("name");
+	b	<< "tag t"
+		<< QstField(RolePrimaryKey, "id", FieldInvisible)
+		<< QstField("name", FieldVisible, "Tag name");
+	b.select("info_tag",
+			 "t.name || ' (' || (SELECT count(id) FROM tagged_note tn WHERE tn.tag_id = t.id) || ')'",
+			 "Tag"
+			 );
 	b.where("name", QstPlaceholder());
+
+	b.setModelColumn("info_tag");
+
 	return b;
 }

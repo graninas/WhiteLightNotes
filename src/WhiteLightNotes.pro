@@ -19,17 +19,17 @@ SOURCES += main.cpp\
     settings/settingsmanager.cpp \
     handlers/taghandler.cpp \
     handlers/notehandler.cpp \
-    handlers/tagednotehandler.cpp \
     notesform.cpp \
-    createnoteform.cpp
+    createnoteform.cpp \
+    handlers/taggednotehandler.cpp
 
 HEADERS  += mainwindow.h \
     settings/settingsmanager.h \
     handlers/taghandler.h \
     handlers/notehandler.h \
-    handlers/tagednotehandler.h \
     notesform.h \
-    createnoteform.h
+    createnoteform.h \
+    handlers/taggednotehandler.h
 
 FORMS    += mainwindow.ui \
     notesform.ui \
@@ -37,6 +37,10 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     icons.qrc
+
+
+
+
 
 
 

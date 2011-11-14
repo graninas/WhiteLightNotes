@@ -9,11 +9,11 @@ NotesForm::NotesForm(QWidget *parent) :
 
 	_tagHandler.setQuery(tagBatch());
 	_tagHandler.setModel(&_tagModel);
-	_tagHandler.setListView(ui->lv_tagsList);
+	_tagHandler.setListView(ui->lv_TagsList);
 
 	_noteHandler.setQuery(noteBatch());
 	_noteHandler.setModel(&_noteModel);
-	_noteHandler.setListView(ui->lw_NotesFormList);
+	_noteHandler.setListView(ui->lv_NotesList);
 }
 
 NotesForm::~NotesForm()
@@ -30,9 +30,15 @@ void NotesForm::loadAll()
 void NotesForm::loadTags()
 {
 	_tagHandler.reload();
+
+	QObject::connect(ui->lv_TagsList->selectionModel(),
+					 SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+					 this, SLOT(loadNotes()));
 }
 
 void NotesForm::loadNotes()
 {
+	_noteHandler.updatePlaceholder("selected_tags",
+								   _tagHandler.viewSelectedKeys());
 	_noteHandler.reload();
 }

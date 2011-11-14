@@ -9,7 +9,7 @@
 #include <QDebug>
 
 #include "handlers/notehandler.h"
-#include "handlers/tagednotehandler.h"
+#include "handlers/taggednotehandler.h"
 #include "handlers/taghandler.h"
 
 CreateNoteForm::CreateNoteForm(QWidget *parent) :
@@ -98,15 +98,17 @@ void CreateNoteForm::_createNote()
 
 	// Возможно, сделать обновление тегов записи через INSERT OR REPLACE,
 	// а не через удаление / добавление.
-	TagedNoteHandler::deleteTagedNotes(noteID);
+	TaggedNoteHandler::deleteTaggedNotes(noteID);
 
 	QStringList tagsList = ui->le_Tags->text().split(',', QString::SkipEmptyParts);
 
 	if (tagsList.isEmpty())
-		tagsList << QString("untaged");
+		tagsList << QString("Untagged");
+
+	tagsList << "All";
 
 	foreach (QString tag, tagsList)
-		TagedNoteHandler::createTagedNote(_createTag(tag), noteID);
+		TaggedNoteHandler::createTaggedNote(_createTag(tag), noteID);
 }
 
 QVariant CreateNoteForm::_createTag(const QString &tagName)

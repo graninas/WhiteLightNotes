@@ -25,7 +25,8 @@ void SettingsManager::setValue(const QString &key,
 	_settings->endGroup();
 }
 
-QVariant SettingsManager::value(const QString &key, const QVariant &defaultValue) const
+QVariant SettingsManager::value(const QString &key,
+								const QVariant &defaultValue) const
 {
     QStringList SectionKey;
     SectionKey << key.split(QChar('.'));

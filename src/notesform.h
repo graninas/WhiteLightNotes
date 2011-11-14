@@ -32,6 +32,7 @@ private:
 
 	NoteHandler             _noteHandler;
 	Qst::QstPlainQueryModel _noteModel;
+
 };
 
 #endif // NOTESFORM_H

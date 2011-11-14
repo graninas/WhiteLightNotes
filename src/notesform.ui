@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
-    <height>448</height>
+    <width>413</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,12 +26,18 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QListView" name="lv_tagsList">
+     <widget class="QListView" name="lv_TagsList">
       <property name="minimumSize">
        <size>
         <width>100</width>
         <height>0</height>
        </size>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::MultiSelection</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
       </property>
      </widget>
     </item>
@@ -62,7 +68,11 @@
        </layout>
       </item>
       <item>
-       <widget class="QListWidget" name="lw_NotesFormList"/>
+       <widget class="QListView" name="lv_NotesList">
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -73,7 +83,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>479</width>
+     <width>413</width>
      <height>18</height>
     </rect>
    </property>
@@ -82,5 +92,25 @@
  <resources>
   <include location="icons.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>le_QuickFilter</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>NotesForm</receiver>
+   <slot>loadNotes()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>327</x>
+     <y>35</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>412</x>
+     <y>35</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>loadNotes()</slot>
+ </slots>
 </ui>
