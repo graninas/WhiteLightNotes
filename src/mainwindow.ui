@@ -33,22 +33,28 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="action_AddNote">
+  <action name="action_NewNote">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/resources/notebook--plus.png</normaloff>:/icons/resources/notebook--plus.png</iconset>
    </property>
    <property name="text">
-    <string>Добавить заметку...</string>
+    <string>New note...</string>
+   </property>
+   <property name="toolTip">
+    <string>New note</string>
    </property>
   </action>
-  <action name="action_ShowNotes">
+  <action name="action_ShowHideNotes">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/resources/notebooks.png</normaloff>:/icons/resources/notebooks.png</iconset>
    </property>
    <property name="text">
-    <string>Показать заметки...</string>
+    <string>Show / Hide notes</string>
+   </property>
+   <property name="toolTip">
+    <string>Show / Hide notes</string>
    </property>
   </action>
   <action name="action_Settings">
@@ -57,7 +63,10 @@
      <normaloff>:/icons/resources/gear.png</normaloff>:/icons/resources/gear.png</iconset>
    </property>
    <property name="text">
-    <string>Настройки...</string>
+    <string>Settings...</string>
+   </property>
+   <property name="toolTip">
+    <string>Settings</string>
    </property>
   </action>
   <action name="action_About">
@@ -66,7 +75,19 @@
      <normaloff>:/icons/resources/question-balloon.png</normaloff>:/icons/resources/question-balloon.png</iconset>
    </property>
    <property name="text">
-    <string>О программе...</string>
+    <string>About...</string>
+   </property>
+   <property name="toolTip">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="action_Exit">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/door-open.png</normaloff>:/icons/resources/door-open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
    </property>
   </action>
  </widget>

@@ -40,15 +40,15 @@ int main(int argc, char *argv[])
 
 	MainWindow w;
 	w.loadAll();
-	w.show();
+//	w.show();
 	w.showTrayIcon();
-//	QApplication::setQuitOnLastWindowClosed(false);
+	QApplication::setQuitOnLastWindowClosed(false);
 	return a.exec();
 }
 
 void createTables()
 {
 	Qst::QstAbstractModelHandler::evalQuery("CREATE TABLE IF NOT EXISTS tag  (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
-	Qst::QstAbstractModelHandler::evalQuery("CREATE TABLE IF NOT EXISTS note (id INTEGER PRIMARY KEY AUTOINCREMENT, html_text TEXT, date TEXT)");
+	Qst::QstAbstractModelHandler::evalQuery("CREATE TABLE IF NOT EXISTS note (id INTEGER PRIMARY KEY AUTOINCREMENT, html_text TEXT, simple_text TEXT, date TEXT)");
 	Qst::QstAbstractModelHandler::evalQuery("CREATE TABLE IF NOT EXISTS tagged_note (id INTEGER PRIMARY KEY AUTOINCREMENT, tag_id INTEGER, note_id INTEGER)");
 }

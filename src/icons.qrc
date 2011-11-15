@@ -15,5 +15,8 @@
         <file>resources/edit-underline.png</file>
         <file>resources/arrow-turn-180-left.png</file>
         <file>resources/arrow-turn.png</file>
+        <file>resources/edit-size-down.png</file>
+        <file>resources/edit-size-up.png</file>
+        <file>resources/door-open.png</file>
     </qresource>
 </RCC>

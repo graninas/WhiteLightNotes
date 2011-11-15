@@ -6,7 +6,6 @@ TaggedNoteHandler::TaggedNoteHandler()
 {
 }
 
-
 void TaggedNoteHandler::createTaggedNote(const QVariant &tagID,
 										 const QVariant &noteID)
 {
@@ -23,7 +22,6 @@ void TaggedNoteHandler::deleteTaggedNotes(const QVariant &noteID)
 	b.where("note_id", noteID);
 	execute(b);
 }
-
 
 Qst::QstBatch taggedNoteBatch()
 {

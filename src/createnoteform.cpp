@@ -5,6 +5,7 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QMenu>
 
 #include <QDebug>
 
@@ -47,6 +48,7 @@ void CreateNoteForm::resetEditFields()
 {
 	ui->te_NoteHtmlText->setHtml(_noteTemplate);
 	_setShortcutsEnabled(true);
+	ui->te_NoteHtmlText->setFocus();
 }
 
 void CreateNoteForm::adjustButtons(const QTextCharFormat &format)
@@ -90,10 +92,26 @@ void CreateNoteForm::cancelCreation()
 	this->close();
 }
 
+void CreateNoteForm::incFontSize()
+{
+	ui->te_NoteHtmlText->setFontPointSize(
+				ui->te_NoteHtmlText->fontPointSize() + 10);
+}
+
+void CreateNoteForm::decFontSize()
+{
+	ui->te_NoteHtmlText->setFontPointSize(
+				ui->te_NoteHtmlText->fontPointSize() - 10);
+}
+
 void CreateNoteForm::_createNote()
 {
-	QString note = ui->te_NoteHtmlText->toHtml();
-	QVariant noteID = NoteHandler::createNote(note, QDateTime::currentDateTime());
+	QString noteHtml   = ui->te_NoteHtmlText->toHtml();
+	QString noteSimple = ui->te_NoteHtmlText->toPlainText();
+
+	QVariant noteID = NoteHandler::createNote(noteHtml,
+											  noteSimple,
+											  QDateTime::currentDateTime());
 	Q_ASSERT(!noteID.isNull());
 
 	// Возможно, сделать обновление тегов записи через INSERT OR REPLACE,
@@ -108,21 +126,21 @@ void CreateNoteForm::_createNote()
 	tagsList << "All";
 
 	foreach (QString tag, tagsList)
-		TaggedNoteHandler::createTaggedNote(_createTag(tag), noteID);
+	{
+		if (!tag.simplified().isEmpty())
+			TaggedNoteHandler::createTaggedNote(_createTag(tag.simplified()), noteID);
+	}
 }
 
 QVariant CreateNoteForm::_createTag(const QString &tagName)
 {
-	Qst::QstPlainQueryModel model;
-	TagHandler th;
-	th.setQuery(tagBatch());
-	th.setModel(&model);
-	th.updatePlaceholder("name", tagName);
-	th.reload();
-	QVariant tagID = th.fieldValue("id");
+	Qst::QstBatch b = tagBatch();
+	b.updatePlaceholder("name", tagName);
+	QVariant tagID = TagHandler::fieldValue(b, "id");
 
-	if (tagID.isNull()) return TagHandler::createTag(tagName);
-	return tagID;
+	if (tagID.isNull()) TagHandler::createTag(tagName);
+
+	return TagHandler::fieldValue(b, "id");
 }
 
 void CreateNoteForm::_setShortcutsEnabled(bool enabled)

@@ -6,6 +6,8 @@
 #include "handlers/taghandler.h"
 #include "handlers/notehandler.h"
 
+typedef QMap<QString, QStringList> StringListMap;
+
 namespace Ui {
     class NotesForm;
 }
@@ -33,6 +35,7 @@ private:
 	NoteHandler             _noteHandler;
 	Qst::QstPlainQueryModel _noteModel;
 
+	Qst::QstVariantListMap _getFilters(const QString &filterString);
 };
 
 #endif // NOTESFORM_H

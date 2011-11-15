@@ -118,12 +118,6 @@ p, li { white-space: pre-wrap; }
    </layout>
   </widget>
   <widget class="QToolBar" name="toolBar">
-   <property name="minimumSize">
-    <size>
-     <width>0</width>
-     <height>0</height>
-    </size>
-   </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -136,26 +130,12 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionBold"/>
    <addaction name="actionItalic"/>
    <addaction name="actionUnderline"/>
+   <addaction name="separator"/>
+   <addaction name="actionDecFontSize"/>
+   <addaction name="actionIncFontSize"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>0</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>16777215</width>
-     <height>16777215</height>
-    </size>
-   </property>
    <property name="windowTitle">
     <string>toolBar_2</string>
    </property>
@@ -228,7 +208,32 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+Y</string>
    </property>
   </action>
+  <action name="actionIncFontSize">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/edit-size-up.png</normaloff>:/icons/resources/edit-size-up.png</iconset>
+   </property>
+   <property name="text">
+    <string>IncFontSize</string>
+   </property>
+  </action>
+  <action name="actionDecFontSize">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/edit-size-down.png</normaloff>:/icons/resources/edit-size-down.png</iconset>
+   </property>
+   <property name="text">
+    <string>DecFontSize</string>
+   </property>
+  </action>
  </widget>
+ <tabstops>
+  <tabstop>te_NoteHtmlText</tabstop>
+  <tabstop>le_Tags</tabstop>
+  <tabstop>pb_Ok</tabstop>
+  <tabstop>pb_OkAndNew</tabstop>
+  <tabstop>pb_Cancel</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>
@@ -377,6 +382,38 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionIncFontSize</sender>
+   <signal>triggered()</signal>
+   <receiver>CreateNoteForm</receiver>
+   <slot>incFontSize()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionDecFontSize</sender>
+   <signal>triggered()</signal>
+   <receiver>CreateNoteForm</receiver>
+   <slot>decFontSize()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>adjustButtons(QTextCharFormat)</slot>
@@ -384,5 +421,8 @@ p, li { white-space: pre-wrap; }
   <slot>finishCreation()</slot>
   <slot>finishAndNew()</slot>
   <slot>cancelCreation()</slot>
+  <slot>incFontSize()</slot>
+  <slot>decFontSize()</slot>
+  <slot>fontColorPopup()</slot>
  </slots>
 </ui>

@@ -30,6 +30,9 @@ public slots:
 	void finishAndNew();
 	void cancelCreation();
 
+	void incFontSize();
+	void decFontSize();
+
 signals:
 
 	void noteCreated();

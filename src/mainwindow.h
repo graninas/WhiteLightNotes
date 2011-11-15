@@ -28,8 +28,12 @@ public slots:
 
 	void showTrayIcon();
 
-	void showNotesForm();
-	void showCreateNoteForm();
+	void notesFormShowChange();
+	void createNoteFormShowChange();
+	void createNote();
+
+	void trayIconClicked(const QSystemTrayIcon::ActivationReason & reason);
+	void closeApplication();
 
 	void loadAll();
 
