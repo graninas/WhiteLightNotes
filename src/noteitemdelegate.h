@@ -18,12 +18,6 @@ public:
 
 	virtual QSize sizeHint(const QStyleOptionViewItem &option,
 						   const QModelIndex &index) const;
-
-private:
-
-	void _paintItem(const QString &html,
-					QPainter *painter,
-					const QStyleOptionViewItem &option) const;
 };
 
 #endif // NOTEITEMDELEGATE_H

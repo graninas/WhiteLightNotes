@@ -18,5 +18,15 @@
         <file>resources/edit-size-down.png</file>
         <file>resources/edit-size-up.png</file>
         <file>resources/door-open.png</file>
+        <file>resources/white.ico</file>
+        <file>resources/yellow.ico</file>
+        <file>resources/black.ico</file>
+        <file>resources/blue.ico</file>
+        <file>resources/green.ico</file>
+        <file>resources/lightblue.ico</file>
+        <file>resources/magenta.ico</file>
+        <file>resources/red.ico</file>
+        <file>resources/darkgreen.ico</file>
+        <file>resources/darkgrey.ico</file>
     </qresource>
 </RCC>

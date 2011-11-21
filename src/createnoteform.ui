@@ -66,25 +66,13 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Comma delimited tags:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="le_Tags">
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="horizontalSpacing">
+       <number>6</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>3</number>
+      </property>
       <item row="2" column="2">
        <widget class="QPushButton" name="pb_Ok">
         <property name="text">
@@ -106,10 +94,24 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="le_Tags">
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Finish: Ctrl + Enter</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Comma delimited tags:</string>
         </property>
        </widget>
       </item>
@@ -117,7 +119,7 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="QToolBar" name="editToolBar">
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -226,10 +228,144 @@ p, li { white-space: pre-wrap; }
     <string>DecFontSize</string>
    </property>
   </action>
+  <action name="actionTextColor">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/edit-color.png</normaloff>:/icons/resources/edit-color.png</iconset>
+   </property>
+   <property name="text">
+    <string>TextColor</string>
+   </property>
+  </action>
+  <action name="actionTextColorBlack">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/black.ico</normaloff>:/icons/resources/black.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorBlack</string>
+   </property>
+  </action>
+  <action name="actionTextColorRed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/red.ico</normaloff>:/icons/resources/red.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorRed</string>
+   </property>
+  </action>
+  <action name="actionTextColorDarkGreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/darkgreen.ico</normaloff>:/icons/resources/darkgreen.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorDarkGreen</string>
+   </property>
+   <property name="toolTip">
+    <string>TextColorDarkGreen</string>
+   </property>
+  </action>
+  <action name="actionTextColorBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/blue.ico</normaloff>:/icons/resources/blue.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorBlue</string>
+   </property>
+  </action>
+  <action name="actionTextColorYellow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/yellow.ico</normaloff>:/icons/resources/yellow.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorYellow</string>
+   </property>
+  </action>
+  <action name="actionTextColorDarkGrey">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/darkgrey.ico</normaloff>:/icons/resources/darkgrey.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorDarkGrey</string>
+   </property>
+   <property name="toolTip">
+    <string>TextColorDarkGrey</string>
+   </property>
+  </action>
+  <action name="actionTextColorGreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/green.ico</normaloff>:/icons/resources/green.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorGreen</string>
+   </property>
+  </action>
+  <action name="actionTextColorMagenta">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/magenta.ico</normaloff>:/icons/resources/magenta.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorMagenta</string>
+   </property>
+  </action>
+  <action name="actionTextColorLightBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/lightblue.ico</normaloff>:/icons/resources/lightblue.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorLightBlue</string>
+   </property>
+  </action>
+  <action name="actionTextColorWhite">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/white.ico</normaloff>:/icons/resources/white.ico</iconset>
+   </property>
+   <property name="text">
+    <string>TextColorWhite</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>te_NoteHtmlText</tabstop>
-  <tabstop>le_Tags</tabstop>
   <tabstop>pb_Ok</tabstop>
   <tabstop>pb_OkAndNew</tabstop>
   <tabstop>pb_Cancel</tabstop>

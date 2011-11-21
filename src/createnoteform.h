@@ -6,6 +6,9 @@
 #include <QxtGui/qxtgui.h>
 #include <QTextCharFormat>
 
+#include <QMap>
+#include <QColor>
+
 namespace Ui {
     class CreateNoteForm;
 }
@@ -19,6 +22,9 @@ private:
 	typedef QPair<QString, int> TagInfo;
 	typedef QList<TagInfo> TagInfoList;
 
+	typedef QPair<QString, QColor> ColorName;
+	typedef QMap<int, ColorName> ColorMap;
+
 public:
     explicit CreateNoteForm(QWidget *parent = 0);
     ~CreateNoteForm();
@@ -30,6 +36,7 @@ public slots:
 	void resetEditFields();
 	void adjustButtons(const QTextCharFormat &format);
 	void setBold(bool bold);
+	void setForegroundColor(const int &colorIndex);
 
 	void finishCreation();
 	void finishAndNew();
@@ -45,6 +52,9 @@ signals:
 private:
     Ui::CreateNoteForm *ui;
 
+	QComboBox *_textColorCombobox;
+
+	ColorMap _colorMap;
 	QString _noteTemplate;
 
 	QxtGlobalShortcut _okEnterShortcut;
@@ -56,6 +66,8 @@ private:
 	void _createNote();
 
 	void _setShortcutsEnabled(bool enabled);
+
+	void _adjustColorButtons(const QTextCharFormat &format);
 };
 
 #endif // CREATENOTEFORM_H

@@ -7,31 +7,61 @@
 #include <QDateTime>
 #include <QMenu>
 
+#include <QToolButton>
+#include <QComboBox>
+
 #include <QDebug>
 
 #include "handlers/notehandler.h"
 #include "handlers/taggednotehandler.h"
 #include "handlers/taghandler.h"
 
+const int FONT_SIZE_CHANGE_VALUE = 10;
+
 CreateNoteForm::CreateNoteForm(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::CreateNoteForm)
+	ui(new Ui::CreateNoteForm),
+	_textColorCombobox(NULL)
 {
     ui->setupUi(this);
 
 	ui->te_NoteHtmlText->setUndoRedoEnabled(true);
 
-	_okEnterShortcut.setShortcut (QKeySequence(Qt::CTRL + Qt::Key_Enter));
-	_okReturnShortcut.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Return));
-	_okAndNewEnterShortcut.setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Return));
+	_cancelShortcut        .setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Escape));
+	_okEnterShortcut       .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Enter));
+	_okReturnShortcut      .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Return));
+	_okAndNewEnterShortcut .setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Return));
 	_okAndNewReturnShortcut.setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Enter));
-	_cancelShortcut.setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Escape));
 
-	connect(&_okEnterShortcut, SIGNAL(activated()), this, SLOT(finishCreation()));
-	connect(&_okReturnShortcut, SIGNAL(activated()), this, SLOT(finishCreation()));
-	connect(&_okAndNewEnterShortcut, SIGNAL(activated()), this, SLOT(finishAndNew()));
+	connect(&_okEnterShortcut,        SIGNAL(activated()), this, SLOT(finishCreation()));
+	connect(&_okReturnShortcut,       SIGNAL(activated()), this, SLOT(finishCreation()));
+	connect(&_okAndNewEnterShortcut,  SIGNAL(activated()), this, SLOT(finishAndNew()));
 	connect(&_okAndNewReturnShortcut, SIGNAL(activated()), this, SLOT(finishCreation()));
-	connect(&_cancelShortcut, SIGNAL(activated()), this, SLOT(cancelCreation()));
+	connect(&_cancelShortcut,         SIGNAL(activated()), this, SLOT(cancelCreation()));
+
+	_colorMap.insert(0, ColorName("black",     QColor(0,0,0)));
+	_colorMap.insert(1, ColorName("blue",      QColor(0,0,255)));
+	_colorMap.insert(2, ColorName("darkgreen", QColor(0,125,0)));
+	_colorMap.insert(3, ColorName("darkgrey",  QColor(127,127,127)));
+	_colorMap.insert(4, ColorName("green",     QColor(0,0,255)));
+	_colorMap.insert(5, ColorName("lightblue", QColor(0,255,255)));
+	_colorMap.insert(6, ColorName("magenta",   QColor(255,0,255)));
+	_colorMap.insert(7, ColorName("red",       QColor(255,0,0)));
+	_colorMap.insert(8, ColorName("white",     QColor(255,255,255)));
+	_colorMap.insert(9, ColorName("yellow",    QColor(255,255,0)));
+
+	_textColorCombobox = new QComboBox(this);
+	foreach(int key, _colorMap.keys())
+	{
+		ColorName cname = _colorMap[key];
+		QString name = cname.first;
+		QString capedName = name.at(0).toUpper() + name.mid(1);
+		_textColorCombobox->addItem(QIcon(":icons/resources/" + name + ".ico"), capedName, name);
+	}
+	ui->editToolBar->addWidget(_textColorCombobox);
+
+	QObject::connect(_textColorCombobox, SIGNAL(activated(int)),
+					 this, SLOT(setForegroundColor(int)));
 }
 
 CreateNoteForm::~CreateNoteForm()
@@ -61,12 +91,19 @@ void CreateNoteForm::adjustButtons(const QTextCharFormat &format)
 
 	if (format.fontUnderline()) ui->actionUnderline->setChecked(true);
 	else ui->actionUnderline->setChecked(false);
+
+	_adjustColorButtons(format);
 }
 
 void CreateNoteForm::setBold(bool bold)
 {
 	if (bold) ui->te_NoteHtmlText->setFontWeight(QFont::Bold);
 	else      ui->te_NoteHtmlText->setFontWeight(QFont::Normal);
+}
+
+void CreateNoteForm::setForegroundColor(const int &colorIndex)
+{
+	ui->te_NoteHtmlText->setTextColor(_colorMap[colorIndex].second);
 }
 
 void CreateNoteForm::finishCreation()
@@ -95,13 +132,13 @@ void CreateNoteForm::cancelCreation()
 void CreateNoteForm::incFontSize()
 {
 	ui->te_NoteHtmlText->setFontPointSize(
-				ui->te_NoteHtmlText->fontPointSize() + 10);
+				ui->te_NoteHtmlText->fontPointSize() + FONT_SIZE_CHANGE_VALUE);
 }
 
 void CreateNoteForm::decFontSize()
 {
 	ui->te_NoteHtmlText->setFontPointSize(
-				ui->te_NoteHtmlText->fontPointSize() - 10);
+				ui->te_NoteHtmlText->fontPointSize() - FONT_SIZE_CHANGE_VALUE);
 }
 
 void CreateNoteForm::_createNote()
@@ -151,4 +188,18 @@ void CreateNoteForm::_setShortcutsEnabled(bool enabled)
 	_okAndNewEnterShortcut.setEnabled(enabled);
 	_okAndNewReturnShortcut.setEnabled(enabled);
 	_cancelShortcut.setEnabled(enabled);
+}
+
+void CreateNoteForm::_adjustColorButtons(const QTextCharFormat &format)
+{
+	QColor foregroudColor = format.foreground().color();
+
+	foreach (int key, _colorMap.keys())
+	{
+		if (_colorMap[key].second == foregroudColor)
+		{
+			_textColorCombobox->setCurrentIndex(key);
+			break;
+		}
+	}
 }

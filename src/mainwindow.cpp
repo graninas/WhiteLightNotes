@@ -119,7 +119,7 @@ void MainWindow::loadAll()
 QString MainWindow::_getNoteTemplate()
 {
 	QFile templFile(QApplication::applicationDirPath()
-					   + "\\NoteTemplate.html");
+					   + "\\resources\\NoteTemplate.html");
 	QString res;
 	if (templFile.open(QFile::ReadOnly))
 	{
