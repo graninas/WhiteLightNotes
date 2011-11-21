@@ -53,7 +53,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(&_createNoteFormHotKeyHandle, SIGNAL(activated()),
 			this, SLOT(createNoteFormShowChange()));
 
-
+	_closeApplicationKeyHandle.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
+	_closeApplicationKeyHandle.setEnabled(true);
+	connect(&_closeApplicationKeyHandle, SIGNAL(activated()),
+			this, SLOT(closeApplication()));
 }
 
 MainWindow::~MainWindow()

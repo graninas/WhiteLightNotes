@@ -15,13 +15,15 @@ NotesForm::NotesForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	ui->tv_Notes->setItemDelegate(&_noteItemDelegate);
+
 	_tagHandler.setQuery(tagBatch());
 	_tagHandler.setModel(&_tagModel);
 	_tagHandler.setListView(ui->lv_Tags);
 
 	_noteHandler.setQuery(noteBatch());
 	_noteHandler.setModel(&_noteModel);
-	_noteHandler.setTableView(ui->tv_Notes);
+	_noteHandler.setListView(ui->tv_Notes);
 }
 
 NotesForm::~NotesForm()

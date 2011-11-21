@@ -61,7 +61,7 @@ Qst::QstBatch noteBatch(const QstVariantListMap &filters)
 //	b.having(havingCond);
 	b.orderBy("n.date");
 
-	b.setModelColumn("simple_text");
+	b.setModelColumn("html_text");
 	return b;
 }
 

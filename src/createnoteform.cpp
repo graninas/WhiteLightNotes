@@ -118,29 +118,30 @@ void CreateNoteForm::_createNote()
 	// а не через удаление / добавление.
 	TaggedNoteHandler::deleteTaggedNotes(noteID);
 
-	QStringList tagsList = ui->le_Tags->text().split(',', QString::SkipEmptyParts);
+	QStringList tagNamesList = ui->le_Tags->text().split(',', QString::SkipEmptyParts);
+	TagInfoList tagInfoList;
 
-	if (tagsList.isEmpty())
-		tagsList << QString("Untagged");
+	if (tagNamesList.isEmpty())
+		tagInfoList << TagInfo("Untagged", 1);
+	tagInfoList << TagInfo("All", 0);
 
-	tagsList << "All";
-
-	foreach (QString tag, tagsList)
+	foreach (QString tagName, tagNamesList)
 	{
-		if (!tag.simplified().isEmpty())
-			TaggedNoteHandler::createTaggedNote(_createTag(tag.simplified()), noteID);
+		if (tagName != "All" && tagName != "Untagged")
+			tagInfoList << QPair<QString, int>(tagName, 2);
 	}
-}
 
-QVariant CreateNoteForm::_createTag(const QString &tagName)
-{
-	Qst::QstBatch b = tagBatch();
-	b.updatePlaceholder("name", tagName);
-	QVariant tagID = TagHandler::fieldValue(b, "id");
-
-	if (tagID.isNull()) TagHandler::createTag(tagName);
-
-	return TagHandler::fieldValue(b, "id");
+	TagInfoList::const_iterator iter = tagInfoList.begin();
+	while (iter != tagInfoList.end())
+	{
+		QString simpleTagName = iter->first.simplified();
+		if (!simpleTagName.isEmpty())
+		{
+			QVariant tagID = TagHandler::createTag(simpleTagName, iter->second);
+			TaggedNoteHandler::createTaggedNote(tagID, noteID);
+		}
+		iter++;
+	}
 }
 
 void CreateNoteForm::_setShortcutsEnabled(bool enabled)

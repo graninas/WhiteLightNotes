@@ -48,6 +48,7 @@ private:
 
 	QxtGlobalShortcut _notesFormHotKeyHandle;
 	QxtGlobalShortcut _createNoteFormHotKeyHandle;
+	QxtGlobalShortcut _closeApplicationKeyHandle;
 
 	QString _getNoteTemplate();
 

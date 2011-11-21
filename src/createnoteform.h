@@ -14,6 +14,11 @@ class CreateNoteForm : public QMainWindow
 {
     Q_OBJECT
 
+private:
+
+	typedef QPair<QString, int> TagInfo;
+	typedef QList<TagInfo> TagInfoList;
+
 public:
     explicit CreateNoteForm(QWidget *parent = 0);
     ~CreateNoteForm();
@@ -49,8 +54,6 @@ private:
 	QxtGlobalShortcut _cancelShortcut;
 
 	void _createNote();
-
-	QVariant _createTag(const QString &tagName);
 
 	void _setShortcutsEnabled(bool enabled);
 };
