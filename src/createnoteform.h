@@ -19,7 +19,8 @@ class CreateNoteForm : public QMainWindow
 
 private:
 
-	typedef QPair<QString, int> TagInfo;
+	typedef int TagPriority;
+	typedef QPair<QString, TagPriority> TagInfo;
 	typedef QList<TagInfo> TagInfoList;
 
 	typedef QPair<QString, QColor> ColorName;
@@ -29,7 +30,9 @@ public:
     explicit CreateNoteForm(QWidget *parent = 0);
     ~CreateNoteForm();
 
+	void setTitleTemplate(const QString &titleTemplate);
 	void setNoteTemplate(const QString &noteTemplate);
+	void setTagsTemplate(const QString &tagsTemplate);
 
 public slots:
 
@@ -55,7 +58,9 @@ private:
 	QComboBox *_textColorCombobox;
 
 	ColorMap _colorMap;
+	QString _titleTemplate;
 	QString _noteTemplate;
+	QString _tagsTemplate;
 
 	QxtGlobalShortcut _okEnterShortcut;
 	QxtGlobalShortcut _okReturnShortcut;
@@ -64,9 +69,20 @@ private:
 	QxtGlobalShortcut _cancelShortcut;
 
 	void _createNote();
+	void _updateTags(const QVariant &noteID);
+
+	TagInfoList _tagInfoList();
+
+	QString _noteComplexHtml(const QString &noteTitle,
+							 const QString &noteHtml,
+							 const QDateTime &datetime,
+							 const TagInfoList &tagInfoList) const;
+
+	// Due to QTBUG 22851 (https://bugreports.qt.nokia.com/browse/QTBUG-22851)
+	QString _spaceAlignedTitle(const QString &noteTitle,
+							   const QDateTime &datetime) const;
 
 	void _setShortcutsEnabled(bool enabled);
-
 	void _adjustColorButtons(const QTextCharFormat &format);
 };
 

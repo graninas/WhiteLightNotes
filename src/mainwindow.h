@@ -5,6 +5,7 @@
 
 #include <QSystemTrayIcon>
 #include <QMenu>
+#include <QFile>
 
 #include "notesform.h"
 #include "createnoteform.h"
@@ -50,7 +51,11 @@ private:
 	QxtGlobalShortcut _createNoteFormHotKeyHandle;
 	QxtGlobalShortcut _closeApplicationKeyHandle;
 
-	QString _getNoteTemplate();
+	QString _getTitleTemplate() const;
+	QString _getNoteTemplate() const;
+	QString _getTagsTemplate() const;
+
+	QString _readFromFile(QFile *file) const;
 
 };
 

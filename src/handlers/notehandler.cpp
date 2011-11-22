@@ -6,16 +6,15 @@ NoteHandler::NoteHandler()
 {
 }
 
-QVariant NoteHandler::createNote(const QVariant &noteHtmlText,
-								 const QVariant &noteSimpleText,
-								 const QVariant &date)
+QVariant NoteHandler::createNote(const QString &title,
+								 const QString &noteHtmlText,
+								 const QString &noteSimpleText,
+								 const QDateTime &date,
+								 const QString &complexData)
 {
 	QstBatch b1;
-	b1.insert("note", QStringList() << "html_text" << "simple_text" << "date");
-	b1.values(QVariantList()
-			 << noteHtmlText
-			 << noteSimpleText
-			 << date);
+	b1.insert("note", QStringList() << "title" << "html_text" << "simple_text" << "date" << "complex_data");
+	b1.values(QVariantList() << title << noteHtmlText << noteSimpleText << date << complexData);
 	NoteHandler::execute(b1);
 
 	QstBatch b2;
@@ -47,8 +46,9 @@ Qst::QstBatch noteBatch(const QstVariantListMap &filters)
 	QstBatch b;
 	b.select(QstField(RolePrimaryKey, "n.id", FieldInvisible));
 	b.select(QstField("n.html_text", FieldInvisible, "Note HTML"));
-	b.select(QstField("n.simple_text", FieldVisible, "Note Simple"));
-	b.select(QstField("n.date", FieldInvisible));
+	b.select(QstField("n.simple_text", FieldInvisible, "Note Simple"));
+	b.select(QstField("n.complex_data", FieldVisible, "Note Complex"));
+	b.select(QstField("n.date", FieldInvisible, "Note Datetime"));
 	b.select(QstField("count(tn.tag_id) as tag_cnt", FieldInvisible));
 	b.from("note n");
 	b.innerJoin("tagged_note tn", QueryWhere("tn.note_id = n.id"));
@@ -61,7 +61,7 @@ Qst::QstBatch noteBatch(const QstVariantListMap &filters)
 //	b.having(havingCond);
 	b.orderBy("n.date");
 
-	b.setModelColumn("html_text");
+	b.setModelColumn("complex_data");
 	return b;
 }
 

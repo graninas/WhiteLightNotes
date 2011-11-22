@@ -17,6 +17,7 @@
 #include "handlers/taghandler.h"
 
 const int FONT_SIZE_CHANGE_VALUE = 10;
+const int SPACES_COUNT = 20; // Due to QTBUG
 
 CreateNoteForm::CreateNoteForm(QWidget *parent) :
     QMainWindow(parent),
@@ -69,9 +70,19 @@ CreateNoteForm::~CreateNoteForm()
     delete ui;
 }
 
+void CreateNoteForm::setTitleTemplate(const QString &titleTemplate)
+{
+	_titleTemplate = titleTemplate;
+}
+
 void CreateNoteForm::setNoteTemplate(const QString &noteTemplate)
 {
 	_noteTemplate = noteTemplate;
+}
+
+void CreateNoteForm::setTagsTemplate(const QString &tagsTemplate)
+{
+	_tagsTemplate = tagsTemplate;
 }
 
 void CreateNoteForm::resetEditFields()
@@ -143,30 +154,27 @@ void CreateNoteForm::decFontSize()
 
 void CreateNoteForm::_createNote()
 {
+	QString noteTitle  = ui->le_Title->text();
 	QString noteHtml   = ui->te_NoteHtmlText->toHtml();
 	QString noteSimple = ui->te_NoteHtmlText->toPlainText();
+	QDateTime dateTime = QDateTime::currentDateTime();
+	QString noteComplex = _noteComplexHtml(noteTitle, noteHtml, dateTime, _tagInfoList());
 
-	QVariant noteID = NoteHandler::createNote(noteHtml,
-											  noteSimple,
-											  QDateTime::currentDateTime());
+	QVariant noteID    = NoteHandler::createNote(noteTitle,
+												 noteHtml,
+												 noteSimple,
+												 dateTime,
+												 noteComplex);
 	Q_ASSERT(!noteID.isNull());
+	_updateTags(noteID);
+}
 
+void CreateNoteForm::_updateTags(const QVariant &noteID)
+{
 	// Возможно, сделать обновление тегов записи через INSERT OR REPLACE,
 	// а не через удаление / добавление.
 	TaggedNoteHandler::deleteTaggedNotes(noteID);
-
-	QStringList tagNamesList = ui->le_Tags->text().split(',', QString::SkipEmptyParts);
-	TagInfoList tagInfoList;
-
-	if (tagNamesList.isEmpty())
-		tagInfoList << TagInfo("Untagged", 1);
-	tagInfoList << TagInfo("All", 0);
-
-	foreach (QString tagName, tagNamesList)
-	{
-		if (tagName != "All" && tagName != "Untagged")
-			tagInfoList << QPair<QString, int>(tagName, 2);
-	}
+	TagInfoList tagInfoList = _tagInfoList();
 
 	TagInfoList::const_iterator iter = tagInfoList.begin();
 	while (iter != tagInfoList.end())
@@ -179,6 +187,52 @@ void CreateNoteForm::_createNote()
 		}
 		iter++;
 	}
+}
+
+CreateNoteForm::TagInfoList CreateNoteForm::_tagInfoList()
+{
+	QStringList tagNamesList = ui->le_Tags->text().split(',', QString::SkipEmptyParts);
+	TagInfoList tagInfoList;
+	tagInfoList << TagInfo("All", 0);
+
+	// If no tags entered, it should be untagged.
+	if (tagNamesList.isEmpty())
+		tagInfoList << TagInfo("Untagged", 1);
+
+	foreach (QString tagName, tagNamesList)
+		if (tagName != "All" && tagName != "Untagged")
+			tagInfoList << TagInfo(tagName, 2);
+
+	return tagInfoList;
+}
+
+QString CreateNoteForm::_noteComplexHtml(const QString &noteTitle,
+										 const QString &noteHtml,
+										 const QDateTime &datetime,
+										 const TagInfoList &tagInfoList) const
+{
+	QString res = _titleTemplate.arg(_spaceAlignedTitle(noteTitle, datetime)).arg("");
+	res += "<p></p>" + noteHtml;
+
+	QString tags;
+	for (int i=0; i < tagInfoList.count(); ++i)
+	{
+		tags += tagInfoList[i].first;
+		if (i < (tagInfoList.count()-1))
+			tags += ", ";
+	}
+
+	return res + "<p></p>" + _tagsTemplate.arg(tags);
+}
+
+QString CreateNoteForm::_spaceAlignedTitle(const QString &noteTitle,
+										   const QDateTime &datetime) const
+{
+	QString spaces = " ";
+	QString res = noteTitle.simplified();
+	res += spaces.repeated(SPACES_COUNT - res.length());
+	res += datetime.toString(Qst::DEFAULT_DATE_TIME_FORMAT);
+	return res;
 }
 
 void CreateNoteForm::_setShortcutsEnabled(bool enabled)

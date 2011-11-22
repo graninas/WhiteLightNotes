@@ -29,6 +29,13 @@
      <number>3</number>
     </property>
     <item>
+     <widget class="QLineEdit" name="le_Title">
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QTextEdit" name="te_NoteHtmlText">
       <property name="minimumSize">
        <size>
@@ -59,9 +66,12 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt; Title&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Text&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; width=&quot;100%&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tr&gt;
+&lt;td width=&quot;80%&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;My title with spaces                                                                                                                                                                                                                                          &lt;/span&gt;&lt;/p&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; %2 &lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -228,146 +238,13 @@ p, li { white-space: pre-wrap; }
     <string>DecFontSize</string>
    </property>
   </action>
-  <action name="actionTextColor">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/edit-color.png</normaloff>:/icons/resources/edit-color.png</iconset>
-   </property>
-   <property name="text">
-    <string>TextColor</string>
-   </property>
-  </action>
-  <action name="actionTextColorBlack">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/black.ico</normaloff>:/icons/resources/black.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorBlack</string>
-   </property>
-  </action>
-  <action name="actionTextColorRed">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/red.ico</normaloff>:/icons/resources/red.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorRed</string>
-   </property>
-  </action>
-  <action name="actionTextColorDarkGreen">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/darkgreen.ico</normaloff>:/icons/resources/darkgreen.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorDarkGreen</string>
-   </property>
-   <property name="toolTip">
-    <string>TextColorDarkGreen</string>
-   </property>
-  </action>
-  <action name="actionTextColorBlue">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/blue.ico</normaloff>:/icons/resources/blue.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorBlue</string>
-   </property>
-  </action>
-  <action name="actionTextColorYellow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/yellow.ico</normaloff>:/icons/resources/yellow.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorYellow</string>
-   </property>
-  </action>
-  <action name="actionTextColorDarkGrey">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/darkgrey.ico</normaloff>:/icons/resources/darkgrey.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorDarkGrey</string>
-   </property>
-   <property name="toolTip">
-    <string>TextColorDarkGrey</string>
-   </property>
-  </action>
-  <action name="actionTextColorGreen">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/green.ico</normaloff>:/icons/resources/green.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorGreen</string>
-   </property>
-  </action>
-  <action name="actionTextColorMagenta">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/magenta.ico</normaloff>:/icons/resources/magenta.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorMagenta</string>
-   </property>
-  </action>
-  <action name="actionTextColorLightBlue">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/lightblue.ico</normaloff>:/icons/resources/lightblue.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorLightBlue</string>
-   </property>
-  </action>
-  <action name="actionTextColorWhite">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/resources/white.ico</normaloff>:/icons/resources/white.ico</iconset>
-   </property>
-   <property name="text">
-    <string>TextColorWhite</string>
-   </property>
-  </action>
  </widget>
  <tabstops>
   <tabstop>te_NoteHtmlText</tabstop>
+  <tabstop>le_Tags</tabstop>
   <tabstop>pb_Ok</tabstop>
   <tabstop>pb_OkAndNew</tabstop>
+  <tabstop>le_Title</tabstop>
   <tabstop>pb_Cancel</tabstop>
  </tabstops>
  <resources>
@@ -560,5 +437,6 @@ p, li { white-space: pre-wrap; }
   <slot>incFontSize()</slot>
   <slot>decFontSize()</slot>
   <slot>fontColorPopup()</slot>
+  <slot>setHeader()</slot>
  </slots>
 </ui>

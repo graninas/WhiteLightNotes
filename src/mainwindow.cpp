@@ -4,8 +4,6 @@
 #include <QMessageBox>
 
 #include <QTextStream>
-#include <QFile>
-
 #include <QDebug>
 
 
@@ -20,7 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	Q_ASSERT(_notesForm != NULL);
 	Q_ASSERT(_createNoteForm != NULL);
 
+	_createNoteForm->setTitleTemplate(_getTitleTemplate());
 	_createNoteForm->setNoteTemplate(_getNoteTemplate());
+	_createNoteForm->setTagsTemplate(_getTagsTemplate());
+
 
 	connect(_createNoteForm, SIGNAL(noteCreated()),
 			_notesForm, SLOT(loadAll()));
@@ -116,19 +117,32 @@ void MainWindow::loadAll()
 	_notesForm->loadAll();
 }
 
-QString MainWindow::_getNoteTemplate()
+QString MainWindow::_getTitleTemplate() const
+{
+	QFile templFile(QApplication::applicationDirPath()
+					   + "\\resources\\TitleTemplate.html");
+	return _readFromFile(&templFile);
+}
+
+QString MainWindow::_getNoteTemplate() const
 {
 	QFile templFile(QApplication::applicationDirPath()
 					   + "\\resources\\NoteTemplate.html");
+	return _readFromFile(&templFile);
+}
+
+QString MainWindow::_getTagsTemplate() const
+{
+	QFile templFile(QApplication::applicationDirPath()
+					   + "\\resources\\TagsTemplate.html");
+	return _readFromFile(&templFile);
+}
+
+QString MainWindow::_readFromFile(QFile *file) const
+{
 	QString res;
-	if (templFile.open(QFile::ReadOnly))
-	{
-		QTextStream in(&templFile);
-		QString line;
-		do {
-			 in >> line;
-			 res += "\n" + line;
-		} while (!line.isNull());
-	}
-return res;
+	Q_ASSERT(file != NULL);
+	if (file->open(QFile::ReadOnly))
+		res = file->readAll();
+	return res;
 }
