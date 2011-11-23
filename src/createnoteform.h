@@ -30,9 +30,9 @@ public:
     explicit CreateNoteForm(QWidget *parent = 0);
     ~CreateNoteForm();
 
-	void setTitleTemplate(const QString &titleTemplate);
 	void setNoteTemplate(const QString &noteTemplate);
-	void setTagsTemplate(const QString &tagsTemplate);
+	void setNoteTextTemplate(const QString &noteTextTemplate);
+	void setHtmlHeaderFooter(const QString &header, const QString &footer);
 
 public slots:
 
@@ -58,9 +58,10 @@ private:
 	QComboBox *_textColorCombobox;
 
 	ColorMap _colorMap;
-	QString _titleTemplate;
 	QString _noteTemplate;
-	QString _tagsTemplate;
+	QString _noteTextTemplate;
+	QString _htmlHeader;
+	QString _htmlFooter;
 
 	QxtGlobalShortcut _okEnterShortcut;
 	QxtGlobalShortcut _okReturnShortcut;
@@ -72,15 +73,18 @@ private:
 	void _updateTags(const QVariant &noteID);
 
 	TagInfoList _tagInfoList();
+	QString _tagsText(const TagInfoList &tagInfoList) const;
 
 	QString _noteComplexHtml(const QString &noteTitle,
 							 const QString &noteHtml,
 							 const QDateTime &datetime,
 							 const TagInfoList &tagInfoList) const;
 
-	// Due to QTBUG 22851 (https://bugreports.qt.nokia.com/browse/QTBUG-22851)
-	QString _spaceAlignedTitle(const QString &noteTitle,
-							   const QDateTime &datetime) const;
+//	// Due to QTBUG 22851 (https://bugreports.qt.nokia.com/browse/QTBUG-22851)
+//	QString _spaceAlignedTitle(const QString &noteTitle,
+//							   const QDateTime &datetime) const;
+
+	QString _cutHtmlHeaders(const QString &str) const;
 
 	void _setShortcutsEnabled(bool enabled);
 	void _adjustColorButtons(const QTextCharFormat &format);

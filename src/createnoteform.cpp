@@ -17,7 +17,7 @@
 #include "handlers/taghandler.h"
 
 const int FONT_SIZE_CHANGE_VALUE = 10;
-const int SPACES_COUNT = 20; // Due to QTBUG
+const int SPACES_COUNT = 18; // Due to QTBUG
 
 CreateNoteForm::CreateNoteForm(QWidget *parent) :
     QMainWindow(parent),
@@ -70,24 +70,25 @@ CreateNoteForm::~CreateNoteForm()
     delete ui;
 }
 
-void CreateNoteForm::setTitleTemplate(const QString &titleTemplate)
-{
-	_titleTemplate = titleTemplate;
-}
-
 void CreateNoteForm::setNoteTemplate(const QString &noteTemplate)
 {
 	_noteTemplate = noteTemplate;
 }
 
-void CreateNoteForm::setTagsTemplate(const QString &tagsTemplate)
+void CreateNoteForm::setNoteTextTemplate(const QString &noteTextTemplate)
 {
-	_tagsTemplate = tagsTemplate;
+	_noteTextTemplate = noteTextTemplate;
+}
+
+void CreateNoteForm::setHtmlHeaderFooter(const QString &header, const QString &footer)
+{
+	_htmlHeader = header;
+	_htmlFooter = footer;
 }
 
 void CreateNoteForm::resetEditFields()
 {
-	ui->te_NoteHtmlText->setHtml(_noteTemplate);
+	ui->te_NoteHtmlText->setHtml(_noteTextTemplate);
 	_setShortcutsEnabled(true);
 	ui->te_NoteHtmlText->setFocus();
 }
@@ -206,34 +207,52 @@ CreateNoteForm::TagInfoList CreateNoteForm::_tagInfoList()
 	return tagInfoList;
 }
 
+QString CreateNoteForm::_tagsText(const TagInfoList &tagInfoList) const
+{
+	QString tags;
+	for (int i=0; i < tagInfoList.count(); ++i)
+		{
+			tags += tagInfoList[i].first;
+			if (i < (tagInfoList.count()-1))
+				tags += ", ";
+		}
+	return tags;
+}
+
 QString CreateNoteForm::_noteComplexHtml(const QString &noteTitle,
 										 const QString &noteHtml,
 										 const QDateTime &datetime,
 										 const TagInfoList &tagInfoList) const
 {
-	QString res = _titleTemplate.arg(_spaceAlignedTitle(noteTitle, datetime)).arg("");
-	res += "<p></p>" + noteHtml;
+	QString onlyHtmlText = _cutHtmlHeaders(ui->te_NoteHtmlText->toHtml());
+	QString res = _noteTemplate;
+	QString tags = _tagsText(tagInfoList);
 
-	QString tags;
-	for (int i=0; i < tagInfoList.count(); ++i)
-	{
-		tags += tagInfoList[i].first;
-		if (i < (tagInfoList.count()-1))
-			tags += ", ";
-	}
+	res.replace("%title_bkground_color%", "#fed3ce");
+	res.replace("%title_text_color%", "#7b5955");
+	res.replace("%title_datetime_color%", "#7b5955");
+	res.replace("%note_bgcolor%", "#ffffff");
+//	res.replace("%note_text_color%", "#000000");
+	res.replace("%tags_bgcolor%", "#ffffff");
+	res.replace("%tags_text_color%", "#a28a88");
 
-	return res + "<p></p>" + _tagsTemplate.arg(tags);
-}
+	res.replace("%title_text%", noteTitle);
+	res.replace("%title_datetime%", datetime.toString(Qst::DEFAULT_DATE_TIME_FORMAT));
+	res.replace("%note_text%", onlyHtmlText);
+	res.replace("%tags_text%", tags);
 
-QString CreateNoteForm::_spaceAlignedTitle(const QString &noteTitle,
-										   const QDateTime &datetime) const
-{
-	QString spaces = " ";
-	QString res = noteTitle.simplified();
-	res += spaces.repeated(SPACES_COUNT - res.length());
-	res += datetime.toString(Qst::DEFAULT_DATE_TIME_FORMAT);
 	return res;
 }
+
+//QString CreateNoteForm::_spaceAlignedTitle(const QString &noteTitle,
+//										   const QDateTime &datetime) const
+//{
+//	QString spaces = " ";
+//	QString res = noteTitle.simplified();
+//	res += spaces.repeated(SPACES_COUNT - res.length());
+//	res += datetime.toString(Qst::DEFAULT_DATE_TIME_FORMAT);
+//	return res;
+//}
 
 void CreateNoteForm::_setShortcutsEnabled(bool enabled)
 {
@@ -242,6 +261,19 @@ void CreateNoteForm::_setShortcutsEnabled(bool enabled)
 	_okAndNewEnterShortcut.setEnabled(enabled);
 	_okAndNewReturnShortcut.setEnabled(enabled);
 	_cancelShortcut.setEnabled(enabled);
+}
+
+QString CreateNoteForm::_cutHtmlHeaders(const QString &str) const
+{
+	QString res = str;
+	int idx = res.indexOf("<body");
+	while(res[idx] != QChar('>'))
+		idx++;
+	res.remove(0, idx+1);
+	res = res.left(res.length() - QString("</body></html>").length());
+	qDebug() << "\nSource html string: \n" << str;
+	qDebug() << "\nCuted html string: \n" << res;
+	return res;
 }
 
 void CreateNoteForm::_adjustColorButtons(const QTextCharFormat &format)

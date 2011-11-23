@@ -25,9 +25,9 @@ void NoteItemDelegate::paint(QPainter *painter,
 							 const QModelIndex &index) const
 {
 	QString htmlText = index.data().toString();
-
 	QStyleOptionViewItemV4 options = option;
 	initStyleOption(&options, index);
+	QRect clip(0, 0, options.rect.width(), options.rect.height());
 
 	painter->save();
 	options.text = "";
@@ -37,7 +37,6 @@ void NoteItemDelegate::paint(QPainter *painter,
 	QTextDocument doc;
 	doc.setHtml(htmlText);
 	painter->translate(options.rect.left(), options.rect.top());
-	QRect clip(0, 0, options.rect.width(), options.rect.height());
 	doc.drawContents(painter, clip);
 	painter->restore();
 }

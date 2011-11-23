@@ -18,10 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	Q_ASSERT(_notesForm != NULL);
 	Q_ASSERT(_createNoteForm != NULL);
 
-	_createNoteForm->setTitleTemplate(_getTitleTemplate());
-	_createNoteForm->setNoteTemplate(_getNoteTemplate());
-	_createNoteForm->setTagsTemplate(_getTagsTemplate());
-
+	_createNoteForm->setNoteTextTemplate(_loadFile("NoteTextTemplate.html"));
+	_createNoteForm->setNoteTemplate(_loadFile("NoteTemplate.html"));
+	_createNoteForm->setHtmlHeaderFooter(_loadFile("Header.html"),
+										 _loadFile("Footer.html"));
 
 	connect(_createNoteForm, SIGNAL(noteCreated()),
 			_notesForm, SLOT(loadAll()));
@@ -117,32 +117,13 @@ void MainWindow::loadAll()
 	_notesForm->loadAll();
 }
 
-QString MainWindow::_getTitleTemplate() const
+QString MainWindow::_loadFile(const QString &fileName) const
 {
-	QFile templFile(QApplication::applicationDirPath()
-					   + "\\resources\\TitleTemplate.html");
-	return _readFromFile(&templFile);
-}
-
-QString MainWindow::_getNoteTemplate() const
-{
-	QFile templFile(QApplication::applicationDirPath()
-					   + "\\resources\\NoteTemplate.html");
-	return _readFromFile(&templFile);
-}
-
-QString MainWindow::_getTagsTemplate() const
-{
-	QFile templFile(QApplication::applicationDirPath()
-					   + "\\resources\\TagsTemplate.html");
-	return _readFromFile(&templFile);
-}
-
-QString MainWindow::_readFromFile(QFile *file) const
-{
+	QFile file(QApplication::applicationDirPath()
+			   + "\\resources\\" + fileName);
 	QString res;
-	Q_ASSERT(file != NULL);
-	if (file->open(QFile::ReadOnly))
-		res = file->readAll();
+	if (file.open(QFile::ReadOnly))
+		res = file.readAll();
 	return res;
 }
+

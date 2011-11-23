@@ -51,12 +51,7 @@ private:
 	QxtGlobalShortcut _createNoteFormHotKeyHandle;
 	QxtGlobalShortcut _closeApplicationKeyHandle;
 
-	QString _getTitleTemplate() const;
-	QString _getNoteTemplate() const;
-	QString _getTagsTemplate() const;
-
-	QString _readFromFile(QFile *file) const;
-
+	QString _loadFile(const QString &fileName) const;
 };
 
 #endif // MAINWINDOW_H
