@@ -8,8 +8,6 @@
 
 // http://stackoverflow.com/questions/1956542/how-to-make-item-view-render-rich-html-text-in-qt
 
-const int TAGS_FIELD_HEIGHT = 20;
-
 NoteItemDelegate::NoteItemDelegate(QObject *parent)
 	:
 	  QStyledItemDelegate(parent)
@@ -27,15 +25,17 @@ void NoteItemDelegate::paint(QPainter *painter,
 	QString htmlText = index.data().toString();
 	QStyleOptionViewItemV4 options = option;
 	initStyleOption(&options, index);
+	options.text = "";
 	QRect clip(0, 0, options.rect.width(), options.rect.height());
 
+	QTextDocument doc;
+	doc.setHtml(htmlText);
+	doc.setTextWidth(options.rect.width());
+
 	painter->save();
-	options.text = "";
 	options.widget->style()->drawControl(QStyle::CE_ItemViewItem,
 										 &options,
 										 painter);
-	QTextDocument doc;
-	doc.setHtml(htmlText);
 	painter->translate(options.rect.left(), options.rect.top());
 	doc.drawContents(painter, clip);
 	painter->restore();

@@ -9,6 +9,9 @@
 #include <QMap>
 #include <QColor>
 
+#include "handlers/taghandler.h"
+#include "tagsmodel.h"
+
 namespace Ui {
     class CreateNoteForm;
 }
@@ -34,6 +37,8 @@ public:
 	void setNoteTextTemplate(const QString &noteTextTemplate);
 	void setHtmlHeaderFooter(const QString &header, const QString &footer);
 
+	void loadTags();
+
 public slots:
 
 	void resetEditFields();
@@ -47,6 +52,10 @@ public slots:
 
 	void incFontSize();
 	void decFontSize();
+
+	void updateTags(const QItemSelection &selected,
+					const QItemSelection &deselected);
+	void updateTags(const QString &changedTags);
 
 signals:
 
@@ -69,20 +78,27 @@ private:
 	QxtGlobalShortcut _okAndNewReturnShortcut;
 	QxtGlobalShortcut _cancelShortcut;
 
+	TagHandler _tagHandler;
+	TagsModel  _tagModel;
+
+	QStringList _enteredSelectedTags;
+
 	void _createNote();
 	void _updateTags(const QVariant &noteID);
+	void _updateTagsLineEdit(const QStringList &tags);
 
-	TagInfoList _tagInfoList();
-	QString _tagsText(const TagInfoList &tagInfoList) const;
+	TagInfoList _tagInfoList(const QStringList &tagsList) const;
+	QStringList _tagList(const QString &tags) const;
+	QString     _tagsText(const QStringList &tagsList) const;
 
 	QString _noteComplexHtml(const QString &noteTitle,
 							 const QString &noteHtml,
 							 const QDateTime &datetime,
-							 const TagInfoList &tagInfoList) const;
+							 const QString &tags) const;
 
-//	// Due to QTBUG 22851 (https://bugreports.qt.nokia.com/browse/QTBUG-22851)
-//	QString _spaceAlignedTitle(const QString &noteTitle,
-//							   const QDateTime &datetime) const;
+	// Due to QTBUG 22851 (https://bugreports.qt.nokia.com/browse/QTBUG-22851)
+	QString _spaceAlignedTitle(const QString &noteTitle,
+							   const QDateTime &datetime) const;
 
 	QString _cutHtmlHeaders(const QString &str) const;
 

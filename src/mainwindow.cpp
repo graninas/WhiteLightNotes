@@ -114,7 +114,9 @@ void MainWindow::closeApplication()
 void MainWindow::loadAll()
 {
 	Q_ASSERT(_notesForm != NULL);
+	Q_ASSERT(_createNoteForm != NULL);
 	_notesForm->loadAll();
+	_createNoteForm->loadTags();
 }
 
 QString MainWindow::_loadFile(const QString &fileName) const

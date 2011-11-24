@@ -29,11 +29,10 @@ Qst::QstBatch tagBatch()
 	QstBatch b;
 	b	<< "tag t"
 		<< QstField(RolePrimaryKey, "id", FieldInvisible)
-		<< QstField("name", FieldVisible, "Tag name");
+		<< QstField("name", FieldInvisible, "Tag name");
 	b.select("info_tag",
 			 "name || ' (' || CASE WHEN tag_info.tag_cnt IS NULL THEN 0 ELSE tag_info.tag_cnt END || ')'",
-			 "Tag" // Column title
-			 );
+			 "Tag"); // Column title
 	b.leftJoin("(SELECT tn.tag_id as tag_id, count(tn.note_id) as tag_cnt FROM tag t INNER JOIN tagged_note tn ON tn.tag_id = t.id GROUP BY tn.tag_id) tag_info",
 			   QueryOn("tag_info.tag_id = t.id"));
 	b.where("name", QstPlaceholder());
