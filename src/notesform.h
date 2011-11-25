@@ -28,7 +28,8 @@ public slots:
 	void loadAll();
 	void loadTags();
 	void loadNotes();
-	void setRedNoteTheme();
+
+	void reset();
 
 private:
     Ui::NotesForm *ui;

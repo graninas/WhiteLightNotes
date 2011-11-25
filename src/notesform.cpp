@@ -55,9 +55,10 @@ void NotesForm::loadNotes()
 	_noteHandler.reload();
 }
 
-void NotesForm::setRedNoteTheme()
+void NotesForm::reset()
 {
-
+	ui->le_QuickFilter->clear();
+	ui->le_QuickFilter->setFocus();
 }
 
 Qst::QstVariantListMap NotesForm::_getFilters(const QString &filterString)

@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	_createNoteForm->setNoteTemplate(_loadFile("NoteTemplate.html"));
 	_createNoteForm->setHtmlHeaderFooter(_loadFile("Header.html"),
 										 _loadFile("Footer.html"));
+	_createNoteForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
+	_notesForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
 
 	connect(_createNoteForm, SIGNAL(noteCreated()),
 			_notesForm, SLOT(loadAll()));
@@ -77,8 +79,9 @@ void MainWindow::notesFormShowChange()
 		_notesForm->close();
 	else
 	{
+		_notesForm->activateWindow();
+		_notesForm->reset();
 		_notesForm->show();
-		_notesForm->setFocus();
 	}
 }
 
@@ -94,9 +97,9 @@ void MainWindow::createNoteFormShowChange()
 
 void MainWindow::createNote()
 {
-	_createNoteForm->resetEditFields();
+	_createNoteForm->activateWindow();
+	_createNoteForm->reset();
 	_createNoteForm->show();
-	_createNoteForm->setFocus();
 }
 
 void MainWindow::trayIconClicked(const QSystemTrayIcon::ActivationReason & reason)

@@ -103,14 +103,15 @@ void CreateNoteForm::loadTags()
 					 this, SLOT(updateEnteredSelectedTags(QItemSelection,QItemSelection)));
 }
 
-void CreateNoteForm::resetEditFields()
+void CreateNoteForm::reset()
 {
 	_setShortcutsEnabled(true);
+	_enteredSelectedTags.clear();
 	_enteredSelectedTags.append("All");
 	_enteredSelectedTags.append("Untagged");
+	_updateTagsLineEdit(_enteredSelectedTags);
 	ui->te_NoteHtmlText->setHtml(_noteTextTemplate);
 	ui->le_Title->setFocus();
-	_updateTagsLineEdit(_enteredSelectedTags);
 }
 
 void CreateNoteForm::adjustButtons(const QTextCharFormat &format)
@@ -151,7 +152,7 @@ void CreateNoteForm::finishAndNew()
 	_setShortcutsEnabled(false);
 	_createNote();
 	emit noteCreated();
-	resetEditFields();
+	reset();
 	ui->te_NoteHtmlText->setFocus();
 }
 

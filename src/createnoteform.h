@@ -43,7 +43,7 @@ public:
 
 public slots:
 
-	void resetEditFields();
+	void reset();
 	void adjustButtons(const QTextCharFormat &format);
 	void setBold(bool bold);
 	void setForegroundColor(const int &colorIndex);
