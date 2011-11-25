@@ -55,6 +55,11 @@ void NotesForm::loadNotes()
 	_noteHandler.reload();
 }
 
+void NotesForm::setRedNoteTheme()
+{
+
+}
+
 Qst::QstVariantListMap NotesForm::_getFilters(const QString &filterString)
 {
 	Qst::QstVariantListMap map;
@@ -80,3 +85,4 @@ Qst::QstVariantListMap NotesForm::_getFilters(const QString &filterString)
 			map["n:"].append(filterString.simplified());
 	return map;
 }
+

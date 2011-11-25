@@ -12,6 +12,7 @@ public:
 							   const QString &noteHtmlText,
 							   const QString &noteSimpleText,
 							   const QDateTime &date,
+							   const QString &theme,
 							   const QString &complexData);
 };
 

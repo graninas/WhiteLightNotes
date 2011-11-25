@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     handlers/taggednotehandler.cpp \
     noteitemdelegate.cpp \
     notesmodel.cpp \
-    tagsmodel.cpp
+    tagsmodel.cpp \
+    notetheme.cpp
 
 HEADERS  += mainwindow.h \
     settings/settingsmanager.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     handlers/taggednotehandler.h \
     noteitemdelegate.h \
     notesmodel.h \
-    tagsmodel.h
+    tagsmodel.h \
+    notetheme.h
 
 FORMS    += mainwindow.ui \
     notesform.ui \
@@ -43,6 +45,12 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     icons.qrc
+
+
+
+
+
+
 
 
 

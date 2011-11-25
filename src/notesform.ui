@@ -101,8 +101,17 @@
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth">
+         <number>10</number>
+        </property>
+        <property name="midLineWidth">
+         <number>6</number>
+        </property>
         <property name="alternatingRowColors">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::SingleSelection</enum>
@@ -125,7 +134,55 @@
      <height>18</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <widget class="QMenu" name="menuNote_Color_Theme">
+     <property name="title">
+      <string>Note Color Theme</string>
+     </property>
+     <addaction name="actionRed"/>
+     <addaction name="actionBlue"/>
+     <addaction name="actionOrange"/>
+    </widget>
+    <addaction name="menuNote_Color_Theme"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
   </widget>
+  <action name="actionRed">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/color-theme-red.ico</normaloff>:/icons/resources/color-theme-red.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Red</string>
+   </property>
+  </action>
+  <action name="actionBlue">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/color-theme-blue.ico</normaloff>:/icons/resources/color-theme-blue.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Blue</string>
+   </property>
+  </action>
+  <action name="actionOrange">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/color-theme-orange.ico</normaloff>:/icons/resources/color-theme-orange.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Orange</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>le_QuickFilter</tabstop>

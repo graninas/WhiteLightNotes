@@ -28,5 +28,21 @@
         <file>resources/red.ico</file>
         <file>resources/darkgreen.ico</file>
         <file>resources/darkgrey.ico</file>
+        <file>resources/edit-color-black.ico</file>
+        <file>resources/edit-color-blue.ico</file>
+        <file>resources/edit-color-darkgreen.ico</file>
+        <file>resources/edit-color-darkgrey.ico</file>
+        <file>resources/edit-color-green.ico</file>
+        <file>resources/edit-color-lightblue.ico</file>
+        <file>resources/edit-color-magenta.ico</file>
+        <file>resources/edit-color-red.ico</file>
+        <file>resources/edit-color-white.ico</file>
+        <file>resources/edit-color-yellow.ico</file>
+        <file>resources/edit-color-orange.ico</file>
+        <file>resources/orange.ico</file>
+        <file>resources/block.png</file>
+        <file>resources/color-theme-red.ico</file>
+        <file>resources/color-theme-blue.ico</file>
+        <file>resources/color-theme-orange.ico</file>
     </qresource>
 </RCC>

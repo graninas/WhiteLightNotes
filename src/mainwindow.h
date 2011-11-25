@@ -9,6 +9,7 @@
 
 #include "notesform.h"
 #include "createnoteform.h"
+#include "notetheme.h"
 
 // Qxt works only if it compiled into Qt.
 #include <QxtGui/qxtgui.h>
@@ -50,6 +51,8 @@ private:
 	QxtGlobalShortcut _notesFormHotKeyHandle;
 	QxtGlobalShortcut _createNoteFormHotKeyHandle;
 	QxtGlobalShortcut _closeApplicationKeyHandle;
+
+
 
 	QString _loadFile(const QString &fileName) const;
 };

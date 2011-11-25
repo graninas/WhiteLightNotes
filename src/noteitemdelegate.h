@@ -4,6 +4,8 @@
 #include <QStyledItemDelegate>
 #include <QPainter>
 
+#include "notetheme.h"
+
 class NoteItemDelegate : public QStyledItemDelegate
 {
 	Q_OBJECT
@@ -18,6 +20,10 @@ public:
 
 	virtual QSize sizeHint(const QStyleOptionViewItem &option,
 						   const QModelIndex &index) const;
+
+private:
+
+	NoteTheme _noteTheme;
 };
 
 #endif // NOTEITEMDELEGATE_H

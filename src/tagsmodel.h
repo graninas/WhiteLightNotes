@@ -12,6 +12,7 @@ public:
 	void setTagColumnIndex(const int &columnIndex);
 
 	Qt::ItemFlags flags ( const QModelIndex & index ) const;
+	QVariant data(const QModelIndex &item, int role) const;
 
 private:
 

@@ -28,9 +28,12 @@ public slots:
 	void loadAll();
 	void loadTags();
 	void loadNotes();
+	void setRedNoteTheme();
 
 private:
     Ui::NotesForm *ui;
+
+	QComboBox *_colorThemeCombobox;
 
 	TagHandler              _tagHandler;
 	Qst::QstPlainQueryModel _tagModel;

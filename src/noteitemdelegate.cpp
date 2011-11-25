@@ -2,9 +2,6 @@
 
 #include <QRect>
 #include <QTextDocument>
-#include <QLabel>
-
-#include <QAbstractTextDocumentLayout>
 
 // http://stackoverflow.com/questions/1956542/how-to-make-item-view-render-rich-html-text-in-qt
 
@@ -23,19 +20,33 @@ void NoteItemDelegate::paint(QPainter *painter,
 							 const QModelIndex &index) const
 {
 	QString htmlText = index.data().toString();
+	QString oldTheme = _noteTheme.getThemePrefix(htmlText);
+	QString newTheme = oldTheme;
+
+	if (option.state & QStyle::State_Selected)
+	{
+		if (!oldTheme.contains("selected"))
+			newTheme += ".selected";
+		htmlText = _noteTheme.colorize(htmlText, _noteTheme.supportedTokens(), oldTheme, newTheme);
+	}
+	else
+	{
+		if (oldTheme.contains("selected"))
+			newTheme.chop(8);
+		htmlText = _noteTheme.colorize(htmlText, _noteTheme.supportedTokens(), oldTheme, newTheme);
+	}
+
 	QStyleOptionViewItemV4 options = option;
 	initStyleOption(&options, index);
 	options.text = "";
-	QRect clip(0, 0, options.rect.width(), options.rect.height());
+	options.state & 0;
 
+	QRect clip(0, 0, options.rect.width(), options.rect.height());
 	QTextDocument doc;
 	doc.setHtml(htmlText);
 	doc.setTextWidth(options.rect.width());
 
 	painter->save();
-	options.widget->style()->drawControl(QStyle::CE_ItemViewItem,
-										 &options,
-										 painter);
 	painter->translate(options.rect.left(), options.rect.top());
 	doc.drawContents(painter, clip);
 	painter->restore();
@@ -44,12 +55,11 @@ void NoteItemDelegate::paint(QPainter *painter,
 QSize NoteItemDelegate::sizeHint(const QStyleOptionViewItem &option,
 								 const QModelIndex &index) const
 {
-	QString htmlText = index.data().toString();
 	QStyleOptionViewItemV4 options = option;
 	QTextDocument doc;
 
 	initStyleOption(&options, index);
-	doc.setHtml(htmlText);
+	doc.setHtml(index.data().toString());
 	doc.setTextWidth(options.rect.width());
 	return QSize(doc.idealWidth(), doc.size().height());
 }

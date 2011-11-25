@@ -38,6 +38,21 @@ Qt::ItemFlags TagsModel::flags ( const QModelIndex & index ) const
 		}
 		iter++;
 	}
-
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+QVariant TagsModel::data(const QModelIndex &item, int role) const
+{
+	if (item.column() == _tagColumnIndex && role == Qt::ToolTipRole)
+	{
+		QString tag = item.data().toString();
+		SelectableTagMap::const_iterator iter = _selectableTagMap.begin();
+		while (iter != _selectableTagMap.end())
+		{
+			if (tag.contains(iter.key()))
+				return QString("'" + iter.key() + "' is autotag.");
+			iter++;
+		}
+	}
+	return QstPlainQueryModel::data(item, role);
 }

@@ -12,6 +12,8 @@
 #include "handlers/taghandler.h"
 #include "tagsmodel.h"
 
+#include "notetheme.h"
+
 namespace Ui {
     class CreateNoteForm;
 }
@@ -53,9 +55,9 @@ public slots:
 	void incFontSize();
 	void decFontSize();
 
-	void updateTags(const QItemSelection &selected,
-					const QItemSelection &deselected);
-	void updateTags(const QString &changedTags);
+	void updateEnteredSelectedTags(const QItemSelection &selected,
+								   const QItemSelection &deselected);
+	void updateEnteredSelectedTags(const QString &changedTags);
 
 signals:
 
@@ -67,6 +69,7 @@ private:
 	QComboBox *_textColorCombobox;
 
 	ColorMap _colorMap;
+
 	QString _noteTemplate;
 	QString _noteTextTemplate;
 	QString _htmlHeader;
@@ -95,10 +98,6 @@ private:
 							 const QString &noteHtml,
 							 const QDateTime &datetime,
 							 const QString &tags) const;
-
-	// Due to QTBUG 22851 (https://bugreports.qt.nokia.com/browse/QTBUG-22851)
-	QString _spaceAlignedTitle(const QString &noteTitle,
-							   const QDateTime &datetime) const;
 
 	QString _cutHtmlHeaders(const QString &str) const;
 
