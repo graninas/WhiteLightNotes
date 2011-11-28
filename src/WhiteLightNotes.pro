@@ -15,8 +15,7 @@ TARGET = WhiteLightNotes
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    settings/settingsmanager.cpp \
+	mainwindow.cpp \
     handlers/taghandler.cpp \
     handlers/notehandler.cpp \
     notesform.cpp \
@@ -25,10 +24,11 @@ SOURCES += main.cpp\
     noteitemdelegate.cpp \
     notesmodel.cpp \
     tagsmodel.cpp \
-    notetheme.cpp
+    notetheme.cpp \
+	settings/settingsdialog.cpp \
+	settings/settingsmanager.cpp
 
 HEADERS  += mainwindow.h \
-    settings/settingsmanager.h \
     handlers/taghandler.h \
     handlers/notehandler.h \
     notesform.h \
@@ -37,14 +37,59 @@ HEADERS  += mainwindow.h \
     noteitemdelegate.h \
     notesmodel.h \
     tagsmodel.h \
-    notetheme.h
+	notetheme.h \
+	settings/settingsdialog.h \
+	settings/settingsmanager.h \
+    settings/settings.h
 
 FORMS    += mainwindow.ui \
     notesform.ui \
-    createnoteform.ui
+    createnoteform.ui \
+    settings/settingsdialog.ui
 
 RESOURCES += \
-    icons.qrc
+	icons.qrc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

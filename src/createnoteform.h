@@ -11,8 +11,9 @@
 
 #include "handlers/taghandler.h"
 #include "tagsmodel.h"
-
 #include "notetheme.h"
+
+#include "settings/settings.h"
 
 namespace Ui {
     class CreateNoteForm;
@@ -35,11 +36,12 @@ public:
     explicit CreateNoteForm(QWidget *parent = 0);
     ~CreateNoteForm();
 
-	void setNoteTemplate(const QString &noteTemplate);
-	void setNoteTextTemplate(const QString &noteTextTemplate);
-	void setHtmlHeaderFooter(const QString &header, const QString &footer);
+	void setNoteShowingTemplate(const QString &noteTemplate);
+	void setNewNoteTextTemplate(const QString &noteTextTemplate);
 
 	void loadTags();
+
+	void setSettings(const SettingsMap &settings);
 
 public slots:
 
@@ -70,10 +72,8 @@ private:
 
 	ColorMap _colorMap;
 
-	QString _noteTemplate;
-	QString _noteTextTemplate;
-	QString _htmlHeader;
-	QString _htmlFooter;
+	QString _noteShowingTemplate;
+	QString _newNoteTextTemplate;
 
 	QxtGlobalShortcut _okEnterShortcut;
 	QxtGlobalShortcut _okReturnShortcut;
@@ -85,6 +85,9 @@ private:
 	TagsModel  _tagModel;
 
 	QStringList _enteredSelectedTags;
+
+	int     _changeFontSizeStep;
+	QString _defaultColorTheme;
 
 	void _createNote();
 	void _updateTags(const QVariant &noteID);
@@ -103,6 +106,8 @@ private:
 
 	void _setShortcutsEnabled(bool enabled);
 	void _adjustColorButtons(const QTextCharFormat &format);
+
+	QString _loadFile(const QString &fileName) const;
 };
 
 #endif // CREATENOTEFORM_H

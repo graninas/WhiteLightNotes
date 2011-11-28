@@ -2,9 +2,9 @@
 #include "ui_mainwindow.h"
 
 #include <QMessageBox>
-
-#include <QTextStream>
 #include <QDebug>
+
+#include "settings/settingsdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,58 +12,54 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	_notesForm = new NotesForm(this);
+	_notesForm      = new NotesForm     (this);
 	_createNoteForm = new CreateNoteForm(this);
-	Q_ASSERT(_notesForm != NULL);
+	Q_ASSERT(_notesForm      != NULL);
 	Q_ASSERT(_createNoteForm != NULL);
 
-	_createNoteForm->setNoteTextTemplate(_loadFile("NoteTextTemplate.html"));
-	_createNoteForm->setNoteTemplate(_loadFile("NoteTemplate.html"));
-	_createNoteForm->setHtmlHeaderFooter(_loadFile("Header.html"),
-										 _loadFile("Footer.html"));
+	_notesForm     ->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
 	_createNoteForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
-	_notesForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
 
-	connect(_createNoteForm, SIGNAL(noteCreated()),
-			_notesForm, SLOT(loadAll()));
+	QObject::connect(_createNoteForm, SIGNAL(noteCreated()),
+					 _notesForm, SLOT(loadAll()));
 
 	_trayIconContextMenu.addAction(ui->action_NewNote);
-	_trayIconContextMenu.addAction(ui->action_ShowHideNotes);
+	_trayIconContextMenu.addAction(ui->action_Notes);
 	_trayIconContextMenu.addAction(ui->action_Settings);
 	_trayIconContextMenu.addAction(ui->action_About);
 	_trayIconContextMenu.addSeparator();
 	_trayIconContextMenu.addAction(ui->action_Exit);
-	_trayIcon.setIcon(QIcon(":icons/resources/notebook.png"));
 	_trayIcon.setContextMenu(&_trayIconContextMenu);
+	_trayIcon.setIcon(QIcon(":icons/resources/notebook.png"));
 
 	QObject::connect(&_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-					 this, SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
+					 this,   SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
 
-	QObject::connect(ui->action_Exit, SIGNAL(triggered()), this, SLOT(closeApplication()));
-	QObject::connect(ui->action_ShowHideNotes, SIGNAL(triggered()),
-					 this, SLOT(notesFormShowChange()));
-	QObject::connect(ui->action_NewNote, SIGNAL(triggered()),
-					 this, SLOT(createNote()));
+	QObject::connect(ui->action_Exit,     SIGNAL(triggered()), this, SLOT(closeApplication()));
+	QObject::connect(ui->action_NewNote,  SIGNAL(triggered()), this, SLOT(createNote()));
+	QObject::connect(ui->action_Notes,    SIGNAL(triggered()), this, SLOT(notesFormShowChange()));
+	QObject::connect(ui->action_Settings, SIGNAL(triggered()), this, SLOT(showSettingsDialog()));
 
-	_notesFormHotKeyHandle.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
-	_notesFormHotKeyHandle.setEnabled(true);
-	connect(&_notesFormHotKeyHandle, SIGNAL(activated()),
-			this, SLOT(notesFormShowChange()));
+	_notesHotkey     .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+	_CreateNoteHotkey.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
+	_closeAppHotkey  .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+	_CreateNoteHotkey.setEnabled(true);
+	_notesHotkey     .setEnabled(true);
+	_closeAppHotkey  .setEnabled(true);
 
-	_createNoteFormHotKeyHandle.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
-	_createNoteFormHotKeyHandle.setEnabled(true);
-	connect(&_createNoteFormHotKeyHandle, SIGNAL(activated()),
-			this, SLOT(createNoteFormShowChange()));
-
-	_closeApplicationKeyHandle.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
-	_closeApplicationKeyHandle.setEnabled(true);
-	connect(&_closeApplicationKeyHandle, SIGNAL(activated()),
-			this, SLOT(closeApplication()));
+	QObject::connect(&_notesHotkey,      SIGNAL(activated()), this, SLOT(notesFormShowChange()));
+	QObject::connect(&_CreateNoteHotkey, SIGNAL(activated()), this, SLOT(createNoteFormShowChange()));
+	QObject::connect(&_closeAppHotkey,   SIGNAL(activated()), this, SLOT(closeApplication()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setSettings(const SettingsMap &settings)
+{
+	_createNoteForm->setSettings(settings);
 }
 
 void MainWindow::showTrayIcon()
@@ -121,13 +117,12 @@ void MainWindow::loadAll()
 	_createNoteForm->loadTags();
 }
 
-QString MainWindow::_loadFile(const QString &fileName) const
+void MainWindow::showSettingsDialog()
 {
-	QFile file(QApplication::applicationDirPath()
-			   + "\\resources\\" + fileName);
-	QString res;
-	if (file.open(QFile::ReadOnly))
-		res = file.readAll();
-	return res;
+	SettingsDialog dlg;
+	if (dlg.exec() == QDialog::Accepted)
+	{
+		Q_ASSERT(false);
+	}
 }
 

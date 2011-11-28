@@ -44,5 +44,6 @@
         <file>resources/color-theme-red.ico</file>
         <file>resources/color-theme-blue.ico</file>
         <file>resources/color-theme-orange.ico</file>
+        <file>resources/folder-open.png</file>
     </qresource>
 </RCC>

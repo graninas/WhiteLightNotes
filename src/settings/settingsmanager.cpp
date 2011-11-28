@@ -5,7 +5,10 @@
 SettingsManager::SettingsManager(const QString &organization,
 								 const QString &application)
 {
-	_settings = new QSettings(organization, application);
+	_settings = new QSettings(QSettings::IniFormat,
+							  QSettings::UserScope,
+							  organization,
+							  application);
 }
 
 SettingsManager::~SettingsManager()
@@ -17,23 +20,28 @@ SettingsManager::~SettingsManager()
 void SettingsManager::setValue(const QString &key,
 							   const QVariant &value)
 {
-    QStringList SectionKey;
-    SectionKey << key.split(QChar('.'));
-
-	_settings->beginGroup(SectionKey[0]);
-	_settings->setValue(SectionKey[1], value);
-	_settings->endGroup();
+	_settings->setValue(key, value);
 }
 
 QVariant SettingsManager::value(const QString &key,
 								const QVariant &defaultValue) const
 {
-    QStringList SectionKey;
-    SectionKey << key.split(QChar('.'));
+	return _settings->value(key, defaultValue);
+}
 
-	QVariant returnValue;
-	_settings->beginGroup(SectionKey[0]);
-	returnValue = _settings->value(SectionKey[1], defaultValue);
-	_settings->endGroup();
-    return returnValue;
+SettingsMap SettingsManager::settings() const
+{
+	QStringList keys = _settings->allKeys();
+	SettingsMap map;
+	foreach (QString key, keys)
+		map.insert(key, _settings->value(key));
+	return map;
+}
+
+void SettingsManager::saveSettings(const SettingsMap &settingsMap)
+{
+	QStringList keys = settingsMap.keys();
+	foreach (QString key, keys)
+		_settings->setValue(key, settingsMap.value(key));
+	_settings->sync();
 }

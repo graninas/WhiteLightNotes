@@ -2,22 +2,19 @@
 #include "ui_createnoteform.h"
 
 #include <QFont>
-
 #include <QString>
 #include <QDateTime>
 #include <QMenu>
-
 #include <QToolButton>
 #include <QComboBox>
+#include <QFile>
+#include <QTextStream>
 
 #include <QDebug>
 
 #include "handlers/notehandler.h"
 #include "handlers/taggednotehandler.h"
 #include "handlers/taghandler.h"
-
-const int FONT_SIZE_CHANGE_VALUE = 10;
-const QString DEFAULT_COLOR_THEME = "red";
 
 CreateNoteForm::CreateNoteForm(QWidget *parent) :
     QMainWindow(parent),
@@ -80,20 +77,16 @@ CreateNoteForm::~CreateNoteForm()
     delete ui;
 }
 
-void CreateNoteForm::setNoteTemplate(const QString &noteTemplate)
+void CreateNoteForm::setNoteShowingTemplate(const QString &noteTemplate)
 {
-	_noteTemplate = noteTemplate;
+	Q_ASSERT(!noteTemplate.isEmpty());
+	_noteShowingTemplate = noteTemplate;
 }
 
-void CreateNoteForm::setNoteTextTemplate(const QString &noteTextTemplate)
+void CreateNoteForm::setNewNoteTextTemplate(const QString &noteTextTemplate)
 {
-	_noteTextTemplate = noteTextTemplate;
-}
-
-void CreateNoteForm::setHtmlHeaderFooter(const QString &header, const QString &footer)
-{
-	_htmlHeader = header;
-	_htmlFooter = footer;
+	Q_ASSERT(!noteTextTemplate.isEmpty());
+	_newNoteTextTemplate = noteTextTemplate;
 }
 
 void CreateNoteForm::loadTags()
@@ -103,6 +96,14 @@ void CreateNoteForm::loadTags()
 					 this, SLOT(updateEnteredSelectedTags(QItemSelection,QItemSelection)));
 }
 
+void CreateNoteForm::setSettings(const SettingsMap &settings)
+{
+	_changeFontSizeStep = settings[S_CHANGE_FONT_SIZE_STEP].toInt();
+	_defaultColorTheme  = settings[S_DEFAULT_COLOR_THEME].toString();
+	setNewNoteTextTemplate(_loadFile(settings[S_NEW_NOTE_TEXT_TEMPLATE].toString()));
+	setNoteShowingTemplate(_loadFile(settings[S_NOTE_SHOWING_TEMPLATE].toString()));
+}
+
 void CreateNoteForm::reset()
 {
 	_setShortcutsEnabled(true);
@@ -110,7 +111,7 @@ void CreateNoteForm::reset()
 	_enteredSelectedTags.append("All");
 	_enteredSelectedTags.append("Untagged");
 	_updateTagsLineEdit(_enteredSelectedTags);
-	ui->te_NoteHtmlText->setHtml(_noteTextTemplate);
+	ui->te_NoteHtmlText->setHtml(_newNoteTextTemplate);
 	ui->le_Title->setFocus();
 }
 
@@ -165,13 +166,13 @@ void CreateNoteForm::cancelCreation()
 void CreateNoteForm::incFontSize()
 {
 	ui->te_NoteHtmlText->setFontPointSize(
-				ui->te_NoteHtmlText->fontPointSize() + FONT_SIZE_CHANGE_VALUE);
+				ui->te_NoteHtmlText->fontPointSize() + _changeFontSizeStep);
 }
 
 void CreateNoteForm::decFontSize()
 {
 	ui->te_NoteHtmlText->setFontPointSize(
-				ui->te_NoteHtmlText->fontPointSize() - FONT_SIZE_CHANGE_VALUE);
+				ui->te_NoteHtmlText->fontPointSize() - _changeFontSizeStep);
 }
 
 void CreateNoteForm::updateEnteredSelectedTags(const QItemSelection &selected,
@@ -228,12 +229,13 @@ void CreateNoteForm::_createNote()
 										   noteHtml,
 										   dateTime,
 										   _tagsText(_enteredSelectedTags));
+	Q_ASSERT(!noteComplex.isEmpty());
 
 	QVariant noteID    = NoteHandler::createNote(noteTitle,
 												 noteHtml,
 												 noteSimple,
 												 dateTime,
-												 DEFAULT_COLOR_THEME,
+												 _defaultColorTheme,
 												 noteComplex);
 	Q_ASSERT(!noteID.isNull());
 	_updateTags(noteID);
@@ -319,10 +321,10 @@ QString CreateNoteForm::_noteComplexHtml(const QString &noteTitle,
 	QString strDateTime = datetime.toString(Qst::DEFAULT_DATE_TIME_FORMAT);
 
 	NoteTheme theme;
-	QString res = theme.colorize(_noteTemplate,
+	QString res = theme.colorize(_noteShowingTemplate,
 								 theme.supportedTokens(),
 								 "undefined",
-								 DEFAULT_COLOR_THEME,
+								 _defaultColorTheme,
 								 false,
 								 false);
 
@@ -364,4 +366,13 @@ void CreateNoteForm::_adjustColorButtons(const QTextCharFormat &format)
 			break;
 		}
 	}
+}
+
+QString CreateNoteForm::_loadFile(const QString &fileName) const
+{
+	QFile file(fileName);
+	QString res;
+	if (file.open(QFile::ReadOnly))
+		res = file.readAll();
+	return res;
 }

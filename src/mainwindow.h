@@ -11,7 +11,8 @@
 #include "createnoteform.h"
 #include "notetheme.h"
 
-// Qxt works only if it compiled into Qt.
+#include "settings/settings.h"
+
 #include <QxtGui/qxtgui.h>
 
 namespace Ui {
@@ -26,6 +27,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+	void setSettings(const SettingsMap &settings);
+
 public slots:
 
 	void showTrayIcon();
@@ -39,22 +42,20 @@ public slots:
 
 	void loadAll();
 
+	void showSettingsDialog();
+
 private:
     Ui::MainWindow *ui;
 
-	NotesForm *_notesForm;
+	NotesForm      *_notesForm;
 	CreateNoteForm *_createNoteForm;
 
 	QSystemTrayIcon _trayIcon;
 	QMenu _trayIconContextMenu;
 
-	QxtGlobalShortcut _notesFormHotKeyHandle;
-	QxtGlobalShortcut _createNoteFormHotKeyHandle;
-	QxtGlobalShortcut _closeApplicationKeyHandle;
-
-
-
-	QString _loadFile(const QString &fileName) const;
+	QxtGlobalShortcut _notesHotkey;
+	QxtGlobalShortcut _CreateNoteHotkey;
+	QxtGlobalShortcut _closeAppHotkey;
 };
 
 #endif // MAINWINDOW_H

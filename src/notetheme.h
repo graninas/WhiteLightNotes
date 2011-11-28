@@ -19,6 +19,7 @@ public:
 	ThemeColorsMap themeColorsMap() const;
 
 	QStringList supportedTokens() const;
+	QStringList supportedColorThemes() const;
 
 	QString colorize(const QString &htmlTemplate,
 					 const QStringList &tokens,

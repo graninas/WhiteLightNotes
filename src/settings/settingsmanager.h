@@ -2,6 +2,7 @@
 #define SETTINGSMANAGER_H
 
 #include <QSettings>
+#include "settings/settings.h"
 
 class SettingsManager
 {
@@ -12,6 +13,9 @@ public:
 
 	void setValue (const QString &key, const QVariant &value);
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
+
+	SettingsMap settings() const;
+	void saveSettings(const SettingsMap &settings);
 
 private:
 

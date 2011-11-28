@@ -29,6 +29,11 @@ QStringList NoteTheme::supportedTokens() const
 	return _supportedTokens;
 }
 
+QStringList NoteTheme::supportedColorThemes() const
+{
+	return _supportedThemes;
+}
+
 QString NoteTheme::colorize(const QString &htmlTemplate,
 							const QStringList &tokens,
 							const QString &oldThemeName,
@@ -109,20 +114,20 @@ void NoteTheme::_addRedThemeColorsMap()
 	_colorOfThemeMap.insert("#fef5f4", "red");
 	_themeColorsMap.insert("red.selected.title.background",    "#fed3ce");
 	_themeColorsMap.insert("red.selected.title.text",          "#905048");
-	_themeColorsMap.insert("red.selected.datetime.background", "#fed3ce");
+	_themeColorsMap.insert("red.selected.datetime.background", "#fed3cd");
 	_themeColorsMap.insert("red.selected.datetime.text",       "#9b5d56");
 	_themeColorsMap.insert("red.selected.note.background",     "#ffffff");
 	_themeColorsMap.insert("red.selected.note.text",           "");
-	_themeColorsMap.insert("red.selected.tags.background",     "#ffffff");
+	_themeColorsMap.insert("red.selected.tags.background",     "#fffffe");
 	_themeColorsMap.insert("red.selected.tags.text",           "#a28a88");
 
 	_themeColorsMap.insert("red.title.background",    "#fef5f4");
 	_themeColorsMap.insert("red.title.text",          "#8c6d6a");
-	_themeColorsMap.insert("red.datetime.background", "#fef5f4");
+	_themeColorsMap.insert("red.datetime.background", "#fef5f5");
 	_themeColorsMap.insert("red.datetime.text",       "#886966");
 	_themeColorsMap.insert("red.note.background",     "#ffffff");
 	_themeColorsMap.insert("red.note.text",           "");
-	_themeColorsMap.insert("red.tags.background",     "#ffffff");
+	_themeColorsMap.insert("red.tags.background",     "#fffffe");
 	_themeColorsMap.insert("red.tags.text",           "#a28a88");
 }
 
@@ -133,20 +138,20 @@ void NoteTheme::_addBlueThemeColorsMap()
 	_colorOfThemeMap.insert("#f4f8fe", "blue");
 	_themeColorsMap.insert("blue.selected.title.background",    "#cedffc");
 	_themeColorsMap.insert("blue.selected.title.text",          "#48618c");
-	_themeColorsMap.insert("blue.selected.datetime.background", "#cedffc");
+	_themeColorsMap.insert("blue.selected.datetime.background", "#cedffd");
 	_themeColorsMap.insert("blue.selected.datetime.text",       "#566d97");
 	_themeColorsMap.insert("blue.selected.note.background",     "#ffffff");
 	_themeColorsMap.insert("blue.selected.note.text",           "");
-	_themeColorsMap.insert("blue.selected.tags.background",     "#ffffff");
+	_themeColorsMap.insert("blue.selected.tags.background",     "#fffffe");
 	_themeColorsMap.insert("blue.selected.tags.text",           "#8891a1");
 
 	_themeColorsMap.insert("blue.title.background",    "#f4f8fe");
 	_themeColorsMap.insert("blue.title.text",          "#556279");
-	_themeColorsMap.insert("blue.datetime.background", "#f4f8fe");
+	_themeColorsMap.insert("blue.datetime.background", "#f4f8ff");
 	_themeColorsMap.insert("blue.datetime.text",       "#667186");
 	_themeColorsMap.insert("blue.note.background",     "#ffffff");
 	_themeColorsMap.insert("blue.note.text",           "");
-	_themeColorsMap.insert("blue.tags.background",     "#ffffff");
+	_themeColorsMap.insert("blue.tags.background",     "#fffffe");
 	_themeColorsMap.insert("blue.tags.text",           "#8891a1");
 }
 
@@ -157,19 +162,19 @@ void NoteTheme::_addOrangeThemeColorsMap()
 	_colorOfThemeMap.insert("#fef8f4", "orange");
 	_themeColorsMap.insert("orange.selected.title.background",    "#fee1ce");
 	_themeColorsMap.insert("orange.selected.title.text",          "#906448");
-	_themeColorsMap.insert("orange.selected.datetime.background", "#fee1ce");
+	_themeColorsMap.insert("orange.selected.datetime.background", "#fee1cf");
 	_themeColorsMap.insert("orange.selected.datetime.text",       "#9b7156");
 	_themeColorsMap.insert("orange.selected.note.background",     "#ffffff");
 	_themeColorsMap.insert("orange.selected.note.text",           "");
-	_themeColorsMap.insert("orange.selected.tags.background",     "#ffffff");
+	_themeColorsMap.insert("orange.selected.tags.background",     "#fffffe");
 	_themeColorsMap.insert("orange.selected.tags.text",           "#a29288");
 
 	_themeColorsMap.insert("orange.title.background",    "#fef8f4");
 	_themeColorsMap.insert("orange.title.text",          "#7b6455");
-	_themeColorsMap.insert("orange.datetime.background", "#fef8f4");
+	_themeColorsMap.insert("orange.datetime.background", "#fef8f5");
 	_themeColorsMap.insert("orange.datetime.text",       "#887366");
 	_themeColorsMap.insert("orange.note.background",     "#ffffff");
 	_themeColorsMap.insert("orange.note.text",           "");
-	_themeColorsMap.insert("orange.tags.background",     "#ffffff");
+	_themeColorsMap.insert("orange.tags.background",     "#fffffe");
 	_themeColorsMap.insert("orange.tags.text",           "#a29288");
 }

@@ -6,33 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>411</width>
+    <height>349</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Options</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>400</width>
-     <height>18</height>
-    </rect>
-   </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/icons/resources/gear.png</normaloff>:/icons/resources/gear.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch=""/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="action_NewNote">
    <property name="icon">
     <iconset resource="icons.qrc">
@@ -42,19 +29,19 @@
     <string>New note...</string>
    </property>
    <property name="toolTip">
-    <string>New note</string>
+    <string>New note...</string>
    </property>
   </action>
-  <action name="action_ShowHideNotes">
+  <action name="action_Notes">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/resources/notebooks.png</normaloff>:/icons/resources/notebooks.png</iconset>
    </property>
    <property name="text">
-    <string>Show / Hide notes</string>
+    <string>Notes...</string>
    </property>
    <property name="toolTip">
-    <string>Show / Hide notes</string>
+    <string>Notes...</string>
    </property>
   </action>
   <action name="action_Settings">
@@ -66,7 +53,7 @@
     <string>Settings...</string>
    </property>
    <property name="toolTip">
-    <string>Settings</string>
+    <string>Settings...</string>
    </property>
   </action>
   <action name="action_About">
@@ -78,7 +65,7 @@
     <string>About...</string>
    </property>
    <property name="toolTip">
-    <string>About</string>
+    <string>About...</string>
    </property>
   </action>
   <action name="action_Exit">

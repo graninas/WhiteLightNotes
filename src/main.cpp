@@ -5,48 +5,54 @@
 #include <QTextCodec>
 
 #include "settings/settingsmanager.h"
-
+#include "settings/settingsdialog.h"
 #include "qst/qstdbconnection.h"
-#include "qst/querygeneration/querybuilders/sqlite/sqlitebuilder.h"
-
 #include "qst/qstabstractmodelhandler.h"
-
+#include "qst/querygeneration/querybuilders/sqlite/sqlitebuilder.h"
 #include "handlers/taghandler.h"
+
 
 using namespace Qst;
 
 void createTables();
 void createPredefinedRows();
+bool checkIsFirstRun(SettingsManager *sm);
+SettingsMap firstRunSettings();
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	a.addLibraryPath(a.applicationDirPath() + "/plugins");	// Задается путь к папке с плагинами.
-
-	QTextCodec *pTextCodec = QTextCodec::codecForName("UTF-8");
-	Q_ASSERT_X(pTextCodec != NULL, "codecPointer", "Invalid Codec");
-	QTextCodec::setCodecForTr(pTextCodec);
-
-	SettingsManager sm = SettingsManager("GAS Soft", "WhiteLightNotes");
-	QString dbFilePath = sm.value("Database.FilePath",
-								  QApplication::applicationDirPath()).toString();
+	a.addLibraryPath(a.applicationDirPath() + "/plugins");
+	QApplication::setQuitOnLastWindowClosed(false);
 
 	SqLiteBuilder builder;
 	QstAbstractModelHandler::setQueryBuilder(&builder);
+	QTextCodec *pTextCodec = QTextCodec::codecForName("UTF-8");
+	QTextCodec::setCodecForTr(pTextCodec);
+
+	SettingsManager sm = SettingsManager("GAS Soft", "WhiteLightNotes");
+	SettingsMap settings;
+	if (checkIsFirstRun(&sm))
+	{
+		settings = firstRunSettings();
+		settings[S_IS_FIRST_RUN] = false;
+		sm.saveSettings(settings);
+	}
+	else
+		settings = sm.settings();
 
 	QstDBConnection conn;
 	conn.setDriverName("QSQLITE");
-	conn.setDatabaseName(dbFilePath + "/WhiteLightNotes.db");
+	conn.setDatabaseName(settings[S_DATABASE_FILE_NAME].toString());
 	conn.open();
 
 	createTables();
 	createPredefinedRows();
 
 	MainWindow w;
+	w.setSettings(settings);
 	w.loadAll();
-//	w.show();
 	w.showTrayIcon();
-	QApplication::setQuitOnLastWindowClosed(false);
 	return a.exec();
 }
 
@@ -61,4 +67,18 @@ void createPredefinedRows()
 {
 	TagHandler::createTag("All", 0);
 	TagHandler::createTag("Untagged", 1);
+}
+
+bool checkIsFirstRun(SettingsManager *sm)
+{
+	return sm->value(S_IS_FIRST_RUN, QVariant(true)).toBool();
+}
+
+SettingsMap firstRunSettings()
+{
+	SettingsDialog dlg;
+	dlg.setSettings(SettingsDialog::defaultSettings());
+	dlg.showWelcomeString();
+	dlg.exec();
+	return dlg.settings();
 }
