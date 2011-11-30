@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	_notesHotkey     .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
 	_CreateNoteHotkey.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
-	_closeAppHotkey  .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+	_closeAppHotkey  .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
 	_CreateNoteHotkey.setEnabled(true);
 	_notesHotkey     .setEnabled(true);
 	_closeAppHotkey  .setEnabled(true);

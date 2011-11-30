@@ -39,11 +39,11 @@ public:
 	void setNoteShowingTemplate(const QString &noteTemplate);
 	void setNewNoteTextTemplate(const QString &noteTextTemplate);
 
-	void loadTags();
-
 	void setSettings(const SettingsMap &settings);
 
 public slots:
+
+	void loadTags();
 
 	void reset();
 	void adjustButtons(const QTextCharFormat &format);

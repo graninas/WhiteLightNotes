@@ -22,11 +22,11 @@ SOURCES += main.cpp\
     createnoteform.cpp \
     handlers/taggednotehandler.cpp \
     noteitemdelegate.cpp \
-    notesmodel.cpp \
     tagsmodel.cpp \
     notetheme.cpp \
 	settings/settingsdialog.cpp \
-	settings/settingsmanager.cpp
+	settings/settingsmanager.cpp \
+    quickfilterparser.cpp
 
 HEADERS  += mainwindow.h \
     handlers/taghandler.h \
@@ -35,12 +35,12 @@ HEADERS  += mainwindow.h \
     createnoteform.h \
     handlers/taggednotehandler.h \
     noteitemdelegate.h \
-    notesmodel.h \
     tagsmodel.h \
 	notetheme.h \
 	settings/settingsdialog.h \
 	settings/settingsmanager.h \
-    settings/settings.h
+    settings/settings.h \
+    quickfilterparser.h
 
 FORMS    += mainwindow.ui \
     notesform.ui \
@@ -49,6 +49,10 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
 	icons.qrc
+
+
+
+
 
 
 

@@ -37,9 +37,50 @@ Qst::QstBatch tagBatch()
 			   QueryOn("tag_info.tag_id = t.id"));
 	b.where("name", QstPlaceholder());
 	b.orderBy("priority");
-	b.orderBy("tag_info.tag_cnt");
-
+	b.orderBy("tag_info.tag_cnt DESC");
 	b.setModelColumn("info_tag");
-
 	return b;
+}
+
+Qst::QstBatch linkedTagsBatch(const QStringList &tagList)
+{
+	QueryBatch b = QueryBatch(QuerySelect, "linked tags batch");
+	b.from("tagged_note tn2");
+	b.innerJoin("tag t2", QueryWhere("t2.id = tn2.tag_id"));
+	b.where("t2.name <> 'All'");
+	b.groupBy("t2.id, t2.name");
+	b.orderBy("count(t2.id) DESC");
+
+	QString includeClause  = "note_id IN (SELECT tn1.note_id FROM tagged_note tn1 INNER JOIN tag t ON t.id = tn1.tag_id";
+	QString excludeClause = "";
+	QString tag;
+	for (int i = 0; i < tagList.count(); ++i)
+	{
+		tag = "'" + tagList[i] + "'";
+
+		if (i == 0)
+		{
+			excludeClause += " t2.name NOT LIKE " + tag;
+			includeClause += " WHERE t.name LIKE " + tag;
+		}
+		else
+		{
+			excludeClause += " AND t2.name NOT LIKE " + tag;
+			includeClause += " OR t.name LIKE "   + tag;
+		}
+	}
+
+	includeClause += ") ";
+	b.where(includeClause);
+	b.where(excludeClause);
+
+	QstBatch batch;
+	batch.setQueryBatch(b);
+	batch.select(QstField(RolePrimaryKey, "t2.id"));
+	batch.select(QstField("t2.name", FieldInvisible, "Tag name"));
+	batch.select("info_tag",
+				 "name || ' (' || count(t2.id) || ')'",
+				 "Tag"); // Column title
+	batch.setModelColumn("info_tag");
+	return batch;
 }

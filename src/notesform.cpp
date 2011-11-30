@@ -17,9 +17,10 @@ NotesForm::NotesForm(QWidget *parent) :
 
 	ui->tv_Notes->setItemDelegate(&_noteItemDelegate);
 
-	_tagHandler.setQuery(tagBatch());
-	_tagHandler.setModel(&_tagModel);
 	_tagHandler.setListView(ui->lv_Tags);
+	_tagHandler.setViewSorting(ui->lv_Tags, true);
+	_tagHandler.setModel(&_tagModel);
+	_tagHandler.reload();
 
 	_noteHandler.setQuery(noteBatch());
 	_noteHandler.setModel(&_noteModel);
@@ -39,19 +40,17 @@ void NotesForm::loadAll()
 
 void NotesForm::loadTags()
 {
+	_setFilteringQuery();
 	_tagHandler.reload();
 
 	QObject::connect(ui->lv_Tags->selectionModel(),
-					 SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+					 SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
 					 this, SLOT(loadNotes()));
 }
 
 void NotesForm::loadNotes()
 {
 	_noteHandler.updatePlaceholder("selected_tags", _tagHandler.viewSelectedKeys());
-	_noteHandler.updatePlaceholder("simple_text", QstValue(ui->le_QuickFilter->text(),
-														   Qst::Like,
-														   Qst::LeftRightPercents));
 	_noteHandler.reload();
 }
 
@@ -61,29 +60,23 @@ void NotesForm::reset()
 	ui->le_QuickFilter->setFocus();
 }
 
-Qst::QstVariantListMap NotesForm::_getFilters(const QString &filterString)
+StringListMap NotesForm::_getFilters(const QString &filterString)
 {
-	Qst::QstVariantListMap map;
-	if (filterString.contains("|"))
-	{
-		QStringList l = filterString.split("|", QString::SkipEmptyParts);
-
-		foreach (QString s, l)
-		{
-			QString simple = s.simplified();
-			QString prefix = simple.left(2);
-			QString filter = simple.right(simple.length() - 2).simplified();
-
-			if (prefix == "n:" || prefix == "t:" || prefix == "d:")
-			{
-				if (!filter.isEmpty()) map[prefix].append(filter);
-			}
-			else if (!simple.isEmpty()) map["n:"].append(simple);
-		}
-	}
-	else
-		if (!filterString.isEmpty())
-			map["n:"].append(filterString.simplified());
+	StringListMap map;
+	QStringList splited = filterString.split(" ", QString::SkipEmptyParts);
+	foreach(QString tag, splited)
+		map["t:"].append(tag.simplified());
 	return map;
+}
+
+void NotesForm::_setFilteringQuery()
+{
+	StringListMap listMap = _getFilters(ui->le_QuickFilter->text());
+	if (!listMap.contains("t:") || listMap["t:"].isEmpty())
+	{
+		_tagHandler.setQuery(tagBatch());
+		return;
+	}
+	_tagHandler.setQuery(linkedTagsBatch(listMap["t:"]));
 }
 

@@ -6,10 +6,9 @@
 #include "handlers/taghandler.h"
 #include "handlers/notehandler.h"
 
-#include "notesmodel.h"
 #include "noteitemdelegate.h"
+#include "quickfilterparser.h"
 
-typedef QMap<QString, QStringList> StringListMap;
 
 namespace Ui {
     class NotesForm;
@@ -28,7 +27,6 @@ public slots:
 	void loadAll();
 	void loadTags();
 	void loadNotes();
-
 	void reset();
 
 private:
@@ -40,12 +38,12 @@ private:
 	Qst::QstPlainQueryModel _tagModel;
 
 	NoteHandler             _noteHandler;
-//	Qst::QstPlainQueryModel _noteModel;
-	NotesModel  _noteModel;
+	Qst::QstPlainQueryModel _noteModel;
 
 	NoteItemDelegate _noteItemDelegate;
 
-	Qst::QstVariantListMap _getFilters(const QString &filterString);
+	StringListMap _getFilters(const QString &filterString);
+	void _setFilteringQuery();
 };
 
 #endif // NOTESFORM_H

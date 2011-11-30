@@ -13,6 +13,7 @@ public:
 };
 
 Qst::QstBatch tagBatch();
+Qst::QstBatch linkedTagsBatch(const QStringList &tagList);
 
 
 #endif // TAGHANDLER_H

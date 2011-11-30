@@ -1,8 +1,11 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
 
-#include <QDebug>
 #include <QTextCodec>
+
+#include <QtDebug>
+#include <QFile>
+#include <QTextStream>
 
 #include "settings/settingsmanager.h"
 #include "settings/settingsdialog.h"
@@ -12,18 +15,25 @@
 #include "handlers/taghandler.h"
 
 
+#define FILE_LOG
+
 using namespace Qst;
 
 void createTables();
 void createPredefinedRows();
 bool checkIsFirstRun(SettingsManager *sm);
 SettingsMap firstRunSettings();
+void customMessageHandler(QtMsgType type, const char *msg);
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	a.addLibraryPath(a.applicationDirPath() + "/plugins");
 	QApplication::setQuitOnLastWindowClosed(false);
+
+#ifdef FILE_LOG
+	qInstallMsgHandler(customMessageHandler);
+#endif
 
 	SqLiteBuilder builder;
 	QstAbstractModelHandler::setQueryBuilder(&builder);
@@ -81,4 +91,20 @@ SettingsMap firstRunSettings()
 	dlg.showWelcomeString();
 	dlg.exec();
 	return dlg.settings();
+}
+
+void customMessageHandler(QtMsgType type, const char *msg)
+{
+	QString txt;
+	switch (type) {
+	case QtDebugMsg:    txt = QString("\nDebug: %1").arg(msg);    break;
+	case QtWarningMsg:  txt = QString("\nWarning: %1").arg(msg);  break;
+	case QtCriticalMsg: txt = QString("\nCritical: %1").arg(msg); break;
+	case QtFatalMsg:    txt = QString("\nFatal: %1").arg(msg);    break;
+	}
+
+	QFile outFile(QApplication::applicationDirPath() +  "/debuglog.txt");
+	outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+	QTextStream ts(&outFile);
+	ts << txt << endl;
 }

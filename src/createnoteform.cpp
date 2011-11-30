@@ -62,6 +62,8 @@ CreateNoteForm::CreateNoteForm(QWidget *parent) :
 	QObject::connect(_textColorCombobox, SIGNAL(activated(int)),
 					 this, SLOT(setForegroundColor(int)));
 
+	QObject::connect(this, SIGNAL(noteCreated()), this, SLOT(loadTags()));
+
 	_tagHandler.setQuery(tagBatch());
 	_tagHandler.setModel(&_tagModel);
 	_tagHandler.setTableView(ui->tv_Tags);
@@ -89,19 +91,19 @@ void CreateNoteForm::setNewNoteTextTemplate(const QString &noteTextTemplate)
 	_newNoteTextTemplate = noteTextTemplate;
 }
 
-void CreateNoteForm::loadTags()
-{
-	_tagHandler.reload();
-	QObject::connect(ui->tv_Tags->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-					 this, SLOT(updateEnteredSelectedTags(QItemSelection,QItemSelection)));
-}
-
 void CreateNoteForm::setSettings(const SettingsMap &settings)
 {
 	_changeFontSizeStep = settings[S_CHANGE_FONT_SIZE_STEP].toInt();
 	_defaultColorTheme  = settings[S_DEFAULT_COLOR_THEME].toString();
 	setNewNoteTextTemplate(_loadFile(settings[S_NEW_NOTE_TEXT_TEMPLATE].toString()));
 	setNoteShowingTemplate(_loadFile(settings[S_NOTE_SHOWING_TEMPLATE].toString()));
+}
+
+void CreateNoteForm::loadTags()
+{
+	_tagHandler.reload();
+	QObject::connect(ui->tv_Tags->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+					 this, SLOT(updateEnteredSelectedTags(QItemSelection,QItemSelection)));
 }
 
 void CreateNoteForm::reset()
@@ -112,6 +114,7 @@ void CreateNoteForm::reset()
 	_enteredSelectedTags.append("Untagged");
 	_updateTagsLineEdit(_enteredSelectedTags);
 	ui->te_NoteHtmlText->setHtml(_newNoteTextTemplate);
+	ui->le_Title->setText("");
 	ui->le_Title->setFocus();
 }
 

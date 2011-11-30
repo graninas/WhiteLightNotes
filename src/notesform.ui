@@ -197,7 +197,7 @@
    <sender>le_QuickFilter</sender>
    <signal>textChanged(QString)</signal>
    <receiver>NotesForm</receiver>
-   <slot>loadNotes()</slot>
+   <slot>loadTags()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>327</x>
@@ -211,6 +211,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>loadNotes()</slot>
+  <slot>loadTags()</slot>
  </slots>
 </ui>
