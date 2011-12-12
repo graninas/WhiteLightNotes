@@ -5,6 +5,9 @@
 #include <QDebug>
 
 #include "settings/settingsdialog.h"
+#include "aboutdialog.h"
+
+#include "handlers/taggednotehandler.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,15 +16,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
 	_notesForm      = new NotesForm     (this);
-	_createNoteForm = new CreateNoteForm(this);
+	_editNoteForm = new EditNoteForm(this);
 	Q_ASSERT(_notesForm      != NULL);
-	Q_ASSERT(_createNoteForm != NULL);
+	Q_ASSERT(_editNoteForm != NULL);
 
-	_notesForm     ->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
-	_createNoteForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
+	_notesForm   ->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
+	_editNoteForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
 
-	QObject::connect(_createNoteForm, SIGNAL(noteCreated()),
-					 _notesForm, SLOT(loadAll()));
+	QObject::connect(_editNoteForm, SIGNAL(noteCreated()),
+					 _notesForm,      SLOT(loadAll()));
 
 	_trayIconContextMenu.addAction(ui->action_NewNote);
 	_trayIconContextMenu.addAction(ui->action_Notes);
@@ -36,20 +39,23 @@ MainWindow::MainWindow(QWidget *parent) :
 					 this,   SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
 
 	QObject::connect(ui->action_Exit,     SIGNAL(triggered()), this, SLOT(closeApplication()));
-	QObject::connect(ui->action_NewNote,  SIGNAL(triggered()), this, SLOT(createNote()));
+	QObject::connect(ui->action_NewNote,  SIGNAL(triggered()), this, SLOT(newNote()));
 	QObject::connect(ui->action_Notes,    SIGNAL(triggered()), this, SLOT(notesFormShowChange()));
 	QObject::connect(ui->action_Settings, SIGNAL(triggered()), this, SLOT(showSettingsDialog()));
+	QObject::connect(ui->action_About,    SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 
 	_notesHotkey     .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
-	_CreateNoteHotkey.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
+	_createNoteHotkey.setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
 	_closeAppHotkey  .setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
-	_CreateNoteHotkey.setEnabled(true);
+	_createNoteHotkey.setEnabled(true);
 	_notesHotkey     .setEnabled(true);
 	_closeAppHotkey  .setEnabled(true);
 
 	QObject::connect(&_notesHotkey,      SIGNAL(activated()), this, SLOT(notesFormShowChange()));
-	QObject::connect(&_CreateNoteHotkey, SIGNAL(activated()), this, SLOT(createNoteFormShowChange()));
+	QObject::connect(&_createNoteHotkey, SIGNAL(activated()), this, SLOT(editNoteFormShowChange()));
 	QObject::connect(&_closeAppHotkey,   SIGNAL(activated()), this, SLOT(closeApplication()));
+
+	QObject::connect(_editNoteForm, SIGNAL(finishNote(Note)), this, SLOT(finishNote(Note)));
 }
 
 MainWindow::~MainWindow()
@@ -59,7 +65,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::setSettings(const SettingsMap &settings)
 {
-	_createNoteForm->setSettings(settings);
+	_editNoteForm->setSettings(settings);
 }
 
 void MainWindow::showTrayIcon()
@@ -70,32 +76,31 @@ void MainWindow::showTrayIcon()
 void MainWindow::notesFormShowChange()
 {
 	Q_ASSERT(_notesForm != NULL);
-
 	if (_notesForm->isVisible())
 		_notesForm->close();
 	else
 	{
 		_notesForm->activateWindow();
-		_notesForm->reset();
 		_notesForm->show();
 	}
 }
 
-void MainWindow::createNoteFormShowChange()
+void MainWindow::editNoteFormShowChange()
 {
-	Q_ASSERT(_createNoteForm != NULL);
+	Q_ASSERT(_editNoteForm != NULL);
 
-	if (_createNoteForm->isVisible())
-		_createNoteForm->cancelCreation();
+	if (_editNoteForm->isVisible())
+		_editNoteForm->close();
 	else
-		createNote();
+		newNote();
 }
 
-void MainWindow::createNote()
+void MainWindow::newNote()
 {
-	_createNoteForm->activateWindow();
-	_createNoteForm->reset();
-	_createNoteForm->show();
+	_editNoteForm->setNote(Note());
+	_editNoteForm->activateWindow();
+	_editNoteForm->loadAll();
+	_editNoteForm->show();
 }
 
 void MainWindow::trayIconClicked(const QSystemTrayIcon::ActivationReason & reason)
@@ -112,9 +117,9 @@ void MainWindow::closeApplication()
 void MainWindow::loadAll()
 {
 	Q_ASSERT(_notesForm != NULL);
-	Q_ASSERT(_createNoteForm != NULL);
+	Q_ASSERT(_editNoteForm != NULL);
 	_notesForm->loadAll();
-	_createNoteForm->loadTags();
+	_editNoteForm->loadAll();
 }
 
 void MainWindow::showSettingsDialog()
@@ -126,3 +131,25 @@ void MainWindow::showSettingsDialog()
 	}
 }
 
+void MainWindow::showAboutDialog()
+{
+	AboutDialog dlg;
+	dlg.exec();
+}
+
+void MainWindow::finishNote(const Note &note)
+{
+	_editNoteForm->close();
+	Q_ASSERT(note.isValid());
+	QVariant noteID = note.noteID();
+	if (noteID.isNull())
+		noteID = NoteHandler::createNote(note.title(), note.htmlText(), note.simpleText(),
+										 note.date(),  note.theme(),    note.complexText());
+	else
+		NoteHandler::updateNote(note.noteID(),     note.title(), note.htmlText(),
+								note.simpleText(), note.date(),  note.theme(),
+								note.complexText());
+	Q_ASSERT(noteID.isValid());
+	TaggedNoteHandler::updateNoteTags(noteID, note.tagList());
+	_notesForm->loadAll();
+}

@@ -1,0 +1,4 @@
+This project contains some Fugue Icons.
+
+Fugue Icons are Copyright © Yusuke Kamiyamane. All rights reserved. Licensed under a Creative Commons Attribution 3.0 license (http://creativecommons.org/licenses/by/3.0/)
+Home page: http://p.yusukekamiyamane.com/

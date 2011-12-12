@@ -29,6 +29,7 @@ public slots:
 	void loadNotes();
 	void reset();
 
+
 private:
     Ui::NotesForm *ui;
 

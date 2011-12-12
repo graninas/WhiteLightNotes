@@ -151,6 +151,7 @@
      <addaction name="actionBlue"/>
      <addaction name="actionOrange"/>
     </widget>
+    <addaction name="actionEdit_note"/>
     <addaction name="menuNote_Color_Theme"/>
    </widget>
    <addaction name="menuFile"/>
@@ -183,6 +184,15 @@
     <string>Orange</string>
    </property>
   </action>
+  <action name="actionEdit_note">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/notebook--pencil.png</normaloff>:/icons/resources/notebook--pencil.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit note...</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>le_QuickFilter</tabstop>
@@ -212,5 +222,6 @@
  </connections>
  <slots>
   <slot>loadTags()</slot>
+  <slot>editNote()</slot>
  </slots>
 </ui>

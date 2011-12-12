@@ -4,7 +4,6 @@
 #include "noteitemdelegate.h"
 
 #include <QTextEdit>
-
 #include <QDebug>
 
 using namespace Qst;
@@ -18,7 +17,7 @@ NotesForm::NotesForm(QWidget *parent) :
 	ui->tv_Notes->setItemDelegate(&_noteItemDelegate);
 
 	_tagHandler.setListView(ui->lv_Tags);
-	_tagHandler.setViewSorting(ui->lv_Tags, true);
+	_tagHandler.setViewSorting(ui->lv_Tags, false);
 	_tagHandler.setModel(&_tagModel);
 	_tagHandler.reload();
 

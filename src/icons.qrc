@@ -45,5 +45,6 @@
         <file>resources/color-theme-blue.ico</file>
         <file>resources/color-theme-orange.ico</file>
         <file>resources/folder-open.png</file>
+        <file>resources/notebook--pencil.png</file>
     </qresource>
 </RCC>

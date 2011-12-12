@@ -8,7 +8,7 @@
 #include <QFile>
 
 #include "notesform.h"
-#include "createnoteform.h"
+#include "editnoteform.h"
 #include "notetheme.h"
 
 #include "settings/settings.h"
@@ -34,8 +34,8 @@ public slots:
 	void showTrayIcon();
 
 	void notesFormShowChange();
-	void createNoteFormShowChange();
-	void createNote();
+	void editNoteFormShowChange();
+	void newNote();
 
 	void trayIconClicked(const QSystemTrayIcon::ActivationReason & reason);
 	void closeApplication();
@@ -43,18 +43,21 @@ public slots:
 	void loadAll();
 
 	void showSettingsDialog();
+	void showAboutDialog();
+
+	void finishNote(const Note &note);
 
 private:
     Ui::MainWindow *ui;
 
-	NotesForm      *_notesForm;
-	CreateNoteForm *_createNoteForm;
+	NotesForm    *_notesForm;
+	EditNoteForm *_editNoteForm;
 
 	QSystemTrayIcon _trayIcon;
 	QMenu _trayIconContextMenu;
 
 	QxtGlobalShortcut _notesHotkey;
-	QxtGlobalShortcut _CreateNoteHotkey;
+	QxtGlobalShortcut _createNoteHotkey;
 	QxtGlobalShortcut _closeAppHotkey;
 };
 

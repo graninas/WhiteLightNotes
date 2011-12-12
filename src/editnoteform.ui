@@ -117,24 +117,10 @@ p, li { white-space: pre-wrap; }
         <property name="verticalSpacing">
          <number>3</number>
         </property>
-        <item row="2" column="2">
-         <widget class="QPushButton" name="pb_Ok">
-          <property name="text">
-           <string>OK</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1" colspan="2">
          <widget class="QLineEdit" name="le_Tags">
           <property name="frame">
            <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Finish: Ctrl + Enter</string>
           </property>
          </widget>
         </item>
@@ -145,17 +131,24 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QPushButton" name="pb_OkAndNew">
+        <item row="2" column="2">
+         <widget class="QPushButton" name="pb_Cancel">
           <property name="text">
-           <string>OK and New</string>
+           <string>Cancel</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QPushButton" name="pb_Ok">
+          <property name="text">
+           <string>OK</string>
           </property>
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QPushButton" name="pb_Cancel">
+         <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Cancel</string>
+           <string>Finish: Ctrl + Enter</string>
           </property>
          </widget>
         </item>
@@ -303,28 +296,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>le_Title</tabstop>
   <tabstop>te_NoteHtmlText</tabstop>
   <tabstop>le_Tags</tabstop>
-  <tabstop>pb_Ok</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>te_NoteHtmlText</sender>
-   <signal>currentCharFormatChanged(QTextCharFormat)</signal>
-   <receiver>CreateNoteForm</receiver>
-   <slot>adjustButtons(QTextCharFormat)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>385</x>
-     <y>138</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>388</x>
-     <y>131</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>actionUndo</sender>
    <signal>triggered()</signal>
@@ -354,22 +330,6 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>194</x>
      <y>126</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionBold</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>CreateNoteForm</receiver>
-   <slot>setBold(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>194</x>
-     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -406,34 +366,34 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>pb_Ok</sender>
-   <signal>clicked()</signal>
+   <sender>le_Tags</sender>
+   <signal>editingFinished()</signal>
    <receiver>CreateNoteForm</receiver>
-   <slot>finishCreation()</slot>
+   <slot>adjustTags()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>494</x>
-     <y>306</y>
+     <x>483</x>
+     <y>272</y>
     </hint>
     <hint type="destinationlabel">
-     <x>499</x>
-     <y>264</y>
+     <x>524</x>
+     <y>272</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>pb_OkAndNew</sender>
+   <sender>pb_Ok</sender>
    <signal>clicked()</signal>
    <receiver>CreateNoteForm</receiver>
-   <slot>finishAndNew()</slot>
+   <slot>finish()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>371</x>
-     <y>306</y>
+     <x>319</x>
+     <y>292</y>
     </hint>
     <hint type="destinationlabel">
-     <x>187</x>
-     <y>311</y>
+     <x>320</x>
+     <y>333</y>
     </hint>
    </hints>
   </connection>
@@ -441,47 +401,15 @@ p, li { white-space: pre-wrap; }
    <sender>pb_Cancel</sender>
    <signal>clicked()</signal>
    <receiver>CreateNoteForm</receiver>
-   <slot>cancelCreation()</slot>
+   <slot>cancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>195</x>
-     <y>306</y>
+     <x>427</x>
+     <y>296</y>
     </hint>
     <hint type="destinationlabel">
-     <x>64</x>
-     <y>311</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionIncFontSize</sender>
-   <signal>triggered()</signal>
-   <receiver>CreateNoteForm</receiver>
-   <slot>incFontSize()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>194</x>
-     <y>146</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionDecFontSize</sender>
-   <signal>triggered()</signal>
-   <receiver>CreateNoteForm</receiver>
-   <slot>decFontSize()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>194</x>
-     <y>146</y>
+     <x>426</x>
+     <y>328</y>
     </hint>
    </hints>
   </connection>
@@ -489,12 +417,12 @@ p, li { white-space: pre-wrap; }
  <slots>
   <slot>adjustButtons(QTextCharFormat)</slot>
   <slot>setBold(bool)</slot>
-  <slot>finishCreation()</slot>
-  <slot>finishAndNew()</slot>
-  <slot>cancelCreation()</slot>
   <slot>incFontSize()</slot>
   <slot>decFontSize()</slot>
   <slot>fontColorPopup()</slot>
   <slot>setHeader()</slot>
+  <slot>adjustTags()</slot>
+  <slot>finish()</slot>
+  <slot>cancel()</slot>
  </slots>
 </ui>

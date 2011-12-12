@@ -12,6 +12,8 @@ public:
 								 const QVariant &noteID);
 	static void deleteTaggedNotes(const QVariant &noteID);
 
+	static void updateNoteTags(const QVariant &noteID,
+							   const QStringList &tagList);
 };
 
 Qst::QstBatch taggedNoteBatch();

@@ -15,7 +15,7 @@
 #include "handlers/taghandler.h"
 
 
-#define FILE_LOG
+#undef FILE_LOG
 
 using namespace Qst;
 
