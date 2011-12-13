@@ -12,7 +12,8 @@ class QuickFilterParser
 public:
     QuickFilterParser();
 
-	StringListMap parse(const QString &filterString) const;
+	static StringListMap parse(const QString &filterString,
+							   const QString &defaultSpecificator);
 };
 
 #endif // QUICKFILTERPARSER_H

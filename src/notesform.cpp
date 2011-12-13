@@ -6,6 +6,7 @@
 
 #include "noteitemdelegate.h"
 #include "handlers/taggednotehandler.h"
+#include "quickfilterparser.h"
 
 using namespace Qst;
 
@@ -94,24 +95,13 @@ void NotesForm::setOrangeColorTheme()
 	emit changeColorTheme(_note(vals), "orange");
 }
 
-StringListMap NotesForm::_getFilters(const QString &filterString)
-{
-	StringListMap map;
-	QStringList splited = filterString.split(" ", QString::SkipEmptyParts);
-	foreach(QString tag, splited)
-		map["t:"].append(tag.simplified());
-	return map;
-}
-
 void NotesForm::_setFilteringQuery()
 {
-	StringListMap listMap = _getFilters(ui->le_QuickFilter->text());
+	StringListMap listMap = QuickFilterParser::parse(ui->le_QuickFilter->text(), "t:");
 	if (!listMap.contains("t:") || listMap["t:"].isEmpty())
-	{
 		_tagHandler.setQuery(tagBatch());
-		return;
-	}
-	_tagHandler.setQuery(linkedTagsBatch(listMap["t:"]));
+	else
+		_tagHandler.setQuery(linkedTagsBatch(listMap["t:"]));
 }
 
 Note NotesForm::_note(const QVariantMap &vals) const

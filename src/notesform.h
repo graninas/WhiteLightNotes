@@ -7,8 +7,6 @@
 #include "handlers/notehandler.h"
 
 #include "noteitemdelegate.h"
-#include "quickfilterparser.h"
-
 #include "note.h"
 
 namespace Ui {
@@ -53,7 +51,6 @@ private:
 
 	NoteItemDelegate _noteItemDelegate;
 
-	StringListMap _getFilters(const QString &filterString);
 	void _setFilteringQuery();
 
 	Note _note(const QVariantMap &vals) const;

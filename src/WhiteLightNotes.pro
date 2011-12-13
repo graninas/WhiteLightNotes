@@ -28,7 +28,11 @@ SOURCES += main.cpp\
     quickfilterparser.cpp \
     aboutdialog.cpp \
     editnoteform.cpp \
-    note.cpp
+    note.cpp \
+    statemachine/state.cpp \
+    statemachine/event.cpp \
+    statemachine/transtable.cpp \
+    statemachine/transition.cpp
 
 HEADERS  += mainwindow.h \
     handlers/taghandler.h \
@@ -44,7 +48,11 @@ HEADERS  += mainwindow.h \
     quickfilterparser.h \
     aboutdialog.h \
     editnoteform.h \
-    note.h
+    note.h \
+    statemachine/state.h \
+    statemachine/event.h \
+    statemachine/transtable.h \
+    statemachine/transition.h
 
 FORMS    += mainwindow.ui \
     notesform.ui \
@@ -54,6 +62,14 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
 	icons.qrc
+
+
+
+
+
+
+
+
 
 
 

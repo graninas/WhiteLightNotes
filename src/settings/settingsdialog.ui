@@ -289,12 +289,12 @@
             <widget class="QComboBox" name="cb_DefaultColorTheme">
              <item>
               <property name="text">
-               <string>Red</string>
+               <string>Blue</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Blue</string>
+               <string>Red</string>
               </property>
              </item>
              <item>
@@ -394,6 +394,19 @@
                <string>Datetime</string>
               </property>
              </item>
+            </widget>
+           </item>
+           <item row="6" column="0" colspan="2">
+            <widget class="QCheckBox" name="cb_AllowEditDateWhenNewNote">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Allow edit date when  create new note</string>
+             </property>
             </widget>
            </item>
           </layout>
