@@ -17,11 +17,19 @@ private:
 	QString _htmlText;
 	QDateTime   _date;
 	QString     _complexText;
-	QStringList _tagList;
 	QString     _theme;
+	QStringList _tagList;
 
 public:
     Note();
+	Note(QVariant noteID,
+		 QString title,
+		 QString simpleText,
+		 QString htmlText,
+		 QDateTime date,
+		 QString complexText,
+		 QString theme,
+		 QStringList tagList);
 
 	QVariant noteID() const;
 
@@ -33,11 +41,6 @@ public:
 	QString   theme()       const;
 
 	void setTitle(const QString &title);
-	void create(const QString title,
-				const QString &plainText,
-				const QString &htmlText,
-				const QDateTime &date,
-				const QString &noteShowingTemplate);
 	void setDate(const QDateTime &date);
 
 	void appendTag(const QString &tag);
@@ -46,6 +49,17 @@ public:
 	void clearTags();
 	QStringList tagList() const;
 	QString tags(bool includeAllTag, bool includeUntaggedTag) const;
+
+	void create(const QString &title,
+				const QString &plainText,
+				const QString &htmlText,
+				const QDateTime &date,
+				const QString &noteShowingTemplate);
+	void update(const QString &title,
+				const QString &plainText,
+				const QString &htmlText,
+				const QDateTime &date,
+				const QString &noteShowingTemplate);
 
 	bool isValid() const;
 

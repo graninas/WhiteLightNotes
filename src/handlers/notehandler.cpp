@@ -8,50 +8,68 @@ NoteHandler::NoteHandler()
 {
 }
 
-QVariant NoteHandler::createNote(const QString &title,
-								 const QString &noteHtmlText,
-								 const QString &noteSimpleText,
+QVariant NoteHandler::createNote(const QString   &title,
+								 const QString   &noteHtmlText,
+								 const QString   &noteSimpleText,
 								 const QDateTime &date,
-								 const QString &theme,
-								 const QString &complexData)
+								 const QString   &theme,
+								 const QString   &complexData)
 {
-	QstBatch b1;
-	b1.insert("note", QStringList() << "title" << "html_text" << "simple_text" << "date" << "theme" << "complex_data");
-	b1.values(QVariantList() << title << noteHtmlText << noteSimpleText << date << theme << complexData);
-	NoteHandler::execute(b1);
+	QstBatch insB;
+	insB.insert("note", QStringList() << "title" << "html_text" << "simple_text" << "date" << "theme" << "complex_data");
+	insB.values(QVariantList() << title << noteHtmlText << noteSimpleText << date << theme << complexData);
+	NoteHandler::execute(insB);
 
-	QstBatch b2;
-	b2.select(QstField("id"));
-	b2.from("note");
-	b2.where("html_text", QstPlaceholder());         // For value escaping.
-	b2.where("date", date, Equal);
-	b2.updatePlaceholder("html_text", noteHtmlText); // For value escaping.
-	return NoteHandler::fieldValue(b2, "id");
+	QstBatch selB;
+	selB.select(QstField("id"));
+	selB.from("note");
+	selB.where("html_text", QstPlaceholder());         // For value escaping.
+	selB.where("date", date, Equal);
+	selB.updatePlaceholder("html_text", noteHtmlText); // For value escaping.
+	return NoteHandler::fieldValue(selB, "id");
 }
 
-QVariant NoteHandler::updateNote(const QVariant noteID,
-								 const QString &title,
-								 const QString &noteHtmlText,
-								 const QString &noteSimpleText,
+QVariant NoteHandler::updateNote(const QVariant  &noteID,
+								 const QString   &title,
+								 const QString   &noteHtmlText,
+								 const QString   &noteSimpleText,
 								 const QDateTime &date,
-								 const QString &theme,
-								 const QString &complexData)
+								 const QString   &theme,
+								 const QString   &complexData)
 {
-	Q_ASSERT(false);
-	return QVariant();
+	Q_ASSERT(!noteID.isNull());
+	QstBatch updB;
+	updB.update("note");
+	updB.set(QueryFieldList()
+			 << QueryField("title",        QstPlaceholder("title"))
+			 << QueryField("html_text",    QstPlaceholder("noteHtmlText"))
+			 << QueryField("simple_text",  QstPlaceholder("noteSimpleText"))
+			 << QueryField("date",         QstPlaceholder("date"))
+			 << QueryField("theme",        QstPlaceholder("theme"))
+			 << QueryField("complex_data", QstPlaceholder("complexData")));
+	updB.where("id", noteID, Equal);
+	updB.updatePlaceholder("title", title); // For value escaping.
+	updB.updatePlaceholder("noteHtmlText", noteHtmlText);
+	updB.updatePlaceholder("noteSimpleText", noteSimpleText);
+	updB.updatePlaceholder("date", date);
+	updB.updatePlaceholder("theme", theme);
+	updB.updatePlaceholder("complexData", complexData);
+	NoteHandler::execute(updB);
+	return noteID;
 }
 
 Qst::QstBatch noteBatch(const QstVariantListMap &filters)
 {
+	Q_UNUSED(filters);
 	QstBatch b;
 	b.select(QstField(RolePrimaryKey, "n.id", FieldInvisible));
+	b.select(QstField("n.title",              FieldInvisible, "Note Title"));
 	b.select(QstField("n.html_text",          FieldInvisible, "Note HTML"));
 	b.select(QstField("n.simple_text",        FieldInvisible, "Note Simple"));
 	b.select(QstField("n.complex_data",       FieldVisible,   "Note Complex"));
 	b.select(QstField("n.date",               FieldInvisible, "Note Datetime"));
 	b.select(QstField("n.theme",              FieldInvisible, "Note Theme"));
 	b.select(QstField("count(tn.tag_id) as tag_cnt", FieldInvisible));
-
 	b.from     ("note n");
 	b.innerJoin("tagged_note tn", QueryWhere    ("tn.note_id = n.id"));
 	b.innerJoin("tag t",          QueryWhere    ("t.id = tn.tag_id"));

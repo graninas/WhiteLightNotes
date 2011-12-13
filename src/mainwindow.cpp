@@ -23,9 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	_notesForm   ->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
 	_editNoteForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
 
-	QObject::connect(_editNoteForm, SIGNAL(noteCreated()),
-					 _notesForm,      SLOT(loadAll()));
-
 	_trayIconContextMenu.addAction(ui->action_NewNote);
 	_trayIconContextMenu.addAction(ui->action_Notes);
 	_trayIconContextMenu.addAction(ui->action_Settings);
@@ -55,7 +52,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&_createNoteHotkey, SIGNAL(activated()), this, SLOT(editNoteFormShowChange()));
 	QObject::connect(&_closeAppHotkey,   SIGNAL(activated()), this, SLOT(closeApplication()));
 
-	QObject::connect(_editNoteForm, SIGNAL(finishNote(Note)), this, SLOT(finishNote(Note)));
+	QObject::connect(_editNoteForm, SIGNAL(finishNote(Note)),    this, SLOT(finishNote(Note)));
+	QObject::connect(_editNoteForm, SIGNAL(cancelNoteEditing()), this, SLOT(cancelEditing()));
+	QObject::connect(_notesForm,    SIGNAL(editNote  (Note)),    this, SLOT(editNote  (Note)));
 }
 
 MainWindow::~MainWindow()
@@ -103,6 +102,14 @@ void MainWindow::newNote()
 	_editNoteForm->show();
 }
 
+void MainWindow::editNote(const Note &note)
+{
+	_editNoteForm->setNote(note);
+	_editNoteForm->activateWindow();
+	_editNoteForm->loadAll();
+	_editNoteForm->show();
+}
+
 void MainWindow::trayIconClicked(const QSystemTrayIcon::ActivationReason & reason)
 {
 	if (reason == QSystemTrayIcon::Trigger)
@@ -144,12 +151,19 @@ void MainWindow::finishNote(const Note &note)
 	QVariant noteID = note.noteID();
 	if (noteID.isNull())
 		noteID = NoteHandler::createNote(note.title(), note.htmlText(), note.simpleText(),
-										 note.date(),  note.theme(),    note.complexText());
+										 QDateTime::currentDateTime(),  note.theme(),
+										 note.complexText());
 	else
 		NoteHandler::updateNote(note.noteID(),     note.title(), note.htmlText(),
 								note.simpleText(), note.date(),  note.theme(),
 								note.complexText());
 	Q_ASSERT(noteID.isValid());
 	TaggedNoteHandler::updateNoteTags(noteID, note.tagList());
-	_notesForm->loadAll();
+	_notesForm   ->loadAll();
+	_editNoteForm->loadAll();
+}
+
+void MainWindow::cancelEditing()
+{
+	_editNoteForm->close();
 }

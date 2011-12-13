@@ -3,11 +3,34 @@
 #include "notetheme.h"
 #include "qst/qstglobal.h"
 
+#include <QDebug>
+
 Note::Note()
 	:
 	  _theme("undefined")
 {
 	clearTags();
+}
+
+Note::Note(QVariant noteID,
+		   QString title,
+		   QString simpleText,
+		   QString htmlText,
+		   QDateTime date,
+		   QString complexText,
+		   QString theme,
+		   QStringList tagList)
+	:
+	  _noteID(noteID),
+	  _title(title),
+	  _simpleText(simpleText),
+	  _htmlText(htmlText),
+	  _date(date),
+	  _complexText(complexText),
+	  _theme(theme),
+	  _tagList(tagList)
+{
+
 }
 
 QVariant Note::noteID() const
@@ -48,32 +71,6 @@ QString Note::theme() const
 void Note::setTitle(const QString &title)
 {
 	_title = title;
-}
-
-void Note::create(const QString title,
-				  const QString &plainText,
-				  const QString &htmlText,
-				  const QDateTime &date,
-				  const QString &noteShowingTemplate)
-{
-	QString onlyHtmlText = _cutHtmlHeaders(htmlText);
-	QString strDateTime  = _date.toString(Qst::DEFAULT_DATE_TIME_FORMAT);
-	QString newTheme     = (_theme == "undefined") ? "blue" : _theme;
-	NoteTheme noteTheme;
-	_complexText = noteTheme.colorize(noteShowingTemplate,
-									  noteTheme.supportedTokens(),
-									  _theme,
-									  newTheme,
-									  false,
-									  false);
-	_complexText.replace("%title%",    _title);
-	_complexText.replace("%datetime%", strDateTime);
-	_complexText.replace("%note%",     onlyHtmlText);
-	_complexText.replace("%tags%",     tags(true, true));
-	_title = title;
-	_simpleText = plainText;
-	_htmlText = htmlText;
-	_date = date;
 }
 
 void Note::setDate(const QDateTime &date)
@@ -141,8 +138,62 @@ QString Note::tags(bool includeAllTag, bool includeUntaggedTag) const
 	return res;
 }
 
+void Note::create(const QString &title,
+				  const QString &plainText,
+				  const QString &htmlText,
+				  const QDateTime &date,
+				  const QString &noteShowingTemplate)
+{
+	Q_ASSERT(date.isValid());
+	_title = title;
+	_simpleText = plainText;
+	_htmlText = htmlText;
+	_date = date;
+	_theme = "blue";
+	QString onlyHtmlText = _cutHtmlHeaders(htmlText);
+	QString strDateTime  = date.toString(Qst::DEFAULT_DATE_TIME_FORMAT);
+	NoteTheme noteTheme;
+	_complexText = noteTheme.colorize(noteShowingTemplate,
+									  noteTheme.supportedTokens(),
+									  "undefined",  _theme,
+									  false, false);
+	_complexText.replace("%title%",    title);
+	_complexText.replace("%datetime%", strDateTime);
+	_complexText.replace("%note%",     onlyHtmlText);
+	_complexText.replace("%tags%",     tags(true, true));
+}
+
+void Note::update(const QString &title,
+				  const QString &plainText,
+				  const QString &htmlText,
+				  const QDateTime &date,
+				  const QString &noteShowingTemplate)
+{
+	Q_ASSERT(_date.isValid());
+	_title = title;
+	_simpleText = plainText;
+	_htmlText = htmlText;
+	_date = date;
+	QString onlyHtmlText = _cutHtmlHeaders(htmlText);
+	QString strDateTime  = date.toString(Qst::DEFAULT_DATE_TIME_FORMAT);
+	NoteTheme noteTheme;
+	_complexText = noteTheme.colorize(noteShowingTemplate,
+									  noteTheme.supportedTokens(),
+									  "undefined", _theme,
+									  false, false);
+	_complexText.replace("%title%",    title);
+	_complexText.replace("%datetime%", strDateTime);
+	_complexText.replace("%note%",     onlyHtmlText);
+	_complexText.replace("%tags%",     tags(true, true));
+}
+
 bool Note::isValid() const
 {
+	qDebug() << _simpleText;
+	qDebug() << _tagList;
+	qDebug() << _date;
+	qDebug() << _complexText;
+
 	return !_simpleText.isEmpty() &&
 		   !_tagList.isEmpty() &&
 		   _date.isValid() &&

@@ -9,6 +9,8 @@
 #include "noteitemdelegate.h"
 #include "quickfilterparser.h"
 
+#include "note.h"
+
 
 namespace Ui {
     class NotesForm;
@@ -27,8 +29,12 @@ public slots:
 	void loadAll();
 	void loadTags();
 	void loadNotes();
-	void reset();
 
+	void editNote();
+
+signals:
+
+	void editNote(const Note &note);
 
 private:
     Ui::NotesForm *ui;

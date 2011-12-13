@@ -11,11 +11,10 @@ public:
 	static void createTaggedNote(const QVariant &tagID,
 								 const QVariant &noteID);
 	static void deleteTaggedNotes(const QVariant &noteID);
-
 	static void updateNoteTags(const QVariant &noteID,
 							   const QStringList &tagList);
-};
+	static QStringList tagList(const QVariant &noteID);
 
-Qst::QstBatch taggedNoteBatch();
+};
 
 #endif // TAGGEDNOTEHANDLER_H

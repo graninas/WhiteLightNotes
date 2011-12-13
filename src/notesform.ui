@@ -219,6 +219,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tv_Notes</sender>
+   <signal>doubleClicked(QModelIndex)</signal>
+   <receiver>NotesForm</receiver>
+   <slot>editNote()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>441</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>573</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>loadTags()</slot>

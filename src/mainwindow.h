@@ -36,6 +36,7 @@ public slots:
 	void notesFormShowChange();
 	void editNoteFormShowChange();
 	void newNote();
+	void editNote(const Note &note);
 
 	void trayIconClicked(const QSystemTrayIcon::ActivationReason & reason);
 	void closeApplication();
@@ -46,6 +47,7 @@ public slots:
 	void showAboutDialog();
 
 	void finishNote(const Note &note);
+	void cancelEditing();
 
 private:
     Ui::MainWindow *ui;

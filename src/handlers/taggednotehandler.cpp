@@ -45,12 +45,21 @@ void TaggedNoteHandler::updateNoteTags(const QVariant    &noteID,
 	}
 }
 
-Qst::QstBatch taggedNoteBatch()
+QStringList TaggedNoteHandler::tagList(const QVariant &noteID)
 {
-	QstBatch batch;
-	batch << "tagged_note"
-		  << QstField(RolePrimaryKey, "id")
-		  << QstField("tag_id")
-		  << QstField("note_id");
-	return batch;
+	QstBatch selB;
+	selB.select("t.name");
+	selB.from("tagged_note tn");
+	selB.innerJoin("tag t", QueryWhere("t.id = tn.tag_id"));
+	selB.where("tn.note_id", noteID, Equal);
+	QstPlainQueryModel model;
+	TaggedNoteHandler th;
+	th.setModel(&model);
+	th.setQuery(selB);
+	th.reload();
+	QStringList l;
+	foreach(QVariant v, th.columnValuesList("name"))
+		l.append(v.toString());
+	return l;
 }
+

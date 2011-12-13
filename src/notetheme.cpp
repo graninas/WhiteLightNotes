@@ -43,6 +43,8 @@ QString NoteTheme::colorize(const QString &htmlTemplate,
 {
 	Q_ASSERT(!_themeColorsMap.isEmpty());
 
+	qDebug() << "\n\n\n" << htmlTemplate;
+
 	QString oldSel = "";
 	QString newSel = "";
 	if (oldSelectState) oldSel = "selected.";

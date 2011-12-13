@@ -73,20 +73,16 @@ EditNoteForm::~EditNoteForm()
 
 void EditNoteForm::setSettings(const SettingsMap &settings)
 {
-	_changeFontSizeStep = settings[S_CHANGE_FONT_SIZE_STEP].toInt();
-	_defaultColorTheme  = settings[S_DEFAULT_COLOR_THEME].toString();
-	_noteShowingTemplate = _loadFile(settings[S_NOTE_SHOWING_TEMPLATE].toString());
+	_changeFontSizeStep  = settings[S_CHANGE_FONT_SIZE_STEP].toInt();
+	_defaultColorTheme   = settings[S_DEFAULT_COLOR_THEME].toString();
+	_newNoteTextTemplate = _loadFile(settings[S_NEW_NOTE_TEXT_TEMPLATE].toString());
+	_noteShowingTemplate = _loadFile(settings[S_NOTE_SHOWING_TEMPLATE] .toString());
 }
 
 void EditNoteForm::setNote(const Note &note)
 {
 	_note = note;
-	adjustTags(_selectedTags, _deselectedTags);
-	if (_note.isValid())
-	{
-		ui->le_Title->setText(_note.title());
-		ui->te_NoteHtmlText->setHtml(_note.htmlText());
-	}
+	_setContents(_note);
 }
 
 void EditNoteForm::loadAll()
@@ -163,11 +159,18 @@ void EditNoteForm::adjustTags()
 
 void EditNoteForm::finish()
 {
-	_note.create(ui->le_Title->text(),
-				 ui->te_NoteHtmlText->toPlainText(),
-				 ui->te_NoteHtmlText->toHtml(),
-				 QDateTime::currentDateTime(),
-				 _noteShowingTemplate);
+	if (_note.noteID().isNull())
+		_note.create(ui->le_Title->text(),
+					 ui->te_NoteHtmlText->toPlainText(),
+					 ui->te_NoteHtmlText->toHtml(),
+					 QDateTime::currentDateTime(),
+					 _noteShowingTemplate);
+	else
+		_note.update(ui->le_Title->text(),
+					 ui->te_NoteHtmlText->toPlainText(),
+					 ui->te_NoteHtmlText->toHtml(),
+					 ui->dte_Date->dateTime(),
+					 _noteShowingTemplate);
 	emit finishNote(_note);
 }
 
@@ -197,6 +200,25 @@ void EditNoteForm::_adjustColorButtons(const QTextCharFormat &format)
 			_textColorCombobox->setCurrentIndex(key);
 			break;
 		}
+	}
+}
+
+void EditNoteForm::_setContents(const Note &note)
+{
+	if (note.noteID().isValid())
+	{
+		ui->le_Title->setText(note.title());
+		ui->te_NoteHtmlText->setHtml(note.htmlText());
+		ui->dte_Date->show();
+		ui->l_Date->show();
+		ui->dte_Date->setDateTime(note.date());
+	}
+	else
+	{
+		ui->le_Title->setText(QString());
+		ui->te_NoteHtmlText->setHtml(_newNoteTextTemplate);
+		ui->dte_Date->hide();
+		ui->l_Date->hide();
 	}
 }
 

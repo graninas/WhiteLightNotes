@@ -1,10 +1,11 @@
 #include "notesform.h"
 #include "ui_notesform.h"
 
-#include "noteitemdelegate.h"
-
 #include <QTextEdit>
 #include <QDebug>
+
+#include "noteitemdelegate.h"
+#include "handlers/taggednotehandler.h"
 
 using namespace Qst;
 
@@ -53,10 +54,21 @@ void NotesForm::loadNotes()
 	_noteHandler.reload();
 }
 
-void NotesForm::reset()
+void NotesForm::editNote()
 {
-	ui->le_QuickFilter->clear();
-	ui->le_QuickFilter->setFocus();
+	if (_noteHandler.viewKeyValue().isNull())
+		return;
+	QVariantMap vals = _noteHandler.viewFieldsValueMap();
+	Q_ASSERT(!vals["id"].isNull());
+	Note n = Note(vals["id"],
+				  vals["title"].toString(),
+				  vals["simple_text"].toString(),
+				  vals["html_text"].toString(),
+				  QDateTime::fromString(vals["date"].toString(), Qst::DEFAULT_DATE_TIME_FORMAT),
+				  vals["complex_data"].toString(),
+				  vals["theme"].toString(),
+				  TaggedNoteHandler::tagList(vals["id"]));
+	emit editNote(n);
 }
 
 StringListMap NotesForm::_getFilters(const QString &filterString)

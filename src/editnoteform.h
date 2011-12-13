@@ -74,6 +74,7 @@ private:
 	ColorMap _colorMap;
 	int      _changeFontSizeStep;
 	QString  _defaultColorTheme;
+	QString  _newNoteTextTemplate;
 	QString  _noteShowingTemplate;
 
 	Note _note;
@@ -86,6 +87,7 @@ private:
 
 	void _setShortcutsEnabled(bool enabled);
 	void _adjustColorButtons(const QTextCharFormat &format);
+	void _setContents(const Note &note);
 
 	QString _loadFile(const QString &fileName) const;
 };
