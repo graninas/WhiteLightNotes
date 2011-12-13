@@ -155,7 +155,7 @@ void Note::create(const QString &title,
 	NoteTheme noteTheme;
 	_complexText = noteTheme.colorize(noteShowingTemplate,
 									  noteTheme.supportedTokens(),
-									  "undefined",  _theme,
+							  "undefined",  _theme,
 									  false, false);
 	_complexText.replace("%title%",    title);
 	_complexText.replace("%datetime%", strDateTime);
@@ -187,13 +187,18 @@ void Note::update(const QString &title,
 	_complexText.replace("%tags%",     tags(true, true));
 }
 
+void Note::changeColorTheme(const QString &newTheme)
+{
+	NoteTheme noteTheme;
+	_complexText = noteTheme.colorize(_complexText,
+									  noteTheme.supportedTokens(),
+									  _theme, newTheme,
+									  false, false);
+	_theme = newTheme;
+}
+
 bool Note::isValid() const
 {
-	qDebug() << _simpleText;
-	qDebug() << _tagList;
-	qDebug() << _date;
-	qDebug() << _complexText;
-
 	return !_simpleText.isEmpty() &&
 		   !_tagList.isEmpty() &&
 		   _date.isValid() &&

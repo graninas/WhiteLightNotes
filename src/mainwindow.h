@@ -48,6 +48,7 @@ public slots:
 
 	void finishNote(const Note &note);
 	void cancelEditing();
+	void changeColorTheme(const Note &note, const QString &newTheme);
 
 private:
     Ui::MainWindow *ui;

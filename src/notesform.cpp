@@ -25,6 +25,10 @@ NotesForm::NotesForm(QWidget *parent) :
 	_noteHandler.setQuery(noteBatch());
 	_noteHandler.setModel(&_noteModel);
 	_noteHandler.setListView(ui->tv_Notes);
+
+	QObject::connect(ui->action_BlueTheme,   SIGNAL(triggered()), this, SLOT(setBlueColorTheme()));
+	QObject::connect(ui->action_RedTheme,    SIGNAL(triggered()), this, SLOT(setRedColorTheme()));
+	QObject::connect(ui->action_OrangeTheme, SIGNAL(triggered()), this, SLOT(setOrangeColorTheme()));
 }
 
 NotesForm::~NotesForm()
@@ -60,15 +64,34 @@ void NotesForm::editNote()
 		return;
 	QVariantMap vals = _noteHandler.viewFieldsValueMap();
 	Q_ASSERT(!vals["id"].isNull());
-	Note n = Note(vals["id"],
-				  vals["title"].toString(),
-				  vals["simple_text"].toString(),
-				  vals["html_text"].toString(),
-				  QDateTime::fromString(vals["date"].toString(), Qst::DEFAULT_DATE_TIME_FORMAT),
-				  vals["complex_data"].toString(),
-				  vals["theme"].toString(),
-				  TaggedNoteHandler::tagList(vals["id"]));
-	emit editNote(n);
+	emit editNote(_note(vals));
+}
+
+void NotesForm::setRedColorTheme()
+{
+	if (_noteHandler.viewKeyValue().isNull())
+		return;
+	QVariantMap vals = _noteHandler.viewFieldsValueMap();
+	Q_ASSERT(!vals["id"].isNull());
+	emit changeColorTheme(_note(vals), "red");
+}
+
+void NotesForm::setBlueColorTheme()
+{
+	if (_noteHandler.viewKeyValue().isNull())
+		return;
+	QVariantMap vals = _noteHandler.viewFieldsValueMap();
+	Q_ASSERT(!vals["id"].isNull());
+	emit changeColorTheme(_note(vals), "blue");
+}
+
+void NotesForm::setOrangeColorTheme()
+{
+	if (_noteHandler.viewKeyValue().isNull())
+		return;
+	QVariantMap vals = _noteHandler.viewFieldsValueMap();
+	Q_ASSERT(!vals["id"].isNull());
+	emit changeColorTheme(_note(vals), "orange");
 }
 
 StringListMap NotesForm::_getFilters(const QString &filterString)
@@ -91,3 +114,14 @@ void NotesForm::_setFilteringQuery()
 	_tagHandler.setQuery(linkedTagsBatch(listMap["t:"]));
 }
 
+Note NotesForm::_note(const QVariantMap &vals) const
+{
+	return  Note(vals["id"],
+				 vals["title"].toString(),
+				 vals["simple_text"].toString(),
+				 vals["html_text"].toString(),
+				 QDateTime::fromString(vals["date"].toString(), Qst::DEFAULT_DATE_TIME_FORMAT),
+				 vals["complex_data"].toString(),
+				 vals["theme"].toString(),
+				 TaggedNoteHandler::tagList(vals["id"]));
+}

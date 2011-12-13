@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(_editNoteForm, SIGNAL(finishNote(Note)),    this, SLOT(finishNote(Note)));
 	QObject::connect(_editNoteForm, SIGNAL(cancelNoteEditing()), this, SLOT(cancelEditing()));
 	QObject::connect(_notesForm,    SIGNAL(editNote  (Note)),    this, SLOT(editNote  (Note)));
+	QObject::connect(_notesForm,    SIGNAL(changeColorTheme(Note,QString)), this, SLOT(changeColorTheme(Note,QString)));
 }
 
 MainWindow::~MainWindow()
@@ -150,14 +151,16 @@ void MainWindow::finishNote(const Note &note)
 	Q_ASSERT(note.isValid());
 	QVariant noteID = note.noteID();
 	if (noteID.isNull())
+	{
 		noteID = NoteHandler::createNote(note.title(), note.htmlText(), note.simpleText(),
 										 QDateTime::currentDateTime(),  note.theme(),
 										 note.complexText());
+		Q_ASSERT(!noteID.isNull());
+	}
 	else
 		NoteHandler::updateNote(note.noteID(),     note.title(), note.htmlText(),
 								note.simpleText(), note.date(),  note.theme(),
 								note.complexText());
-	Q_ASSERT(noteID.isValid());
 	TaggedNoteHandler::updateNoteTags(noteID, note.tagList());
 	_notesForm   ->loadAll();
 	_editNoteForm->loadAll();
@@ -166,4 +169,15 @@ void MainWindow::finishNote(const Note &note)
 void MainWindow::cancelEditing()
 {
 	_editNoteForm->close();
+}
+
+void MainWindow::changeColorTheme(const Note &note, const QString &newTheme)
+{
+	Q_ASSERT(!note.noteID().isNull());
+	Note n = note;
+	n.changeColorTheme(newTheme);
+	NoteHandler::updateNote(n.noteID(),     n.title(), n.htmlText(),
+							n.simpleText(), n.date(),  n.theme(),
+							n.complexText());
+	_notesForm->loadNotes();
 }

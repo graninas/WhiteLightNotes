@@ -11,7 +11,6 @@
 
 #include "note.h"
 
-
 namespace Ui {
     class NotesForm;
 }
@@ -32,9 +31,14 @@ public slots:
 
 	void editNote();
 
+	void setRedColorTheme();
+	void setBlueColorTheme();
+	void setOrangeColorTheme();
+
 signals:
 
 	void editNote(const Note &note);
+	void changeColorTheme(const Note &note, const QString &newTheme);
 
 private:
     Ui::NotesForm *ui;
@@ -51,6 +55,8 @@ private:
 
 	StringListMap _getFilters(const QString &filterString);
 	void _setFilteringQuery();
+
+	Note _note(const QVariantMap &vals) const;
 };
 
 #endif // NOTESFORM_H

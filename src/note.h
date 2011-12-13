@@ -61,6 +61,8 @@ public:
 				const QDateTime &date,
 				const QString &noteShowingTemplate);
 
+	void changeColorTheme(const QString &newTheme);
+
 	bool isValid() const;
 
 private:

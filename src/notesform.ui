@@ -147,17 +147,17 @@
      <property name="title">
       <string>Note Color Theme</string>
      </property>
-     <addaction name="actionRed"/>
-     <addaction name="actionBlue"/>
-     <addaction name="actionOrange"/>
+     <addaction name="action_RedTheme"/>
+     <addaction name="action_BlueTheme"/>
+     <addaction name="action_OrangeTheme"/>
     </widget>
-    <addaction name="actionEdit_note"/>
+    <addaction name="action_EditNote"/>
     <addaction name="menuNote_Color_Theme"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
   </widget>
-  <action name="actionRed">
+  <action name="action_RedTheme">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/resources/color-theme-red.ico</normaloff>:/icons/resources/color-theme-red.ico</iconset>
@@ -166,7 +166,7 @@
     <string>Red</string>
    </property>
   </action>
-  <action name="actionBlue">
+  <action name="action_BlueTheme">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/resources/color-theme-blue.ico</normaloff>:/icons/resources/color-theme-blue.ico</iconset>
@@ -175,7 +175,7 @@
     <string>Blue</string>
    </property>
   </action>
-  <action name="actionOrange">
+  <action name="action_OrangeTheme">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/resources/color-theme-orange.ico</normaloff>:/icons/resources/color-theme-orange.ico</iconset>
@@ -184,7 +184,7 @@
     <string>Orange</string>
    </property>
   </action>
-  <action name="actionEdit_note">
+  <action name="action_EditNote">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/resources/notebook--pencil.png</normaloff>:/icons/resources/notebook--pencil.png</iconset>
