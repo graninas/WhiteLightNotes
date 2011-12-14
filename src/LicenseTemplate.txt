@@ -1,7 +1,7 @@
 /****************************************************************************
-** WhiteLight Notes 0.5
-** Copyright (C) JSC "Loctelecom" (Russian Federation, Chita), 2011
-** Contact: Granin A.S. (graninas@gmail.com)
+** WhiteLight Notes 0.9 rc1
+** Copyright (C)  Granin A.S. 2011
+** 
 **
 ** This file is part of the WhiteLight Notes project.
 **
