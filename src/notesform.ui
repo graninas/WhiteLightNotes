@@ -204,22 +204,6 @@
  </resources>
  <connections>
   <connection>
-   <sender>le_QuickFilter</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>NotesForm</receiver>
-   <slot>loadTags()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>327</x>
-     <y>35</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>412</x>
-     <y>35</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>tv_Notes</sender>
    <signal>doubleClicked(QModelIndex)</signal>
    <receiver>NotesForm</receiver>
@@ -232,6 +216,22 @@
     <hint type="destinationlabel">
      <x>573</x>
      <y>94</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tb_Clear</sender>
+   <signal>clicked()</signal>
+   <receiver>le_QuickFilter</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>473</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>431</x>
+     <y>36</y>
     </hint>
    </hints>
   </connection>

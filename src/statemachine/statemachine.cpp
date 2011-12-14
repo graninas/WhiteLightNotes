@@ -1,7 +1,5 @@
 #include "statemachine.h"
 
-#include <QDebug>
-
 StateMachine::StateMachine()
 {
 }

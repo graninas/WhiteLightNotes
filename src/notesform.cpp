@@ -23,13 +23,13 @@ NotesForm::NotesForm(QWidget *parent) :
 	_tagHandler.setModel(&_tagModel);
 	_tagHandler.reload();
 
-	_noteHandler.setQuery(noteBatch());
 	_noteHandler.setModel(&_noteModel);
 	_noteHandler.setListView(ui->tv_Notes);
 
 	QObject::connect(ui->action_BlueTheme,   SIGNAL(triggered()), this, SLOT(setBlueColorTheme()));
 	QObject::connect(ui->action_RedTheme,    SIGNAL(triggered()), this, SLOT(setRedColorTheme()));
 	QObject::connect(ui->action_OrangeTheme, SIGNAL(triggered()), this, SLOT(setOrangeColorTheme()));
+	QObject::connect(ui->le_QuickFilter,     SIGNAL(textChanged(QString)), this, SLOT(loadAll()));
 }
 
 NotesForm::~NotesForm()
@@ -39,15 +39,19 @@ NotesForm::~NotesForm()
 
 void NotesForm::loadAll()
 {
-	loadTags();
+	_quickFilterItems = QuickFilterParser::parse(ui->le_QuickFilter->text(), "t:");
+	loadTags ();
 	loadNotes();
 }
 
 void NotesForm::loadTags()
 {
-	_setFilteringQuery();
-	_tagHandler.reload();
+	if (!_quickFilterItems.contains("t:") || _quickFilterItems["t:"].isEmpty())
+		_tagHandler.setQuery(tagBatch());
+	else
+		_tagHandler.setQuery(linkedTagsBatch(_quickFilterItems["t:"]));
 
+	_tagHandler.reload();
 	QObject::connect(ui->lv_Tags->selectionModel(),
 					 SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
 					 this, SLOT(loadNotes()));
@@ -55,6 +59,7 @@ void NotesForm::loadTags()
 
 void NotesForm::loadNotes()
 {
+	_noteHandler.setQuery(noteBatch(_quickFilterItems));
 	_noteHandler.updatePlaceholder("selected_tags", _tagHandler.viewSelectedKeys());
 	_noteHandler.reload();
 }
@@ -93,15 +98,6 @@ void NotesForm::setOrangeColorTheme()
 	QVariantMap vals = _noteHandler.viewFieldsValueMap();
 	Q_ASSERT(!vals["id"].isNull());
 	emit changeColorTheme(_note(vals), "orange");
-}
-
-void NotesForm::_setFilteringQuery()
-{
-	StringListMap listMap = QuickFilterParser::parse(ui->le_QuickFilter->text(), "t:");
-	if (!listMap.contains("t:") || listMap["t:"].isEmpty())
-		_tagHandler.setQuery(tagBatch());
-	else
-		_tagHandler.setQuery(linkedTagsBatch(listMap["t:"]));
 }
 
 Note NotesForm::_note(const QVariantMap &vals) const

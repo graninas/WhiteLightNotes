@@ -2,6 +2,7 @@
 #define NOTEHANDLER_H
 
 #include "qst/qstabstractmodelhandler.h"
+#include "types.h"
 
 class NoteHandler : public Qst::QstAbstractModelHandler
 {
@@ -24,6 +25,8 @@ public:
 							   const QString   &complexData);
 };
 
-Qst::QstBatch noteBatch(const Qst::QstVariantListMap &filters = Qst::QstVariantListMap());
+Qst::QstBatch noteBatch(const StringListMap &filters);
+
+QString filterCondition(const QString &filterName, const QStringList &filterItems);
 
 #endif // NOTEHANDLER_H

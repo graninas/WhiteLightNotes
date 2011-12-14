@@ -51,7 +51,7 @@ private:
 
 	NoteItemDelegate _noteItemDelegate;
 
-	void _setFilteringQuery();
+	StringListMap _quickFilterItems;
 
 	Note _note(const QVariantMap &vals) const;
 };

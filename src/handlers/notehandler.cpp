@@ -58,9 +58,8 @@ QVariant NoteHandler::updateNote(const QVariant  &noteID,
 	return noteID;
 }
 
-Qst::QstBatch noteBatch(const QstVariantListMap &filters)
+Qst::QstBatch noteBatch(const StringListMap &filters)
 {
-	Q_UNUSED(filters);
 	QstBatch b;
 	b.select(QstField(RolePrimaryKey, "n.id", FieldInvisible));
 	b.select(QstField("n.title",              FieldInvisible, "Note Title"));
@@ -77,8 +76,27 @@ Qst::QstBatch noteBatch(const QstVariantListMap &filters)
 	b.groupBy  ("n.id, n.html_text, n.date");
 	b.orderBy  ("n.date");
 
+	QString noteCond  = filterCondition("n.simple_text", filters["n:"]);
+	QString dateCond  = filterCondition("n.date",        filters["d:"]);
+	QString colorCond = filterCondition("n.theme",       filters["c:"]);
+	if (!noteCond.isEmpty())   b.where(noteCond);
+	if (!dateCond.isEmpty())   b.where(dateCond);
+	if (!colorCond.isEmpty())  b.where(colorCond);
+
 	b.setModelColumn("complex_data");
 	return b;
+}
+
+QString filterCondition(const QString &filterName, const QStringList &filterItems)
+{
+	if (filterItems.isEmpty())
+		return QString();
+
+	QString res =  "(" + filterName + " LIKE '" + filterItems.first() + "')";
+	for (int i = 1; i < filterItems.count(); ++i)
+		res += " OR (" + filterName + " LIKE '" + filterItems[i] + "')";
+
+	return res;
 }
 
 

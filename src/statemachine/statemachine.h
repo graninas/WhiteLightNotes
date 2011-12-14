@@ -2,9 +2,7 @@
 #define STATEMACHINE_H
 
 #include "transtable.h"
-#include <QStringList>
-
-typedef QMap<QString, QStringList> StringListMap;
+#include "types.h"
 
 class StateMachine
 {

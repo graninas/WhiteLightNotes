@@ -2,6 +2,8 @@
 
 using namespace Qst;
 
+#include <QDebug>
+
 TagHandler::TagHandler()
 {
 }
@@ -57,19 +59,17 @@ Qst::QstBatch linkedTagsBatch(const QStringList &tagList)
 	for (int i = 0; i < tagList.count(); ++i)
 	{
 		tag = "'" + tagList[i] + "'";
-
 		if (i == 0)
 		{
-			excludeClause += " t2.name NOT LIKE " + tag;
+			excludeClause += " t2.name NOT LIKE "  + tag;
 			includeClause += " WHERE t.name LIKE " + tag;
 		}
 		else
 		{
 			excludeClause += " AND t2.name NOT LIKE " + tag;
-			includeClause += " OR t.name LIKE "   + tag;
+			includeClause += " OR t.name LIKE "       + tag;
 		}
 	}
-
 	includeClause += ") ";
 	b.where(includeClause);
 	b.where(excludeClause);
@@ -81,6 +81,7 @@ Qst::QstBatch linkedTagsBatch(const QStringList &tagList)
 	batch.select("info_tag",
 				 "name || ' (' || count(t2.id) || ')'",
 				 "Tag"); // Column title
+
 	batch.setModelColumn("info_tag");
 	return batch;
 }

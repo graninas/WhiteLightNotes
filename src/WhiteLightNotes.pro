@@ -54,7 +54,8 @@ HEADERS  += mainwindow.h \
     statemachine/event.h \
     statemachine/transtable.h \
     statemachine/transition.h \
-    statemachine/statemachine.h
+    statemachine/statemachine.h \
+    types.h
 
 FORMS    += mainwindow.ui \
     notesform.ui \
@@ -64,6 +65,7 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
 	icons.qrc
+
 
 
 

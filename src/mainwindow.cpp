@@ -171,7 +171,8 @@ void MainWindow::cancelEditing()
 	_editNoteForm->close();
 }
 
-void MainWindow::changeColorTheme(const Note &note, const QString &newTheme)
+void MainWindow::changeColorTheme(const Note &note,
+								  const QString &newTheme)
 {
 	Q_ASSERT(!note.noteID().isNull());
 	Note n = note;
@@ -179,5 +180,5 @@ void MainWindow::changeColorTheme(const Note &note, const QString &newTheme)
 	NoteHandler::updateNote(n.noteID(),     n.title(), n.htmlText(),
 							n.simpleText(), n.date(),  n.theme(),
 							n.complexText());
-	_notesForm->loadNotes();
+	loadAll();
 }

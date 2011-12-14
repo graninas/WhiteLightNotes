@@ -2,8 +2,6 @@
 
 #include "statemachine/transtable.h"
 
-#include <QDebug>
-
 typedef Transition T;
 
 TransTable table()
@@ -71,7 +69,6 @@ StringListMap QuickFilterParser::parse(const QString &filterString,
 	testM2["n:"].append("Samantha Carther");
 	testM2["n:"].append("and_More");
 	testM2["t:"].append("tag1");
-	qDebug() << m2;
 	Q_ASSERT(m2 == testM2);
 
 	return sm.process(filterString, State("Empty"), defaultSpecificator);
