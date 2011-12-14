@@ -6,40 +6,34 @@ StateMachine::StateMachine()
 {
 }
 
-StateMachine::StateMachine(const TransTable &table,
-						   const State &startState,
-						   const QString &defSpecificator)
+StateMachine::StateMachine(const TransTable &table)
 	:
-	  _table(table),
-	  _startState(startState),
-	  _defSpecificator(defSpecificator)
+	  _table(table)
 {
 }
 
-StringListMap StateMachine::process(const QString &str)
+StringListMap StateMachine::process(const QString &str,
+									const State &startState,
+									const QString &defSpecificator) const
 {
-	qDebug() << "\n\nStart state machine.";
-
-	Transition t = Transition(N, _startState);
+	Transition t = Transition(N, startState);
 	TransitionResult transRes;
 	for (int i = 0; i < str.count(); ++i)
 	{
 		t = _table.transition(t.state(), str[i]);
-		transRes = _getTransitionResult(transRes, t.action(), str[i]);
-		qDebug() << "Event char: " << str[i];
-		qDebug() << "Transition: (" +actionToString(t.action()) + ", " + t.state().name() + ")";
-		qDebug() << "Transition result: " << transRes.collected << ", " << transRes.filter;
+		transRes = _getTransitionResult(transRes, t.action(), str[i], defSpecificator);
 	}
 
 	t = _table.transition(t.state(), '\n');
-	transRes = _getTransitionResult(transRes, t.action(), '\n');
+	transRes = _getTransitionResult(transRes, t.action(), '\n', defSpecificator);
 	return transRes.resMap;
 }
 
 StateMachine::TransitionResult StateMachine::_getTransitionResult
 	(const TransitionResult &prevRes,
 	 const Action &action,
-	 const QChar &ch) const
+	 const QChar &ch,
+	 const QString &defSpecificator) const
 {
 	TransitionResult newResult = prevRes;
 	switch (action)
@@ -49,7 +43,7 @@ StateMachine::TransitionResult StateMachine::_getTransitionResult
 		if (!newResult.filter.isEmpty())
 			 newResult.resMap[newResult.filter].append(newResult.collected);
 		else
-			 newResult.resMap[_defSpecificator].append(newResult.collected);
+			 newResult.resMap[defSpecificator].append(newResult.collected);
 		newResult.collected = "";
 		newResult.filter = "";
 		break;

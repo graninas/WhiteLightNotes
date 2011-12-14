@@ -11,8 +11,6 @@ class StateMachine
 private:
 
 	TransTable _table;
-	State      _startState;
-	QString    _defSpecificator;
 
 	struct TransitionResult
 	{
@@ -23,17 +21,18 @@ private:
 
 public:
 	StateMachine();
-	StateMachine(const TransTable &table,
-				 const State &startState,
-				 const QString &defSpecificator);
+	StateMachine(const TransTable &table);
 
-	StringListMap process(const QString &str);
+	StringListMap process(const QString &str,
+						  const State &startState,
+						  const QString &defSpecificator) const;
 
 private:
 
 	TransitionResult _getTransitionResult(const TransitionResult &prevResult,
 										  const Action &action,
-										  const QChar &ch) const;
+										  const QChar &ch,
+										  const QString &defSpecificator) const;
 };
 
 #endif // STATEMACHINE_H
