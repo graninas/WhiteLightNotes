@@ -5,7 +5,7 @@
 #include <QString>
 #include <QStringList>
 
-typedef QMap<QString, QStringList> StringListMap;
+#include "statemachine/statemachine.h"
 
 class QuickFilterParser
 {

@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     statemachine/state.cpp \
     statemachine/event.cpp \
     statemachine/transtable.cpp \
-    statemachine/transition.cpp
+    statemachine/transition.cpp \
+    statemachine/statemachine.cpp
 
 HEADERS  += mainwindow.h \
     handlers/taghandler.h \
@@ -52,7 +53,8 @@ HEADERS  += mainwindow.h \
     statemachine/state.h \
     statemachine/event.h \
     statemachine/transtable.h \
-    statemachine/transition.h
+    statemachine/transition.h \
+    statemachine/statemachine.h
 
 FORMS    += mainwindow.ui \
     notesform.ui \
@@ -62,6 +64,8 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
 	icons.qrc
+
+
 
 
 

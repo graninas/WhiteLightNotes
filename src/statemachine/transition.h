@@ -7,11 +7,14 @@
 
 typedef enum
 {
-	C, // Collect
-	N, // No action
-	F, // Filter item
-	S  // Specificator item
+	N = 0, // No action
+	C = 1, // Collect
+	F = 2, // Filter item
+	S = 3, // Specificator item
+	A = 4  // Abort
 } Action;
+
+QString actionToString(const Action &a);
 
 class Transition
 {
@@ -22,6 +25,9 @@ private:
 public:
 	Transition();
 	Transition(const Action &action, const State &state);
+
+	State  state() const;
+	Action action() const;
 };
 
 typedef QList<Transition> TransitionList;
