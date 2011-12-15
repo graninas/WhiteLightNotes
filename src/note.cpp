@@ -166,7 +166,6 @@ void Note::create(const QString &title,
 				  const QDateTime &date,
 				  const QString &noteShowingTemplate)
 {
-	Q_ASSERT(date.isValid());
 	_title = title;
 	_simpleText = plainText;
 	_htmlText = htmlText;
@@ -177,7 +176,7 @@ void Note::create(const QString &title,
 	NoteTheme noteTheme;
 	_complexText = noteTheme.colorize(noteShowingTemplate,
 									  noteTheme.supportedTokens(),
-							  "undefined",  _theme,
+									  "undefined",  _theme,
 									  false, false);
 	_complexText.replace("%title%",    title);
 	_complexText.replace("%datetime%", strDateTime);
@@ -191,7 +190,6 @@ void Note::update(const QString &title,
 				  const QDateTime &date,
 				  const QString &noteShowingTemplate)
 {
-	Q_ASSERT(_date.isValid());
 	_title = title;
 	_simpleText = plainText;
 	_htmlText = htmlText;

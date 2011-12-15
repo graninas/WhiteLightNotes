@@ -58,6 +58,7 @@ private:
 	QStringList _capitalize(const QStringList &list) const;
 	QString _defaultColorTheme() const;
 	void _setColorThemeSettings(const SettingsMap &settings);
+	void _setDefaultFilteringBy(const SettingsMap &settings);
 };
 
 #endif // SETTINGSDIALOG_H

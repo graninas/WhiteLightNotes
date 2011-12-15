@@ -98,6 +98,7 @@ private:
 	QString  _defaultColorTheme;
 	QString  _newNoteTextTemplate;
 	QString  _noteShowingTemplate;
+	bool     _allowDatetimeEditing;
 
 	Note _note;
 

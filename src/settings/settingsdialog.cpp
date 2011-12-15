@@ -44,21 +44,30 @@ SettingsDialog::~SettingsDialog()
 SettingsMap SettingsDialog::settings() const
 {
 	SettingsMap map;
-	map[S_DEFAULT_COLOR_THEME]    = _defaultColorTheme();
 	map[S_DATABASE_FILE_NAME]     = ui->le_DatabaseFile->text();
-	map[S_CHANGE_FONT_SIZE_STEP]  = ui->sb_ChangeFontSizeStep->value();
 	map[S_NEW_NOTE_TEXT_TEMPLATE] = ui->le_NewNoteTextTemplate->text();
 	map[S_NOTE_SHOWING_TEMPLATE]  = ui->le_NoteShowingTemplate->text();
+
+	map[S_DEFAULT_COLOR_THEME]    = _defaultColorTheme();
+	map[S_CHANGE_FONT_SIZE_STEP]  = ui->sb_ChangeFontSizeStep->value();
+	map[S_DEFAULT_FILTERING_BY]   = ui->cb_DefaultFilteringBy->currentText();
+	map[S_ENABLE_NOTE_TITLES]     = ui->cb_EnableNoteTitles->isChecked();
+	map[S_ALLOW_DATE_EDITING_IN_NEW_NOTE] = ui->cb_AllowDateEditingInNewNote->isChecked();
 	return map;
 }
 
 void SettingsDialog::setSettings(const SettingsMap &settings)
 {
-	_setColorThemeSettings(settings);
 	ui->le_DatabaseFile->setText(settings[S_DATABASE_FILE_NAME].toString());
-	ui->sb_ChangeFontSizeStep->setValue(settings[S_CHANGE_FONT_SIZE_STEP].toInt());
 	ui->le_NewNoteTextTemplate->setText(settings[S_NEW_NOTE_TEXT_TEMPLATE].toString());
 	ui->le_NoteShowingTemplate->setText(settings[S_NOTE_SHOWING_TEMPLATE].toString());
+
+	_setColorThemeSettings(settings);
+	_setDefaultFilteringBy(settings);
+	ui->sb_ChangeFontSizeStep->setValue(settings[S_CHANGE_FONT_SIZE_STEP].toInt());
+	ui->cb_EnableNoteTitles->setChecked(settings[S_ENABLE_NOTE_TITLES].toBool());
+	ui->cb_AllowDateEditingInNewNote->setChecked(settings[S_ALLOW_DATE_EDITING_IN_NEW_NOTE].toBool());
+
 }
 
 void SettingsDialog::showWelcomeString()
@@ -71,10 +80,14 @@ SettingsMap SettingsDialog::defaultSettings()
 	QString appDirPath = QApplication::applicationDirPath();
 	SettingsMap map;
 	map[S_DATABASE_FILE_NAME]     = appDirPath + "/" + DEFAULT_DATABASE_FILE_NAME;
-	map[S_CHANGE_FONT_SIZE_STEP]  = 10;
-	map[S_DEFAULT_COLOR_THEME]    = "red";
 	map[S_NEW_NOTE_TEXT_TEMPLATE] = appDirPath + "/resources/NewNoteTextTemplate.html";
 	map[S_NOTE_SHOWING_TEMPLATE]  = appDirPath + "/resources/NoteShowingTemplate.html";
+
+	map[S_CHANGE_FONT_SIZE_STEP]  = 10;
+	map[S_DEFAULT_COLOR_THEME]    = "blue";
+	map[S_DEFAULT_FILTERING_BY]   = "Tags";
+	map[S_ENABLE_NOTE_TITLES]     = false;
+	map[S_ALLOW_DATE_EDITING_IN_NEW_NOTE] = false;
 
 	return map;
 }
@@ -117,15 +130,25 @@ QStringList SettingsDialog::_capitalize(const QStringList &list) const
 QString SettingsDialog::_defaultColorTheme() const
 {
 	QString colTxt = ui->cb_DefaultColorTheme->currentText();
-	return colTxt[0].toLower() + colTxt.mid(1);
+	return  colTxt[0].toLower() + colTxt.mid(1);
 }
 
 void SettingsDialog::_setColorThemeSettings(const SettingsMap &settings)
 {
 	NoteTheme theme;
+	ui->cb_DefaultColorTheme->clear();
 	ui->cb_DefaultColorTheme->addItems(_capitalize(theme.supportedColorThemes()));
 	QString defColorTheme = settings[S_DEFAULT_COLOR_THEME].toString();
 	int indexOfTheme = theme.supportedColorThemes().indexOf(defColorTheme);
 	if (indexOfTheme != -1) ui->cb_DefaultColorTheme->setCurrentIndex(indexOfTheme);
 	else                    ui->cb_DefaultColorTheme->setCurrentIndex(0);
+}
+
+void SettingsDialog::_setDefaultFilteringBy(const SettingsMap &settings)
+{
+	QStringList l;
+	l << "Tags" << "Note text" << "Datetime";
+	ui->cb_DefaultFilteringBy->clear();
+	ui->cb_DefaultFilteringBy->addItems(l);
+	ui->cb_DefaultFilteringBy->setCurrentIndex(l.indexOf(settings[S_DEFAULT_FILTERING_BY].toString()));
 }

@@ -140,6 +140,9 @@
            </item>
            <item row="1" column="1">
             <widget class="QComboBox" name="cb_Language">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <item>
               <property name="text">
                <string>English</string>
@@ -225,7 +228,7 @@
            <item row="4" column="0" colspan="2">
             <widget class="QCheckBox" name="cb_RunOnSystemStartup">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="font">
               <font>
@@ -306,6 +309,9 @@
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_11">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="font">
               <font>
                <weight>75</weight>
@@ -319,6 +325,9 @@
            </item>
            <item row="3" column="0">
             <widget class="QLabel" name="label_12">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="font">
               <font>
                <weight>75</weight>
@@ -332,6 +341,9 @@
            </item>
            <item row="4" column="0">
             <widget class="QLabel" name="label_13">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="font">
               <font>
                <weight>75</weight>
@@ -352,12 +364,15 @@
               </font>
              </property>
              <property name="text">
-              <string>When no specificator, filter by</string>
+              <string>Default filtering by</string>
              </property>
             </widget>
            </item>
            <item row="2" column="1">
             <widget class="QLineEdit" name="lineEdit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>t:</string>
              </property>
@@ -365,6 +380,9 @@
            </item>
            <item row="3" column="1">
             <widget class="QLineEdit" name="lineEdit_5">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>n:</string>
              </property>
@@ -372,21 +390,24 @@
            </item>
            <item row="4" column="1">
             <widget class="QLineEdit" name="lineEdit_6">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>d:</string>
              </property>
             </widget>
            </item>
            <item row="5" column="1">
-            <widget class="QComboBox" name="comboBox">
+            <widget class="QComboBox" name="cb_DefaultFilteringBy">
              <item>
               <property name="text">
-               <string>Note text</string>
+               <string>Tags</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Tags</string>
+               <string>Note text</string>
               </property>
              </item>
              <item>
@@ -396,8 +417,8 @@
              </item>
             </widget>
            </item>
-           <item row="6" column="0" colspan="2">
-            <widget class="QCheckBox" name="cb_AllowEditDateWhenNewNote">
+           <item row="7" column="0" colspan="2">
+            <widget class="QCheckBox" name="cb_AllowDateEditingInNewNote">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -405,7 +426,20 @@
               </font>
              </property>
              <property name="text">
-              <string>Allow edit date when  create new note</string>
+              <string>Allow date editing in new note</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" colspan="2">
+            <widget class="QCheckBox" name="cb_EnableNoteTitles">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Enable note titles</string>
              </property>
             </widget>
            </item>

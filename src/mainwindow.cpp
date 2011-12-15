@@ -27,9 +27,9 @@
 #include <QDebug>
 
 #include "settings/settingsdialog.h"
-#include "aboutdialog.h"
-
+#include "settings/settingsmanager.h"
 #include "handlers/taggednotehandler.h"
+#include "aboutdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -88,6 +88,7 @@ MainWindow::~MainWindow()
 void MainWindow::setSettings(const SettingsMap &settings)
 {
 	_editNoteForm->setSettings(settings);
+	_notesForm   ->setSettings(settings);
 }
 
 void MainWindow::showTrayIcon()
@@ -154,10 +155,14 @@ void MainWindow::loadAll()
 
 void MainWindow::showSettingsDialog()
 {
+	SettingsManager sm = SettingsManager("GAS Soft", "WhiteLightNotes");
 	SettingsDialog dlg;
+	dlg.setSettings(sm.settings());
 	if (dlg.exec() == QDialog::Accepted)
 	{
-		Q_ASSERT(false);
+		SettingsMap map = dlg.settings();
+		setSettings(map);
+		sm.saveSettings(map);
 	}
 }
 

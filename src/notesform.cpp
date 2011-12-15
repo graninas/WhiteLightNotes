@@ -34,7 +34,8 @@ using namespace Qst;
 
 NotesForm::NotesForm(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::NotesForm)
+	ui(new Ui::NotesForm),
+	_defaultSpecificator("t:")
 {
     ui->setupUi(this);
 
@@ -59,9 +60,24 @@ NotesForm::~NotesForm()
     delete ui;
 }
 
+void NotesForm::setSettings(const SettingsMap &settings)
+{
+	if (settings[S_DEFAULT_FILTERING_BY].toString() == "Tags")
+		_defaultSpecificator = "t:";
+	else if (settings[S_DEFAULT_FILTERING_BY].toString() == "Note text")
+		_defaultSpecificator = "n:";
+	else if (settings[S_DEFAULT_FILTERING_BY].toString() == "Datetime")
+		_defaultSpecificator = "d:";
+	else
+	{
+		qDebug() << settings;
+		Q_ASSERT(false);
+	}
+}
+
 void NotesForm::loadAll()
 {
-	_quickFilterItems = QuickFilterParser::parse(ui->le_QuickFilter->text(), "t:");
+	_quickFilterItems = QuickFilterParser::parse(ui->le_QuickFilter->text(), _defaultSpecificator);
 	loadTags ();
 	loadNotes();
 }

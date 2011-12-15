@@ -31,6 +31,8 @@
 #include "noteitemdelegate.h"
 #include "note.h"
 
+#include "settings/settings.h"
+
 namespace Ui {
     class NotesForm;
 }
@@ -42,6 +44,8 @@ class NotesForm : public QMainWindow
 public:
     explicit NotesForm(QWidget *parent = 0);
     ~NotesForm();
+
+	void setSettings(const SettingsMap &settings);
 
 public slots:
 
@@ -74,6 +78,7 @@ private:
 	NoteItemDelegate _noteItemDelegate;
 
 	StringListMap _quickFilterItems;
+	QString _defaultSpecificator;
 
 	Note _note(const QVariantMap &vals) const;
 };

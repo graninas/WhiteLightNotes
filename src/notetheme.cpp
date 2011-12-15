@@ -27,8 +27,8 @@
 NoteTheme::NoteTheme()
 {
 	_addUndefinedColorsMap();
-	_addRedThemeColorsMap();
 	_addBlueThemeColorsMap();
+	_addRedThemeColorsMap();
 	_addOrangeThemeColorsMap();
 
 	_supportedTokens << "title.background"

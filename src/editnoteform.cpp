@@ -39,7 +39,8 @@
 EditNoteForm::EditNoteForm(QWidget *parent) :
     QMainWindow(parent),
 	ui(new Ui::CreateNoteForm),
-	_textColorCombobox(NULL)
+	_textColorCombobox(NULL),
+	_allowDatetimeEditing(false)
 {
     ui->setupUi(this);
 
@@ -95,10 +96,15 @@ EditNoteForm::~EditNoteForm()
 
 void EditNoteForm::setSettings(const SettingsMap &settings)
 {
-	_changeFontSizeStep  = settings[S_CHANGE_FONT_SIZE_STEP].toInt();
-	_defaultColorTheme   = settings[S_DEFAULT_COLOR_THEME].toString();
 	_newNoteTextTemplate = _loadFile(settings[S_NEW_NOTE_TEXT_TEMPLATE].toString());
 	_noteShowingTemplate = _loadFile(settings[S_NOTE_SHOWING_TEMPLATE] .toString());
+
+	_changeFontSizeStep  = settings[S_CHANGE_FONT_SIZE_STEP].toInt();
+	_defaultColorTheme   = settings[S_DEFAULT_COLOR_THEME].toString();
+	ui->le_Title->setVisible(settings[S_ENABLE_NOTE_TITLES].toBool());
+	ui->dte_Date->setVisible(settings[S_ALLOW_DATE_EDITING_IN_NEW_NOTE].toBool());
+	ui->l_Date->setVisible(settings[S_ALLOW_DATE_EDITING_IN_NEW_NOTE].toBool());
+	_allowDatetimeEditing  = settings[S_ALLOW_DATE_EDITING_IN_NEW_NOTE].toBool();
 }
 
 void EditNoteForm::setNote(const Note &note)
@@ -162,7 +168,7 @@ void EditNoteForm::adjustTags(QItemSelection selected, QItemSelection deselected
 	foreach (QModelIndex idx, deselected.indexes())
 		_note.removeTag(_tagHandler.fieldValue("name", idx).toString());
 
-	_selectedTags = selected;
+	_selectedTags   = selected;
 	_deselectedTags = deselected;
 
 	ui->le_Tags->setText(_note.tags(true, true));
@@ -181,11 +187,12 @@ void EditNoteForm::adjustTags()
 
 void EditNoteForm::finish()
 {
+	adjustTags();
 	if (_note.noteID().isNull())
 		_note.create(ui->le_Title->text(),
 					 ui->te_NoteHtmlText->toPlainText(),
 					 ui->te_NoteHtmlText->toHtml(),
-					 QDateTime::currentDateTime(),
+					 ui->dte_Date->dateTime(),
 					 _noteShowingTemplate);
 	else
 		_note.update(ui->le_Title->text(),
@@ -231,17 +238,22 @@ void EditNoteForm::_setContents(const Note &note)
 	{
 		ui->le_Title->setText(note.title());
 		ui->te_NoteHtmlText->setHtml(note.htmlText());
+		ui->dte_Date->setDateTime(note.date());
 		ui->dte_Date->show();
 		ui->l_Date->show();
-		ui->dte_Date->setDateTime(note.date());
 	}
 	else
 	{
 		ui->le_Title->setText(QString());
 		ui->te_NoteHtmlText->setHtml(_newNoteTextTemplate);
-		ui->dte_Date->hide();
-		ui->l_Date->hide();
+		ui->dte_Date->setDateTime(QDateTime::currentDateTime());
+		ui->dte_Date->setVisible(_allowDatetimeEditing);
+		ui->l_Date->setVisible(_allowDatetimeEditing);
 	}
+	if (ui->le_Title->isVisible())
+		ui->le_Title->setFocus();
+	else
+		ui->te_NoteHtmlText->setFocus();
 }
 
 QString EditNoteForm::_loadFile(const QString &fileName) const
