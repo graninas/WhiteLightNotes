@@ -470,10 +470,20 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
-              <widget class="QLineEdit" name="lineEdit_3"/>
+              <widget class="QLineEdit" name="lineEdit_3">
+               <property name="text">
+                <string>Ctrl + 2</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QToolButton" name="toolButton_2">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="text">
                 <string>...</string>
                </property>
@@ -497,10 +507,20 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
-              <widget class="QLineEdit" name="lineEdit_2"/>
+              <widget class="QLineEdit" name="lineEdit_2">
+               <property name="text">
+                <string>Ctrl + 1</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QToolButton" name="toolButton_3">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="text">
                 <string>...</string>
                </property>
@@ -524,10 +544,20 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
-              <widget class="QLineEdit" name="lineEdit_4"/>
+              <widget class="QLineEdit" name="lineEdit_4">
+               <property name="text">
+                <string>Ctrl + 0</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QToolButton" name="toolButton_4">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="text">
                 <string>...</string>
                </property>

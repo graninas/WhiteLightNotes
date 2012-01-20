@@ -53,14 +53,18 @@ public slots:
 	void loadTags();
 	void loadNotes();
 
+	void createNote();
 	void editNote();
 
 	void setRedColorTheme();
 	void setBlueColorTheme();
 	void setOrangeColorTheme();
 
+	void showAllTags();
+
 signals:
 
+	void newNote();
 	void editNote(const Note &note);
 	void changeColorTheme(const Note &note, const QString &newTheme);
 
@@ -77,10 +81,16 @@ private:
 
 	NoteItemDelegate _noteItemDelegate;
 
+	QStringList   _selectedNoteTags;
 	StringListMap _quickFilterItems;
-	QString _defaultSpecificator;
+	QString       _defaultSpecificator;
 
 	Note _note(const QVariantMap &vals) const;
+
+private slots:
+
+	void _saveNoteTagsInQuickFilter(const QItemSelection &selected,
+									const QItemSelection &deselected);
 };
 
 #endif // NOTESFORM_H

@@ -76,6 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(_editNoteForm, SIGNAL(finishNote(Note)),    this, SLOT(finishNote(Note)));
 	QObject::connect(_editNoteForm, SIGNAL(cancelNoteEditing()), this, SLOT(cancelEditing()));
+	QObject::connect(_notesForm,    SIGNAL(newNote()),           this, SLOT(newNote()));
 	QObject::connect(_notesForm,    SIGNAL(editNote  (Note)),    this, SLOT(editNote  (Note)));
 	QObject::connect(_notesForm,    SIGNAL(changeColorTheme(Note,QString)), this, SLOT(changeColorTheme(Note,QString)));
 }

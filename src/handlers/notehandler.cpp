@@ -26,6 +26,8 @@ using namespace Qst;
 
 #include "notetheme.h"
 
+#include <QDebug>
+
 NoteHandler::NoteHandler()
 {
 }
@@ -82,6 +84,11 @@ QVariant NoteHandler::updateNote(const QVariant  &noteID,
 
 Qst::QstBatch noteBatch(const StringListMap &filters)
 {
+	QString tagCond   = filterCondition("t.name",        filters["t:"]);
+	QString noteCond  = filterCondition("n.simple_text", filters["n:"]);
+	QString dateCond  = filterCondition("n.date",        filters["d:"]);
+	QString colorCond = filterCondition("n.theme",       filters["c:"]);
+
 	QstBatch b;
 	b.select(QstField(RolePrimaryKey, "n.id", FieldInvisible));
 	b.select(QstField("n.title",              FieldInvisible, "Note Title"));
@@ -93,17 +100,17 @@ Qst::QstBatch noteBatch(const StringListMap &filters)
 	b.select(QstField("count(tn.tag_id) as tag_cnt", FieldInvisible));
 	b.from     ("note n");
 	b.innerJoin("tagged_note tn", QueryWhere    ("tn.note_id = n.id"));
-	b.innerJoin("tag t",          QueryWhere    ("t.id = tn.tag_id"));
 	b.where    ("tn.tag_id",      QstPlaceholder("selected_tags"));
 	b.groupBy  ("n.id, n.html_text, n.date");
 	b.orderBy  ("n.date");
+	if (!tagCond.isEmpty())
+		b.innerJoin("tag t", QueryWhere("(t.id = tn.tag_id) AND (" + tagCond + ")"));
+	else
+		b.innerJoin("tag t", QueryWhere("t.id = tn.tag_id"));
 
-	QString noteCond  = filterCondition("n.simple_text", filters["n:"]);
-	QString dateCond  = filterCondition("n.date",        filters["d:"]);
-	QString colorCond = filterCondition("n.theme",       filters["c:"]);
-	if (!noteCond.isEmpty())   b.where(noteCond);
-	if (!dateCond.isEmpty())   b.where(dateCond);
-	if (!colorCond.isEmpty())  b.where(colorCond);
+	if (!noteCond.isEmpty())   b.where (noteCond);
+	if (!dateCond.isEmpty())   b.where (dateCond);
+	if (!colorCond.isEmpty())  b.where (colorCond);
 
 	b.setModelColumn("complex_data");
 	return b;

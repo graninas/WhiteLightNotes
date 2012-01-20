@@ -64,6 +64,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="pb_ShowAllTags">
+        <property name="text">
+         <string>Show all tags</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -151,6 +158,7 @@
      <addaction name="action_BlueTheme"/>
      <addaction name="action_OrangeTheme"/>
     </widget>
+    <addaction name="action_NewNote"/>
     <addaction name="action_EditNote"/>
     <addaction name="menuNote_Color_Theme"/>
    </widget>
@@ -191,6 +199,18 @@
    </property>
    <property name="text">
     <string>Edit note...</string>
+   </property>
+  </action>
+  <action name="action_NewNote">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/notebook--plus.png</normaloff>:/icons/resources/notebook--plus.png</iconset>
+   </property>
+   <property name="text">
+    <string>NewNote...</string>
+   </property>
+   <property name="toolTip">
+    <string>NewNote...</string>
    </property>
   </action>
  </widget>
@@ -235,9 +255,59 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_NewNote</sender>
+   <signal>triggered()</signal>
+   <receiver>NotesForm</receiver>
+   <slot>createNote()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_EditNote</sender>
+   <signal>triggered()</signal>
+   <receiver>NotesForm</receiver>
+   <slot>editNote()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_ShowAllTags</sender>
+   <signal>clicked()</signal>
+   <receiver>NotesForm</receiver>
+   <slot>showAllTags()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>432</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>53</x>
+     <y>459</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>loadTags()</slot>
   <slot>editNote()</slot>
+  <slot>createNote()</slot>
+  <slot>showAllTags()</slot>
  </slots>
 </ui>

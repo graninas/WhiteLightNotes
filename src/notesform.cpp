@@ -84,10 +84,13 @@ void NotesForm::loadAll()
 
 void NotesForm::loadTags()
 {
-	if (!_quickFilterItems.contains("t:") || _quickFilterItems["t:"].isEmpty())
+	QStringList filters = _quickFilterItems["t:"];
+	filters.append(_selectedNoteTags);
+	filters.removeDuplicates();
+	if (filters.isEmpty())
 		_tagHandler.setQuery(tagBatch());
 	else
-		_tagHandler.setQuery(linkedTagsBatch(_quickFilterItems["t:"]));
+		_tagHandler.setQuery(linkedTagsBatch(filters));
 
 	_tagHandler.reload();
 	QObject::connect(ui->lv_Tags->selectionModel(),
@@ -100,6 +103,14 @@ void NotesForm::loadNotes()
 	_noteHandler.setQuery(noteBatch(_quickFilterItems));
 	_noteHandler.updatePlaceholder("selected_tags", _tagHandler.viewSelectedKeys());
 	_noteHandler.reload();
+
+	QObject::connect(ui->tv_Notes->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+					 this, SLOT(_saveNoteTagsInQuickFilter(QItemSelection,QItemSelection)));
+}
+
+void NotesForm::createNote()
+{
+	emit newNote();
 }
 
 void NotesForm::editNote()
@@ -138,14 +149,40 @@ void NotesForm::setOrangeColorTheme()
 	emit changeColorTheme(_note(vals), "orange");
 }
 
+void NotesForm::showAllTags()
+{
+	_selectedNoteTags.clear();
+	loadTags();
+}
+
 Note NotesForm::_note(const QVariantMap &vals) const
 {
-	return  Note(vals["id"],
-				 vals["title"].toString(),
-				 vals["simple_text"].toString(),
-				 vals["html_text"].toString(),
-				 QDateTime::fromString(vals["date"].toString(), Qst::DEFAULT_DATE_TIME_FORMAT),
-				 vals["complex_data"].toString(),
-				 vals["theme"].toString(),
-				 TaggedNoteHandler::tagList(vals["id"]));
+	return Note(vals["id"],
+				vals["title"].toString(),
+				vals["simple_text"].toString(),
+				vals["html_text"].toString(),
+				QDateTime::fromString(vals["date"].toString(), Qst::DEFAULT_DATE_TIME_FORMAT),
+				vals["complex_data"].toString(),
+				vals["theme"].toString(),
+				TaggedNoteHandler::tagList(vals["id"]));
+}
+
+void NotesForm::_saveNoteTagsInQuickFilter(const QItemSelection &selected,
+										   const QItemSelection &deselected)
+{
+	Q_UNUSED(deselected);
+	if (selected.indexes().isEmpty())
+		return;
+
+	_selectedNoteTags.clear();
+	QStringList ids;
+	foreach (QModelIndex idx, selected.indexes())
+		ids.append(_noteHandler.fieldValue("id", idx).toString());
+	ids.removeDuplicates();
+	foreach (QString id, ids)
+	{
+		QStringList tagList = TaggedNoteHandler::tagList(id.toInt());
+		_selectedNoteTags.append(tagList);
+	}
+	loadTags();
 }

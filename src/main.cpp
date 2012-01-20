@@ -28,6 +28,7 @@
 #include <QtDebug>
 #include <QFile>
 #include <QTextStream>
+#include <QMessageBox>
 
 #include "settings/settingsmanager.h"
 #include "settings/settingsdialog.h"
@@ -41,6 +42,7 @@
 
 using namespace Qst;
 
+SettingsMap preRun();
 void createTables();
 void createPredefinedRows();
 bool checkIsFirstRun(SettingsManager *sm);
@@ -62,21 +64,9 @@ int main(int argc, char *argv[])
 	QTextCodec *pTextCodec = QTextCodec::codecForName("UTF-8");
 	QTextCodec::setCodecForTr(pTextCodec);
 
-	SettingsManager sm = SettingsManager("GAS Soft", "WhiteLightNotes");
-	SettingsMap settings;
-	if (checkIsFirstRun(&sm))
-	{
-		settings = firstRunSettings();
-		settings[S_IS_FIRST_RUN] = false;
-		sm.saveSettings(settings);
-	}
-	else
-		settings = sm.settings();
-
-	QstDBConnection conn;
-	conn.setDriverName("QSQLITE");
-	conn.setDatabaseName(settings[S_DATABASE_FILE_NAME].toString());
-	conn.open();
+	SettingsMap settings = preRun();
+	if (settings.isEmpty())
+		return 0;
 
 	createTables();
 	createPredefinedRows();
@@ -86,6 +76,51 @@ int main(int argc, char *argv[])
 	w.loadAll();
 	w.showTrayIcon();
 	return a.exec();
+}
+
+SettingsMap preRun()
+{
+	SettingsManager sm = SettingsManager("GAS Soft", "WhiteLightNotes");
+	SettingsMap settings;
+	QstDBConnection conn;
+	conn.setDriverName("QSQLITE");
+
+	if (checkIsFirstRun(&sm))
+	{
+		settings = firstRunSettings();
+		if (settings.isEmpty())
+			return SettingsMap();
+	}
+	else
+		settings = sm.settings();
+
+	bool repeat = true;
+	while (repeat)
+	{
+		conn.setDatabaseName(settings[S_DATABASE_FILE_NAME].toString());
+		if (!conn.open())
+		{
+			QMessageBox msgBox;
+			msgBox.setText(QMessageBox::tr("DB file does not found or it has invalid format.\n\n(")
+						   + settings[S_DATABASE_FILE_NAME].toString() + ").");
+			msgBox.setInformativeText(QMessageBox::tr("Please, select another DB file name and path."));
+			msgBox.setStandardButtons(QMessageBox::Ok);
+			msgBox.setIcon(QMessageBox::Critical);
+			msgBox.exec();
+			repeat = true;
+
+			SettingsDialog dlg;
+			dlg.setSettings(settings);
+			dlg.showWelcomeString();
+			if (dlg.exec() == QDialog::Accepted)
+				settings = dlg.settings();
+			else return SettingsMap();
+		}
+		else repeat = false;
+	}
+	settings[S_IS_FIRST_RUN] = false;
+	sm.saveSettings(settings);
+	return settings;
 }
 
 void createTables()
@@ -111,8 +146,9 @@ SettingsMap firstRunSettings()
 	SettingsDialog dlg;
 	dlg.setSettings(SettingsDialog::defaultSettings());
 	dlg.showWelcomeString();
-	dlg.exec();
-	return dlg.settings();
+	if (dlg.exec() == QDialog::Accepted)
+		return dlg.settings();
+	return SettingsMap();
 }
 
 void customMessageHandler(QtMsgType type, const char *msg)

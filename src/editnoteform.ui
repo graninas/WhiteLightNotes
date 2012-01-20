@@ -309,7 +309,11 @@ p, li { white-space: pre-wrap; }
  <tabstops>
   <tabstop>le_Title</tabstop>
   <tabstop>te_NoteHtmlText</tabstop>
+  <tabstop>dte_Date</tabstop>
   <tabstop>le_Tags</tabstop>
+  <tabstop>pb_Ok</tabstop>
+  <tabstop>pb_Cancel</tabstop>
+  <tabstop>tv_Tags</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>

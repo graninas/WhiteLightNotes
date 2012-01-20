@@ -219,6 +219,7 @@ void Note::changeColorTheme(const QString &newTheme)
 
 bool Note::isValid() const
 {
+	qDebug() << _simpleText << _tagList << _date << _complexText;
 	return !_simpleText.isEmpty() &&
 		   !_tagList.isEmpty() &&
 		   _date.isValid() &&
@@ -232,5 +233,5 @@ QString Note::_cutHtmlHeaders(const QString &htmlStr) const
 	while(res[idx] != QChar('>'))
 		idx++;
 	res.remove(0, idx+1);
-	return res.left(res.length() - QString("</body></html>").length());;
+	return res.left(res.length() - QString("</body></html>").length());
 }

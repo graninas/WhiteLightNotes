@@ -30,10 +30,11 @@
 #include <QToolButton>
 #include <QComboBox>
 #include <QFile>
-#include <QTextStream>
+#include <QMessageBox>
 
 #include <QDebug>
 
+#include "noteshowingtemplate.h"
 #include "handlers/taghandler.h"
 
 EditNoteForm::EditNoteForm(QWidget *parent) :
@@ -99,6 +100,18 @@ void EditNoteForm::setSettings(const SettingsMap &settings)
 	_newNoteTextTemplate = _loadFile(settings[S_NEW_NOTE_TEXT_TEMPLATE].toString());
 	_noteShowingTemplate = _loadFile(settings[S_NOTE_SHOWING_TEMPLATE] .toString());
 
+	if (_noteShowingTemplate.isEmpty())
+	{
+		QMessageBox msgBox;
+		msgBox.setText(tr("NoteShowingTemplate.html does not found \n\n(")
+					   + settings[S_NEW_NOTE_TEXT_TEMPLATE].toString() + ").");
+		msgBox.setInformativeText(tr("In-program reserve template will be used now."));
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.exec();
+		_noteShowingTemplate = noteShowingTemplate();
+	}
+
 	_changeFontSizeStep  = settings[S_CHANGE_FONT_SIZE_STEP].toInt();
 	_defaultColorTheme   = settings[S_DEFAULT_COLOR_THEME].toString();
 	ui->le_Title->setVisible(settings[S_ENABLE_NOTE_TITLES].toBool());
@@ -118,9 +131,13 @@ void EditNoteForm::loadAll()
 	_tagHandler.reload();
 	adjustTags(_selectedTags, _deselectedTags);
 
+	if (ui->le_Title->isVisible())
+		ui->le_Title->setFocus();
+	else
+		ui->te_NoteHtmlText->setFocus();
+
 	QObject::connect(ui->tv_Tags->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
 					 this, SLOT(adjustTags(QItemSelection,QItemSelection)));
-	ui->le_Title->setFocus();
 }
 
 void EditNoteForm::adjustButtons(const QTextCharFormat &format)
@@ -250,10 +267,6 @@ void EditNoteForm::_setContents(const Note &note)
 		ui->dte_Date->setVisible(_allowDatetimeEditing);
 		ui->l_Date->setVisible(_allowDatetimeEditing);
 	}
-	if (ui->le_Title->isVisible())
-		ui->le_Title->setFocus();
-	else
-		ui->te_NoteHtmlText->setFocus();
 }
 
 QString EditNoteForm::_loadFile(const QString &fileName) const
