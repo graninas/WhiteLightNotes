@@ -37,6 +37,7 @@
 #include "qst/querygeneration/querybuilders/sqlite/sqlitebuilder.h"
 #include "handlers/taghandler.h"
 
+#include "notesform.h"
 
 #undef FILE_LOG
 
@@ -71,8 +72,11 @@ int main(int argc, char *argv[])
 	createTables();
 	createPredefinedRows();
 
+	NotesForm notesForm;
+
 	MainWindow w;
-	w.setSettings(settings);
+	w.createForms(&notesForm);
+	w.setupForms(settings);
 	w.loadAll();
 	w.showTrayIcon();
 	return a.exec();

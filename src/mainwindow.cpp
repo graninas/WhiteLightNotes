@@ -33,17 +33,11 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-	ui(new Ui::MainWindow)
+	ui(new Ui::MainWindow),
+	_notesForm(NULL),
+	_editNoteForm(NULL)
 {
     ui->setupUi(this);
-
-	_notesForm      = new NotesForm     (this);
-	_editNoteForm = new EditNoteForm(this);
-	Q_ASSERT(_notesForm      != NULL);
-	Q_ASSERT(_editNoteForm != NULL);
-
-	_notesForm   ->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
-	_editNoteForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
 
 	_trayIconContextMenu.addAction(ui->action_NewNote);
 	_trayIconContextMenu.addAction(ui->action_Notes);
@@ -86,8 +80,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setSettings(const SettingsMap &settings)
+void MainWindow::createForms(NotesForm * notesForm,
+							 EditNoteForm *editNoteForm)
 {
+	if (notesForm != NULL)
+		_notesForm = notesForm;
+	else
+		_notesForm = new NotesForm   (this);
+
+	if (editNoteForm != NULL)
+		_editNoteForm = editNoteForm;
+	else
+		_editNoteForm = new EditNoteForm(this);
+
+	Q_ASSERT(_notesForm    != NULL);
+	Q_ASSERT(_editNoteForm != NULL);
+}
+
+void MainWindow::setupForms(const SettingsMap &settings)
+{
+	_notesForm   ->setWindowFlags(Qt::Window);
+	_editNoteForm->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
 	_editNoteForm->setSettings(settings);
 	_notesForm   ->setSettings(settings);
 }
@@ -162,7 +175,7 @@ void MainWindow::showSettingsDialog()
 	if (dlg.exec() == QDialog::Accepted)
 	{
 		SettingsMap map = dlg.settings();
-		setSettings(map);
+		setupForms(map);
 		sm.saveSettings(map);
 	}
 }

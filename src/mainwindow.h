@@ -49,7 +49,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-	void setSettings(const SettingsMap &settings);
+	void createForms(NotesForm * notesForm,
+					 EditNoteForm *editNoteForm = NULL);
+	void setupForms(const SettingsMap &settings);
 
 public slots:
 

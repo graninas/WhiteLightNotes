@@ -28,12 +28,18 @@
     <height>16777215</height>
    </size>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::NoFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Notes</string>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
     <normaloff>:/icons/resources/notebooks.png</normaloff>:/icons/resources/notebooks.png</iconset>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,3">
