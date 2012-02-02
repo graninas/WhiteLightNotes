@@ -1,5 +1,5 @@
 /****************************************************************************
-** WhiteLight Notes 0.9 rc1
+** WhiteLight Notes 0.9 rc2
 ** Copyright (C)  Granin A.S. 2011
 ** 
 **
@@ -67,12 +67,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&_notesHotkey,      SIGNAL(activated()), this, SLOT(notesFormShowChange()));
 	QObject::connect(&_createNoteHotkey, SIGNAL(activated()), this, SLOT(editNoteFormShowChange()));
 	QObject::connect(&_closeAppHotkey,   SIGNAL(activated()), this, SLOT(closeApplication()));
-
-	QObject::connect(_editNoteForm, SIGNAL(finishNote(Note)),    this, SLOT(finishNote(Note)));
-	QObject::connect(_editNoteForm, SIGNAL(cancelNoteEditing()), this, SLOT(cancelEditing()));
-	QObject::connect(_notesForm,    SIGNAL(newNote()),           this, SLOT(newNote()));
-	QObject::connect(_notesForm,    SIGNAL(editNote  (Note)),    this, SLOT(editNote  (Note)));
-	QObject::connect(_notesForm,    SIGNAL(changeColorTheme(Note,QString)), this, SLOT(changeColorTheme(Note,QString)));
 }
 
 MainWindow::~MainWindow()
@@ -95,6 +89,13 @@ void MainWindow::createForms(NotesForm * notesForm,
 
 	Q_ASSERT(_notesForm    != NULL);
 	Q_ASSERT(_editNoteForm != NULL);
+
+
+	QObject::connect(_editNoteForm, SIGNAL(finishNote(Note)),    this, SLOT(finishNote(Note)));
+	QObject::connect(_editNoteForm, SIGNAL(cancelNoteEditing()), this, SLOT(cancelEditing()));
+	QObject::connect(_notesForm,    SIGNAL(newNote()),           this, SLOT(newNote()));
+	QObject::connect(_notesForm,    SIGNAL(editNote  (Note)),    this, SLOT(editNote  (Note)));
+	QObject::connect(_notesForm,    SIGNAL(changeColorTheme(Note,QString)), this, SLOT(changeColorTheme(Note,QString)));
 }
 
 void MainWindow::setupForms(const SettingsMap &settings)

@@ -1,5 +1,5 @@
 /****************************************************************************
-** WhiteLight Notes 0.9 rc1
+** WhiteLight Notes 0.9 rc2
 ** Copyright (C)  Granin A.S. 2011
 ** 
 **
@@ -21,8 +21,9 @@
 ****************************************************************************/
 
 #include "quickfilterparser.h"
-
 #include "statemachine/transtable.h"
+
+#include <QObject>
 
 typedef Transition T;
 
@@ -32,7 +33,8 @@ TransTable table()
 	QString n = "n";
 	QString d = "d";
 	QString c = "c";
-	QString lett = "_0123456789абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯabefghijklmopqrsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	QString lett = QObject::tr("абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ")
+					+ "_0123456789abefghijklmopqrsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	QString colon = ":";
 	QString space = " ";
 	QString pipe  = "|";

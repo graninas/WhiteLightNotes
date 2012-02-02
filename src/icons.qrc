@@ -47,5 +47,6 @@
         <file>resources/folder-open.png</file>
         <file>resources/notebook--pencil.png</file>
         <file>resources/notebook--minus.png</file>
+        <file>resources/cross.png</file>
     </qresource>
 </RCC>

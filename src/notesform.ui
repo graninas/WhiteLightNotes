@@ -32,7 +32,7 @@
    <enum>Qt::NoFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Notes</string>
+   <string>WhiteLight Notes</string>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
@@ -63,7 +63,7 @@
          <enum>QFrame::NoFrame</enum>
         </property>
         <property name="selectionMode">
-         <enum>QAbstractItemView::MultiSelection</enum>
+         <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
@@ -151,6 +151,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="action_Close"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -219,11 +220,22 @@
     <string>NewNote...</string>
    </property>
   </action>
+  <action name="action_Close">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/resources/cross.png</normaloff>:/icons/resources/cross.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
-  <tabstop>le_QuickFilter</tabstop>
-  <tabstop>tb_Clear</tabstop>
   <tabstop>lv_Tags</tabstop>
+  <tabstop>le_QuickFilter</tabstop>
+  <tabstop>tv_Notes</tabstop>
+  <tabstop>tb_Clear</tabstop>
+  <tabstop>pb_ShowAllTags</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>
@@ -306,6 +318,22 @@
     <hint type="destinationlabel">
      <x>53</x>
      <y>459</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Close</sender>
+   <signal>triggered()</signal>
+   <receiver>NotesForm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>223</y>
     </hint>
    </hints>
   </connection>

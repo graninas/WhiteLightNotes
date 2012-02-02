@@ -1,5 +1,5 @@
 /****************************************************************************
-** WhiteLight Notes 0.9 rc1
+** WhiteLight Notes 0.9 rc2
 ** Copyright (C)  Granin A.S. 2011
 ** 
 **
